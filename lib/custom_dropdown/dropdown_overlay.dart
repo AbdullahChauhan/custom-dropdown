@@ -1,28 +1,38 @@
 part of 'custom_dropdown.dart';
 
-class _DropdownOverlay<T> extends StatefulWidget {
-  final List<T> items;
+const _overlayIcon = Icon(Icons.keyboard_arrow_up_rounded, color: Colors.black, size: 20);
+const _headerPadding = EdgeInsets.only(left: 16.0, top: 16, bottom: 16, right: 14);
+const _overlayOuterPadding = EdgeInsets.only(bottom: 12, left: 12, right: 12);
+const _overlayOffset = Offset(-12, 0);
+const _overlayShadowOffset = Offset(0, 6);
+const _listItemPadding = EdgeInsets.symmetric(vertical: 12, horizontal: 16);
+
+class _DropdownOverlay extends StatefulWidget {
+  final List<String> items;
+  final TextEditingController controller;
   final Size size;
   final LayerLink layerLink;
   final VoidCallback hideOverlay;
-  final TextEditingController controller;
+  final String hintText;
   final Widget? suffixIcon;
   final TextStyle? headerStyle;
   final TextStyle? listItemStyle;
-
-  final String? hintText;
+  final bool? excludeSelected;
+  final BorderRadius? borderRadius;
 
   const _DropdownOverlay({
     Key? key,
     required this.items,
+    required this.controller,
     required this.size,
     required this.layerLink,
     required this.hideOverlay,
-    required this.controller,
     required this.suffixIcon,
-    this.hintText,
+    required this.hintText,
     this.headerStyle,
     this.listItemStyle,
+    this.excludeSelected,
+    this.borderRadius,
   }) : super(key: key);
 
   @override
@@ -32,14 +42,18 @@ class _DropdownOverlay<T> extends StatefulWidget {
 class _DropdownOverlayState extends State<_DropdownOverlay> {
   bool displayOverly = true;
   late String headerText;
-  late List<dynamic> items;
+  late List<String> items;
   final scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     headerText = widget.controller.text;
-    items = widget.items.where((element) => element != headerText).toList();
+    if (widget.excludeSelected! && widget.controller.text.isNotEmpty) {
+      items = widget.items.where((item) => item != headerText).toList();
+    } else {
+      items = widget.items;
+    }
   }
 
   @override
@@ -50,45 +64,22 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final listItemStyle = const TextStyle(
-      fontSize: 16,
-    ).merge(widget.listItemStyle);
+    // border radius
+    final borderRadius = widget.borderRadius ?? BorderRadius.circular(12);
 
-    final scrollableChild = Scrollbar(
-      controller: scrollController,
-      child: ListView.builder(
-        controller: scrollController,
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        itemCount: items.length,
-        itemBuilder: (_, index) {
-          return Material(
-            color: Colors.transparent,
-            child: InkWell(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.grey[100],
-              onTap: () {
-                if (headerText != items[index]) {
-                  widget.controller.text = items[index];
-                }
-                setState(() => displayOverly = false);
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 16,
-                ),
-                child: Text(
-                  items[index],
-                  style: listItemStyle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+    // items list
+    final list = _ItemsList(
+      scrollController: scrollController,
+      excludeSelected: widget.excludeSelected!,
+      items: items,
+      headerText: headerText,
+      itemTextStyle: widget.listItemStyle,
+      onItemSelect: (value) {
+        if (headerText != value) {
+          widget.controller.text = value;
+        }
+        setState(() => displayOverly = false);
+      },
     );
 
     return GestureDetector(
@@ -104,22 +95,18 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
               child: CompositedTransformFollower(
                 link: widget.layerLink,
                 showWhenUnlinked: false,
-                offset: const Offset(-12, 0),
+                offset: _overlayOffset,
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 12,
-                    left: 12,
-                    right: 12,
-                  ),
+                  padding: _overlayOuterPadding,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: borderRadius,
                       boxShadow: [
                         BoxShadow(
                           blurRadius: 24.0,
                           color: Colors.black.withOpacity(.08),
-                          offset: const Offset(0, 6),
+                          offset: _overlayShadowOffset,
                         ),
                       ],
                     ),
@@ -129,11 +116,10 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                         animationDismissed: widget.hideOverlay,
                         expand: displayOverly,
                         child: SizedBox(
-                          height: items.length > 4 ? 200 : null,
+                          height: items.length > 4 ? 225 : null,
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: NotificationListener<
-                                OverscrollIndicatorNotification>(
+                            borderRadius: borderRadius,
+                            child: NotificationListener<OverscrollIndicatorNotification>(
                               onNotification: (notification) {
                                 notification.disallowGlow();
                                 return true;
@@ -142,10 +128,10 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                 data: Theme.of(context).copyWith(
                                   scrollbarTheme: ScrollbarThemeData(
                                     isAlwaysShown: true,
-                                    thickness: MaterialStateProperty.all(3.25),
-                                    radius: const Radius.circular(8),
+                                    thickness: MaterialStateProperty.all(5),
+                                    radius: const Radius.circular(4),
                                     thumbColor: MaterialStateProperty.all(
-                                      Colors.grey[350],
+                                      Colors.grey[300],
                                     ),
                                   ),
                                 ),
@@ -154,33 +140,19 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 16.0,
-                                        top: 16,
-                                        bottom: 16,
-                                        right: 14,
-                                      ),
+                                      padding: _headerPadding,
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              headerText.isNotEmpty
-                                                  ? headerText
-                                                  : '${widget.hintText}',
+                                              headerText.isNotEmpty ? headerText : widget.hintText,
                                               style: widget.headerStyle,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
                                           const SizedBox(width: 12),
-                                          widget.suffixIcon ??
-                                              const Icon(
-                                                Icons.keyboard_arrow_up_rounded,
-                                                color: Colors.black,
-                                                size: 20,
-                                              ),
+                                          widget.suffixIcon ?? _overlayIcon,
                                         ],
                                       ),
                                     ),
@@ -190,9 +162,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                       height: 0,
                                       color: Colors.grey[300],
                                     ),
-                                    items.length > 4
-                                        ? Expanded(child: scrollableChild)
-                                        : scrollableChild
+                                    items.length > 4 ? Expanded(child: list) : list
                                   ],
                                 ),
                               ),
@@ -207,6 +177,63 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ItemsList extends StatelessWidget {
+  final ScrollController scrollController;
+  final List<String> items;
+  final bool excludeSelected;
+  final String headerText;
+  final ValueSetter<String> onItemSelect;
+  final TextStyle? itemTextStyle;
+
+  const _ItemsList({
+    Key? key,
+    required this.scrollController,
+    required this.items,
+    required this.excludeSelected,
+    required this.headerText,
+    required this.onItemSelect,
+    this.itemTextStyle,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final listItemStyle = const TextStyle(
+      fontSize: 16,
+    ).merge(itemTextStyle);
+
+    return Scrollbar(
+      controller: scrollController,
+      child: ListView.builder(
+        controller: scrollController,
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        itemCount: items.length,
+        itemBuilder: (_, index) {
+          final selected = !excludeSelected && headerText == items[index];
+          return Material(
+            color: Colors.transparent,
+            child: InkWell(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.grey[200],
+              onTap: () => onItemSelect(items[index]),
+              child: Container(
+                color: selected ? Colors.grey[100] : Colors.transparent,
+                padding: _listItemPadding,
+                child: Text(
+                  items[index],
+                  style: listItemStyle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

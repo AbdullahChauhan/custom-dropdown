@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-part 'overlay_builder.dart';
+part 'animated_section.dart';
 part 'dropdown_field.dart';
 part 'dropdown_overlay.dart';
-part 'animated_section.dart';
+part 'overlay_builder.dart';
 
-class CustomDropdown<T> extends StatefulWidget {
-  final List<T> items;
+class CustomDropdown extends StatefulWidget {
+  final List<String> items;
   final TextEditingController controller;
   final String? hintText;
   final TextStyle? hintStyle;
@@ -15,12 +15,15 @@ class CustomDropdown<T> extends StatefulWidget {
   final String? errorText;
   final TextStyle? errorStyle;
   final TextStyle? listItemStyle;
-  final InputBorder? border;
-  final InputBorder? errorBorder;
+  final BorderSide? borderSide;
+  final BorderSide? errorBorderSide;
+  final BorderRadius? borderRadius;
   final Widget? suffixIcon;
   final Function(String)? onChanged;
+  final bool? excludeSelected;
+  final Color? fillColor;
 
-  const CustomDropdown({
+  CustomDropdown({
     Key? key,
     required this.items,
     required this.controller,
@@ -30,11 +33,18 @@ class CustomDropdown<T> extends StatefulWidget {
     this.errorText,
     this.errorStyle,
     this.listItemStyle,
-    this.border,
-    this.errorBorder,
+    this.errorBorderSide,
+    this.borderRadius,
+    this.borderSide,
     this.suffixIcon,
     this.onChanged,
-  }) : super(key: key);
+    this.excludeSelected = true,
+    this.fillColor = Colors.white,
+  })  : assert(
+          controller.text.isEmpty || items.contains(controller.text),
+          'Controller value must match with one of the item in items list.',
+        ),
+        super(key: key);
 
   @override
   _CustomDropdownState createState() => _CustomDropdownState();
@@ -69,11 +79,12 @@ class _CustomDropdownState extends State<CustomDropdown> {
           size: size,
           layerLink: layerLink,
           hideOverlay: hideCallback,
-          headerStyle:
-              widget.controller.text.isNotEmpty ? selectedStyle : hintStyle,
+          headerStyle: widget.controller.text.isNotEmpty ? selectedStyle : hintStyle,
           suffixIcon: widget.suffixIcon,
           hintText: hintText,
           listItemStyle: widget.listItemStyle,
+          excludeSelected: widget.excludeSelected,
+          borderRadius: widget.borderRadius,
         );
       },
       child: (showCallback) {
@@ -83,14 +94,16 @@ class _CustomDropdownState extends State<CustomDropdown> {
             controller: widget.controller,
             onTap: showCallback,
             style: selectedStyle,
-            border: widget.border,
-            errorBorder: widget.errorBorder,
+            borderRadius: widget.borderRadius,
+            borderSide: widget.borderSide,
+            errorBorderSide: widget.errorBorderSide,
             errorStyle: widget.errorStyle,
             errorText: widget.errorText,
             hintStyle: hintStyle,
             hintText: hintText,
             suffixIcon: widget.suffixIcon,
             onChanged: widget.onChanged,
+            fillColor: widget.fillColor,
           ),
         );
       },

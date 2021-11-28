@@ -15,8 +15,7 @@ class AnimatedSection extends StatefulWidget {
   _AnimatedSectionState createState() => _AnimatedSectionState();
 }
 
-class _AnimatedSectionState extends State<AnimatedSection>
-    with SingleTickerProviderStateMixin {
+class _AnimatedSectionState extends State<AnimatedSection> with SingleTickerProviderStateMixin {
   late AnimationController animController;
   late Animation<double> animation;
 
@@ -31,13 +30,11 @@ class _AnimatedSectionState extends State<AnimatedSection>
     animController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
-    )..addStatusListener(
-        (status) {
-          if (status == AnimationStatus.dismissed) {
-            widget.animationDismissed();
-          }
-        },
-      );
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.dismissed) {
+          widget.animationDismissed();
+        }
+      });
 
     animation = CurvedAnimation(
       parent: animController,

@@ -1,10 +1,10 @@
 part of 'custom_dropdown.dart';
 
-const _icon = Icon(
-  Icons.keyboard_arrow_down_rounded,
-  color: Colors.black,
-  size: 20,
-);
+const _textFieldIcon = Icon(Icons.keyboard_arrow_down_rounded, color: Colors.black, size: 20);
+const _contentPadding = EdgeInsets.only(left: 16);
+const _noTextStyle = TextStyle(height: 0);
+const _borderSide = BorderSide(color: Colors.transparent);
+const _errorBorderSide = BorderSide(color: Colors.redAccent, width: 2);
 
 class _DropDownField extends StatefulWidget {
   final TextEditingController controller;
@@ -15,9 +15,11 @@ class _DropDownField extends StatefulWidget {
   final TextStyle? style;
   final String? errorText;
   final TextStyle? errorStyle;
-  final InputBorder? border;
-  final InputBorder? errorBorder;
+  final BorderSide? borderSide;
+  final BorderSide? errorBorderSide;
+  final BorderRadius? borderRadius;
   final Widget? suffixIcon;
+  final Color? fillColor;
 
   const _DropDownField({
     Key? key,
@@ -30,8 +32,10 @@ class _DropDownField extends StatefulWidget {
     this.style,
     this.errorText,
     this.errorStyle,
-    this.border,
-    this.errorBorder,
+    this.borderSide,
+    this.errorBorderSide,
+    this.borderRadius,
+    this.fillColor,
   }) : super(key: key);
 
   @override
@@ -48,6 +52,12 @@ class _DropDownFieldState extends State<_DropDownField> {
     if (widget.onChanged != null) {
       widget.controller.addListener(listenItemChanges);
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.controller.removeListener(listenItemChanges);
   }
 
   @override
@@ -72,17 +82,15 @@ class _DropDownFieldState extends State<_DropDownField> {
 
   @override
   Widget build(BuildContext context) {
-    final border = widget.border ??
-        OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.transparent),
-        );
+    final border = OutlineInputBorder(
+      borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
+      borderSide: widget.borderSide ?? _borderSide,
+    );
 
-    final errorBorder = widget.errorBorder ??
-        OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 2),
-        );
+    final errorBorder = OutlineInputBorder(
+      borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
+      borderSide: widget.errorBorderSide ?? _errorBorderSide,
+    );
 
     return TextFormField(
       controller: widget.controller,
@@ -95,15 +103,13 @@ class _DropDownFieldState extends State<_DropDownField> {
       style: widget.style,
       decoration: InputDecoration(
         isDense: true,
-        contentPadding: const EdgeInsets.only(left: 16),
-        suffixIcon: widget.suffixIcon ?? _icon,
+        contentPadding: _contentPadding,
+        suffixIcon: widget.suffixIcon ?? _textFieldIcon,
         hintText: widget.hintText,
         hintStyle: widget.hintStyle,
-        fillColor: Colors.white,
+        fillColor: widget.fillColor,
         filled: true,
-        errorStyle: widget.errorText != null
-            ? widget.errorStyle
-            : const TextStyle(height: 0),
+        errorStyle: widget.errorText != null ? widget.errorStyle : _noTextStyle,
         border: border,
         enabledBorder: border,
         focusedBorder: border,
