@@ -1,4 +1,4 @@
-import 'package:custom_dropdown/custom_dropdown.dart';
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

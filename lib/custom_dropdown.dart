@@ -1,4 +1,4 @@
-library custom_dropdown;
+library animated_custom_dropdown;
 
 export 'custom_dropdown.dart';
 

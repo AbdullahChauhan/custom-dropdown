@@ -1,4 +1,4 @@
-name: custom_dropdown_example
+name: animated_custom_dropdown_example
 description: Demonstrates how to use the custom dropdown package.
 
 # The following line prevents the package from being accidentally published to
@@ -29,7 +29,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  custom_dropdown:
+  animated_custom_dropdown:
     path: ../
 
 
