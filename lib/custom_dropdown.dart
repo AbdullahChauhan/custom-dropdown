@@ -1,3 +1,7 @@
+library custom_dropdown;
+
+export 'custom_dropdown.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
