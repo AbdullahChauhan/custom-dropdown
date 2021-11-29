@@ -11,7 +11,7 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 1. Add the latest version of package to your `pubspec.yaml` (and run `flutter pub get`):
 ```dart
 dependencies:
-  custom_dropdown: 0.0.1
+  custom_dropdown: 1.0.0
 ```
 2. Import the package and use it in your Flutter App.
 ```dart
