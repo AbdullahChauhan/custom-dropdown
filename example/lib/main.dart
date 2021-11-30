@@ -48,7 +48,9 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.white),
+        systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
+          statusBarColor: Colors.white,
+        ),
         backgroundColor: Colors.white,
         elevation: .25,
         title: const Text(

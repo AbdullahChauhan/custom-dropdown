@@ -1,6 +1,10 @@
 part of 'custom_dropdown.dart';
 
-const _textFieldIcon = Icon(Icons.keyboard_arrow_down_rounded, color: Colors.black, size: 20);
+const _textFieldIcon = Icon(
+  Icons.keyboard_arrow_down_rounded,
+  color: Colors.black,
+  size: 20,
+);
 const _contentPadding = EdgeInsets.only(left: 16);
 const _noTextStyle = TextStyle(height: 0);
 const _borderSide = BorderSide(color: Colors.transparent);

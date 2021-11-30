@@ -1,7 +1,16 @@
 part of 'custom_dropdown.dart';
 
-const _overlayIcon = Icon(Icons.keyboard_arrow_up_rounded, color: Colors.black, size: 20);
-const _headerPadding = EdgeInsets.only(left: 16.0, top: 16, bottom: 16, right: 14);
+const _overlayIcon = Icon(
+  Icons.keyboard_arrow_up_rounded,
+  color: Colors.black,
+  size: 20,
+);
+const _headerPadding = EdgeInsets.only(
+  left: 16.0,
+  top: 16,
+  bottom: 16,
+  right: 14,
+);
 const _overlayOuterPadding = EdgeInsets.only(bottom: 12, left: 12, right: 12);
 const _overlayOffset = Offset(-12, 0);
 const _overlayShadowOffset = Offset(0, 6);
@@ -119,7 +128,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                           height: items.length > 4 ? 225 : null,
                           child: ClipRRect(
                             borderRadius: borderRadius,
-                            child: NotificationListener<OverscrollIndicatorNotification>(
+                            child: NotificationListener<
+                                OverscrollIndicatorNotification>(
                               onNotification: (notification) {
                                 notification.disallowGlow();
                                 return true;
@@ -145,7 +155,9 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              headerText.isNotEmpty ? headerText : widget.hintText,
+                                              headerText.isNotEmpty
+                                                  ? headerText
+                                                  : widget.hintText,
                                               style: widget.headerStyle,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -162,7 +174,9 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                       height: 0,
                                       color: Colors.grey[300],
                                     ),
-                                    items.length > 4 ? Expanded(child: list) : list
+                                    items.length > 4
+                                        ? Expanded(child: list)
+                                        : list
                                   ],
                                 ),
                               ),

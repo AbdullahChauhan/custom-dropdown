@@ -83,7 +83,8 @@ class _CustomDropdownState extends State<CustomDropdown> {
           size: size,
           layerLink: layerLink,
           hideOverlay: hideCallback,
-          headerStyle: widget.controller.text.isNotEmpty ? selectedStyle : hintStyle,
+          headerStyle:
+              widget.controller.text.isNotEmpty ? selectedStyle : hintStyle,
           suffixIcon: widget.suffixIcon,
           hintText: hintText,
           listItemStyle: widget.listItemStyle,
