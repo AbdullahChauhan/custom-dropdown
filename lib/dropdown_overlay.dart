@@ -156,7 +156,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                             child: NotificationListener<
                                 OverscrollIndicatorNotification>(
                               onNotification: (notification) {
-                                notification.disallowGlow();
+                                notification.disallowIndicator();
                                 return true;
                               },
                               child: Theme(
