@@ -2,9 +2,6 @@ library animated_custom_dropdown;
 
 export 'custom_dropdown.dart';
 
-import 'dart:developer';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 part 'animated_section.dart';
