@@ -4,11 +4,13 @@ class AnimatedSection extends StatefulWidget {
   final bool expand;
   final VoidCallback animationDismissed;
   final Widget child;
+  final double axisAlignment;
   const AnimatedSection({
     Key? key,
     this.expand = false,
     required this.animationDismissed,
     required this.child,
+    required this.axisAlignment,
   }) : super(key: key);
 
   @override
@@ -68,7 +70,7 @@ class _AnimatedSectionState extends State<AnimatedSection>
     return FadeTransition(
       opacity: animation,
       child: SizeTransition(
-        axisAlignment: 1.0,
+        axisAlignment: widget.axisAlignment,
         sizeFactor: animation,
         child: widget.child,
       ),

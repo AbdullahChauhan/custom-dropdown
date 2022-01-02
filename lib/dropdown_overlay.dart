@@ -1,10 +1,5 @@
 part of 'custom_dropdown.dart';
 
-const _overlayIcon = Icon(
-  Icons.keyboard_arrow_up_rounded,
-  color: Colors.black,
-  size: 20,
-);
 const _headerPadding = EdgeInsets.only(
   left: 16.0,
   top: 16,
@@ -12,7 +7,6 @@ const _headerPadding = EdgeInsets.only(
   right: 14,
 );
 const _overlayOuterPadding = EdgeInsets.only(bottom: 12, left: 12, right: 12);
-const _overlayOffset = Offset(-12, 0);
 const _overlayShadowOffset = Offset(0, 6);
 const _listItemPadding = EdgeInsets.symmetric(vertical: 12, horizontal: 16);
 
@@ -50,13 +44,26 @@ class _DropdownOverlay extends StatefulWidget {
 
 class _DropdownOverlayState extends State<_DropdownOverlay> {
   bool displayOverly = true;
+  bool displayOverlayBottom = true;
   late String headerText;
   late List<String> items;
+  final key1 = GlobalKey(), key2 = GlobalKey();
   final scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      final render1 = key1.currentContext?.findRenderObject() as RenderBox;
+      final render2 = key2.currentContext?.findRenderObject() as RenderBox;
+      final screenHeight = MediaQuery.of(context).size.height;
+      double y = render1.localToGlobal(Offset.zero).dy;
+      if (screenHeight - y < render2.size.height) {
+        displayOverlayBottom = false;
+        setState(() {});
+      }
+    });
+
     headerText = widget.controller.text;
     if (widget.excludeSelected! && widget.controller.text.isNotEmpty) {
       items = widget.items.where((item) => item != headerText).toList();
@@ -75,6 +82,18 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
   Widget build(BuildContext context) {
     // border radius
     final borderRadius = widget.borderRadius ?? BorderRadius.circular(12);
+
+    // overlay icon
+    final overlayIcon = Icon(
+      displayOverlayBottom
+          ? Icons.keyboard_arrow_up_rounded
+          : Icons.keyboard_arrow_down_rounded,
+      color: Colors.black,
+      size: 20,
+    );
+
+// overlay offset
+    final overlayOffset = Offset(-12, displayOverlayBottom ? 0 : 60);
 
     // items list
     final list = _ItemsList(
@@ -103,9 +122,13 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
               width: widget.size.width + 24,
               child: CompositedTransformFollower(
                 link: widget.layerLink,
+                followerAnchor: displayOverlayBottom
+                    ? Alignment.topLeft
+                    : Alignment.bottomLeft,
                 showWhenUnlinked: false,
-                offset: _overlayOffset,
-                child: Padding(
+                offset: overlayOffset,
+                child: Container(
+                  key: key1,
                   padding: _overlayOuterPadding,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
@@ -124,7 +147,9 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                       child: AnimatedSection(
                         animationDismissed: widget.hideOverlay,
                         expand: displayOverly,
+                        axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
                         child: SizedBox(
+                          key: key2,
                           height: items.length > 4 ? 225 : null,
                           child: ClipRRect(
                             borderRadius: borderRadius,
@@ -164,7 +189,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                             ),
                                           ),
                                           const SizedBox(width: 12),
-                                          widget.suffixIcon ?? _overlayIcon,
+                                          widget.suffixIcon ?? overlayIcon,
                                         ],
                                       ),
                                     ),
