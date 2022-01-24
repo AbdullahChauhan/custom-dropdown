@@ -17,7 +17,6 @@ class _DropdownOverlay extends StatefulWidget {
   final LayerLink layerLink;
   final VoidCallback hideOverlay;
   final String hintText;
-  final Widget? suffixIcon;
   final TextStyle? headerStyle;
   final TextStyle? listItemStyle;
   final bool? excludeSelected;
@@ -30,7 +29,6 @@ class _DropdownOverlay extends StatefulWidget {
     required this.size,
     required this.layerLink,
     required this.hideOverlay,
-    required this.suffixIcon,
     required this.hintText,
     this.headerStyle,
     this.listItemStyle,
@@ -189,7 +187,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                             ),
                                           ),
                                           const SizedBox(width: 12),
-                                          widget.suffixIcon ?? overlayIcon,
+                                          overlayIcon,
                                         ],
                                       ),
                                     ),

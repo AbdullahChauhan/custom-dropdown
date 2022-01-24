@@ -21,7 +21,7 @@ class CustomDropdown extends StatefulWidget {
   final BorderSide? borderSide;
   final BorderSide? errorBorderSide;
   final BorderRadius? borderRadius;
-  final Widget? suffixIcon;
+  final Widget? fieldSuffixIcon;
   final Function(String)? onChanged;
   final bool? excludeSelected;
   final Color? fillColor;
@@ -39,7 +39,7 @@ class CustomDropdown extends StatefulWidget {
     this.errorBorderSide,
     this.borderRadius,
     this.borderSide,
-    this.suffixIcon,
+    this.fieldSuffixIcon,
     this.onChanged,
     this.excludeSelected = true,
     this.fillColor = Colors.white,
@@ -85,7 +85,6 @@ class _CustomDropdownState extends State<CustomDropdown> {
           hideOverlay: hideCallback,
           headerStyle:
               widget.controller.text.isNotEmpty ? selectedStyle : hintStyle,
-          suffixIcon: widget.suffixIcon,
           hintText: hintText,
           listItemStyle: widget.listItemStyle,
           excludeSelected: widget.excludeSelected,
@@ -106,7 +105,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
             errorText: widget.errorText,
             hintStyle: hintStyle,
             hintText: hintText,
-            suffixIcon: widget.suffixIcon,
+            suffixIcon: widget.fieldSuffixIcon,
             onChanged: widget.onChanged,
             fillColor: widget.fillColor,
           ),
