@@ -1,3 +1,7 @@
+## 1.1.1
+* Update: Suffix icon only allowed for dropdown field.
+* Fix: Empty list pass (assert added).
+
 ## 1.1.0
 * Add: Dropdown overlay alignments (top, bottom) according to available screen space.
 * Update readme.

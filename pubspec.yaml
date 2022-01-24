@@ -1,6 +1,6 @@
 name: animated_custom_dropdown
 description: Custom dropdown widget allows to add highly customizable widget in your projects with proper open and close animations and also comes with form required validation.
-version: 1.1.0
+version: 1.1.1
 homepage: https://github.com/AbdullahChauhan/custom-dropdown
 
 environment:
