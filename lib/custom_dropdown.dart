@@ -9,6 +9,8 @@ part 'dropdown_field.dart';
 part 'dropdown_overlay.dart';
 part 'overlay_builder.dart';
 
+enum _SearchType { onListData }
+
 class CustomDropdown extends StatefulWidget {
   final List<String> items;
   final TextEditingController controller;
@@ -25,6 +27,7 @@ class CustomDropdown extends StatefulWidget {
   final Function(String)? onChanged;
   final bool? excludeSelected;
   final Color? fillColor;
+  final _SearchType? searchType;
 
   CustomDropdown({
     Key? key,
@@ -48,6 +51,32 @@ class CustomDropdown extends StatefulWidget {
           controller.text.isEmpty || items.contains(controller.text),
           'Controller value must match with one of the item in items list.',
         ),
+        searchType = null,
+        super(key: key);
+
+  CustomDropdown.search({
+    Key? key,
+    required this.items,
+    required this.controller,
+    this.hintText,
+    this.hintStyle,
+    this.selectedStyle,
+    this.errorText,
+    this.errorStyle,
+    this.listItemStyle,
+    this.errorBorderSide,
+    this.borderRadius,
+    this.borderSide,
+    this.fieldSuffixIcon,
+    this.onChanged,
+    this.excludeSelected = true,
+    this.fillColor = Colors.white,
+  })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
+        assert(
+          controller.text.isEmpty || items.contains(controller.text),
+          'Controller value must match with one of the item in items list.',
+        ),
+        searchType = _SearchType.onListData,
         super(key: key);
 
   @override
@@ -89,6 +118,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           listItemStyle: widget.listItemStyle,
           excludeSelected: widget.excludeSelected,
           borderRadius: widget.borderRadius,
+          searchType: widget.searchType,
         );
       },
       child: (showCallback) {

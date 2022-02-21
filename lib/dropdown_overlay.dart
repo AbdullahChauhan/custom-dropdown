@@ -21,6 +21,7 @@ class _DropdownOverlay extends StatefulWidget {
   final TextStyle? listItemStyle;
   final bool? excludeSelected;
   final BorderRadius? borderRadius;
+  final _SearchType? searchType;
 
   const _DropdownOverlay({
     Key? key,
@@ -34,6 +35,7 @@ class _DropdownOverlay extends StatefulWidget {
     this.listItemStyle,
     this.excludeSelected,
     this.borderRadius,
+    this.searchType,
   }) : super(key: key);
 
   @override
@@ -45,6 +47,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
   bool displayOverlayBottom = true;
   late String headerText;
   late List<String> items;
+  late List<String> filteredItems;
   final key1 = GlobalKey(), key2 = GlobalKey();
   final scrollController = ScrollController();
 
@@ -68,6 +71,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
     } else {
       items = widget.items;
     }
+    filteredItems = items;
   }
 
   @override
@@ -78,6 +82,9 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
 
   @override
   Widget build(BuildContext context) {
+    // search availability check
+    final onListDataSearch = widget.searchType == _SearchType.onListData;
+
     // border radius
     final borderRadius = widget.borderRadius ?? BorderRadius.circular(12);
 
@@ -90,23 +97,38 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
       size: 20,
     );
 
-// overlay offset
+    // overlay offset
     final overlayOffset = Offset(-12, displayOverlayBottom ? 0 : 60);
 
+    // list padding
+    final listPadding =
+        onListDataSearch ? const EdgeInsets.only(top: 8) : EdgeInsets.zero;
+
     // items list
-    final list = _ItemsList(
-      scrollController: scrollController,
-      excludeSelected: widget.excludeSelected!,
-      items: items,
-      headerText: headerText,
-      itemTextStyle: widget.listItemStyle,
-      onItemSelect: (value) {
-        if (headerText != value) {
-          widget.controller.text = value;
-        }
-        setState(() => displayOverly = false);
-      },
-    );
+    final list = items.isNotEmpty
+        ? _ItemsList(
+            scrollController: scrollController,
+            excludeSelected: widget.excludeSelected!,
+            items: items,
+            padding: listPadding,
+            headerText: headerText,
+            itemTextStyle: widget.listItemStyle,
+            onItemSelect: (value) {
+              if (headerText != value) {
+                widget.controller.text = value;
+              }
+              setState(() => displayOverly = false);
+            },
+          )
+        : const Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 12.0),
+              child: Text(
+                'No result found.',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          );
 
     return GestureDetector(
       onTap: () => setState(() => displayOverly = false),
@@ -148,7 +170,11 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                         axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
                         child: SizedBox(
                           key: key2,
-                          height: items.length > 4 ? 225 : null,
+                          height: items.length > 4
+                              ? onListDataSearch
+                                  ? 270
+                                  : 225
+                              : null,
                           child: ClipRRect(
                             borderRadius: borderRadius,
                             child: NotificationListener<
@@ -191,12 +217,13 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                         ],
                                       ),
                                     ),
-                                    Divider(
-                                      indent: 16,
-                                      endIndent: 16,
-                                      height: 0,
-                                      color: Colors.grey[300],
-                                    ),
+                                    if (onListDataSearch)
+                                      _SearchField(
+                                        items: filteredItems,
+                                        onSearchedItems: (val) {
+                                          setState(() => items = val);
+                                        },
+                                      ),
                                     items.length > 4
                                         ? Expanded(child: list)
                                         : list
@@ -225,6 +252,7 @@ class _ItemsList extends StatelessWidget {
   final bool excludeSelected;
   final String headerText;
   final ValueSetter<String> onItemSelect;
+  final EdgeInsets padding;
   final TextStyle? itemTextStyle;
 
   const _ItemsList({
@@ -234,6 +262,7 @@ class _ItemsList extends StatelessWidget {
     required this.excludeSelected,
     required this.headerText,
     required this.onItemSelect,
+    required this.padding,
     this.itemTextStyle,
   }) : super(key: key);
 
@@ -248,7 +277,7 @@ class _ItemsList extends StatelessWidget {
       child: ListView.builder(
         controller: scrollController,
         shrinkWrap: true,
-        padding: EdgeInsets.zero,
+        padding: padding,
         itemCount: items.length,
         itemBuilder: (_, index) {
           final selected = !excludeSelected && headerText == items[index];
@@ -271,6 +300,66 @@ class _ItemsList extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _SearchField extends StatelessWidget {
+  final List<String> items;
+  final ValueChanged<List<String>> onSearchedItems;
+  const _SearchField({
+    Key? key,
+    required this.items,
+    required this.onSearchedItems,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: TextField(
+        onChanged: (val) {
+          final result = items
+              .where((item) => item.toLowerCase().contains(val.toLowerCase()))
+              .toList();
+          onSearchedItems(result);
+        },
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.grey[50],
+          constraints: const BoxConstraints.tightFor(height: 40),
+          contentPadding: const EdgeInsets.all(8),
+          hintText: 'Search',
+          hintStyle: const TextStyle(
+            color: Colors.grey,
+          ),
+          prefixIcon: const Icon(
+            Icons.search,
+            color: Colors.grey,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: Colors.grey.withOpacity(.25),
+              width: 1,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: Colors.grey.withOpacity(.25),
+              width: 1,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: Colors.grey.withOpacity(.25),
+              width: 1,
+            ),
+          ),
+        ),
       ),
     );
   }
