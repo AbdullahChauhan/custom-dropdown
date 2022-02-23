@@ -22,6 +22,7 @@ class _DropdownOverlay extends StatefulWidget {
   final bool? excludeSelected;
   final BorderRadius? borderRadius;
   final _SearchType? searchType;
+  final Future<List<String>> Function(String)? futureRequest;
 
   const _DropdownOverlay({
     Key? key,
@@ -36,6 +37,7 @@ class _DropdownOverlay extends StatefulWidget {
     this.excludeSelected,
     this.borderRadius,
     this.searchType,
+    this.futureRequest,
   }) : super(key: key);
 
   @override
@@ -45,6 +47,7 @@ class _DropdownOverlay extends StatefulWidget {
 class _DropdownOverlayState extends State<_DropdownOverlay> {
   bool displayOverly = true;
   bool displayOverlayBottom = true;
+  bool isSearchRequestLoading = false;
   late String headerText;
   late List<String> items;
   late List<String> filteredItems;
@@ -83,7 +86,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
   @override
   Widget build(BuildContext context) {
     // search availability check
-    final onListDataSearch = widget.searchType == _SearchType.onListData;
+    final onSearch = widget.searchType == _SearchType.onListData ||
+        widget.searchType == _SearchType.onRequestData;
 
     // border radius
     final borderRadius = widget.borderRadius ?? BorderRadius.circular(12);
@@ -102,7 +106,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
 
     // list padding
     final listPadding =
-        onListDataSearch ? const EdgeInsets.only(top: 8) : EdgeInsets.zero;
+        onSearch ? const EdgeInsets.only(top: 8) : EdgeInsets.zero;
 
     // items list
     final list = items.isNotEmpty
@@ -171,7 +175,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                         child: SizedBox(
                           key: key2,
                           height: items.length > 4
-                              ? onListDataSearch
+                              ? onSearch
                                   ? 270
                                   : 225
                               : null,
@@ -217,16 +221,45 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                         ],
                                       ),
                                     ),
-                                    if (onListDataSearch)
-                                      _SearchField(
+                                    if (widget.searchType ==
+                                        _SearchType.onListData)
+                                      _SearchField.forListData(
                                         items: filteredItems,
                                         onSearchedItems: (val) {
                                           setState(() => items = val);
                                         },
+                                      )
+                                    else
+                                      _SearchField.forRequestData(
+                                        futureRequest: widget.futureRequest,
+                                        items: filteredItems,
+                                        onSearchedItems: (val) {
+                                          setState(() => items = val);
+                                        },
+                                        onFutureRequestLoading: (val) {
+                                          setState(
+                                            () => isSearchRequestLoading = val,
+                                          );
+                                        },
                                       ),
-                                    items.length > 4
-                                        ? Expanded(child: list)
-                                        : list
+                                    if (isSearchRequestLoading)
+                                      const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 20.0),
+                                        child: Center(
+                                            child: SizedBox(
+                                          width: 25,
+                                          height: 25,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                            strokeWidth: 3,
+                                          ),
+                                        )),
+                                      )
+                                    else
+                                      items.length > 4
+                                          ? Expanded(child: list)
+                                          : list
                                   ],
                                 ),
                               ),
@@ -308,22 +341,49 @@ class _ItemsList extends StatelessWidget {
 class _SearchField extends StatelessWidget {
   final List<String> items;
   final ValueChanged<List<String>> onSearchedItems;
-  const _SearchField({
+  final _SearchType? searchType;
+  final Future<List<String>> Function(String)? futureRequest;
+  final ValueChanged<bool>? onFutureRequestLoading;
+
+  const _SearchField.forListData({
     Key? key,
     required this.items,
     required this.onSearchedItems,
-  }) : super(key: key);
+  })  : searchType = _SearchType.onListData,
+        futureRequest = null,
+        onFutureRequestLoading = null,
+        super(key: key);
+
+  const _SearchField.forRequestData({
+    Key? key,
+    required this.items,
+    required this.onSearchedItems,
+    this.futureRequest,
+    this.onFutureRequestLoading,
+  })  : searchType = _SearchType.onRequestData,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextField(
-        onChanged: (val) {
-          final result = items
-              .where((item) => item.toLowerCase().contains(val.toLowerCase()))
-              .toList();
-          onSearchedItems(result);
+        onChanged: (val) async {
+          List<String>? result;
+          if (searchType != null && searchType == _SearchType.onRequestData) {
+            onFutureRequestLoading!(true);
+            try {
+              result = await futureRequest!(val);
+              onFutureRequestLoading!(false);
+            } catch (e) {
+              onFutureRequestLoading!(false);
+            }
+          } else {
+            result = items
+                .where((item) => item.toLowerCase().contains(val.toLowerCase()))
+                .toList();
+          }
+          onSearchedItems(result ?? []);
         },
         decoration: InputDecoration(
           filled: true,

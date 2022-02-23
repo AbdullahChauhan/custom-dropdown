@@ -9,7 +9,7 @@ part 'dropdown_field.dart';
 part 'dropdown_overlay.dart';
 part 'overlay_builder.dart';
 
-enum _SearchType { onListData }
+enum _SearchType { onListData, onRequestData }
 
 class CustomDropdown extends StatefulWidget {
   final List<String> items;
@@ -27,6 +27,7 @@ class CustomDropdown extends StatefulWidget {
   final Function(String)? onChanged;
   final bool? excludeSelected;
   final Color? fillColor;
+  final Future<List<String>> Function(String)? futureRequest;
   final _SearchType? searchType;
 
   CustomDropdown({
@@ -52,6 +53,7 @@ class CustomDropdown extends StatefulWidget {
           'Controller value must match with one of the item in items list.',
         ),
         searchType = null,
+        futureRequest = null,
         super(key: key);
 
   CustomDropdown.search({
@@ -77,6 +79,33 @@ class CustomDropdown extends StatefulWidget {
           'Controller value must match with one of the item in items list.',
         ),
         searchType = _SearchType.onListData,
+        futureRequest = null,
+        super(key: key);
+
+  CustomDropdown.searchRequest({
+    Key? key,
+    required this.items,
+    required this.controller,
+    required this.futureRequest,
+    this.hintText,
+    this.hintStyle,
+    this.selectedStyle,
+    this.errorText,
+    this.errorStyle,
+    this.listItemStyle,
+    this.errorBorderSide,
+    this.borderRadius,
+    this.borderSide,
+    this.fieldSuffixIcon,
+    this.onChanged,
+    this.excludeSelected = true,
+    this.fillColor = Colors.white,
+  })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
+        assert(
+          controller.text.isEmpty || items.contains(controller.text),
+          'Controller value must match with one of the item in items list.',
+        ),
+        searchType = _SearchType.onRequestData,
         super(key: key);
 
   @override
@@ -119,6 +148,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           excludeSelected: widget.excludeSelected,
           borderRadius: widget.borderRadius,
           searchType: widget.searchType,
+          futureRequest: widget.futureRequest,
         );
       },
       child: (showCallback) {
