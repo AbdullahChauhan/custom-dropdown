@@ -370,7 +370,9 @@ class _SearchField extends StatelessWidget {
       child: TextField(
         onChanged: (val) async {
           List<String>? result;
-          if (searchType != null && searchType == _SearchType.onRequestData) {
+          if (searchType != null &&
+              searchType == _SearchType.onRequestData &&
+              val.isNotEmpty) {
             onFutureRequestLoading!(true);
             try {
               result = await futureRequest!(val);
