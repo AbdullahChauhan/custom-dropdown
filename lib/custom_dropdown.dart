@@ -101,10 +101,6 @@ class CustomDropdown extends StatefulWidget {
     this.excludeSelected = true,
     this.fillColor = Colors.white,
   })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
-        assert(
-          controller.text.isEmpty || items.contains(controller.text),
-          'Controller value must match with one of the item in items list.',
-        ),
         searchType = _SearchType.onRequestData,
         super(key: key);
 
