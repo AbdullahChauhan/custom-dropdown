@@ -100,6 +100,7 @@ class _DropDownFieldState extends State<_DropDownField> {
       controller: widget.controller,
       validator: (val) {
         if (val?.isEmpty ?? false) return widget.errorText ?? '';
+        return null;
       },
       readOnly: true,
       onTap: widget.onTap,
