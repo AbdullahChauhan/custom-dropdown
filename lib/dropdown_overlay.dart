@@ -358,7 +358,7 @@ class _SearchFieldState extends State<_SearchField> {
           prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 22),
           suffixIcon: GestureDetector(
             onTap: onClear,
-            child: const Icon(Icons.close, color: Colors.grey, size: 22),
+            child: const Icon(Icons.close, color: Colors.grey, size: 20),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
