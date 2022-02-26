@@ -305,7 +305,7 @@ class _ItemsList extends StatelessWidget {
   }
 }
 
-class _SearchField extends StatelessWidget {
+class _SearchField extends StatefulWidget {
   final List<String> items;
   final ValueChanged<List<String>> onSearchedItems;
   const _SearchField({
@@ -315,15 +315,29 @@ class _SearchField extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<_SearchField> createState() => _SearchFieldState();
+}
+
+class _SearchFieldState extends State<_SearchField> {
+  final searchCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    searchCtrl.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextField(
+        controller: searchCtrl,
         onChanged: (val) {
-          final result = items
+          final result = widget.items
               .where((item) => item.toLowerCase().contains(val.toLowerCase()))
               .toList();
-          onSearchedItems(result);
+          widget.onSearchedItems(result);
         },
         decoration: InputDecoration(
           filled: true,
@@ -331,12 +345,16 @@ class _SearchField extends StatelessWidget {
           constraints: const BoxConstraints.tightFor(height: 40),
           contentPadding: const EdgeInsets.all(8),
           hintText: 'Search',
-          hintStyle: const TextStyle(
-            color: Colors.grey,
-          ),
-          prefixIcon: const Icon(
-            Icons.search,
-            color: Colors.grey,
+          hintStyle: const TextStyle(color: Colors.grey),
+          prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 22),
+          suffixIcon: GestureDetector(
+            onTap: () {
+              if (searchCtrl.text.isNotEmpty) {
+                searchCtrl.clear();
+                widget.onSearchedItems(widget.items);
+              }
+            },
+            child: const Icon(Icons.close, color: Colors.grey, size: 22),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
