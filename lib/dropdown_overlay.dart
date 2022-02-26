@@ -68,7 +68,9 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
     });
 
     headerText = widget.controller.text;
-    if (widget.excludeSelected! && widget.controller.text.isNotEmpty) {
+    if (widget.excludeSelected! &&
+        widget.items.length > 1 &&
+        widget.controller.text.isNotEmpty) {
       items = widget.items.where((item) => item != headerText).toList();
     } else {
       items = widget.items;
@@ -110,7 +112,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
     final list = items.isNotEmpty
         ? _ItemsList(
             scrollController: scrollController,
-            excludeSelected: widget.excludeSelected!,
+            excludeSelected:
+                widget.items.length > 1 ? widget.excludeSelected! : false,
             items: items,
             padding: listPadding,
             headerText: headerText,
