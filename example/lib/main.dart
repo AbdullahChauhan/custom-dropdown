@@ -19,6 +19,8 @@ class App extends StatelessWidget {
   }
 }
 
+const _labelStyle = TextStyle(fontWeight: FontWeight.w600);
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -29,22 +31,20 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final formKey = GlobalKey<FormState>();
   final List<String> list = ['Developer', 'Designer', 'Consultant', 'Student'];
-  final jobRoleCtrl = TextEditingController();
-  final jobRoleFormCtrl = TextEditingController();
+  final jobRoleDropdownCtrl = TextEditingController(),
+      jobRoleFormDropdownCtrl = TextEditingController(),
+      jobRoleSearchDropdownCtrl = TextEditingController();
 
   @override
   void dispose() {
+    jobRoleDropdownCtrl.dispose();
+    jobRoleFormDropdownCtrl.dispose();
+    jobRoleSearchDropdownCtrl.dispose();
     super.dispose();
-    jobRoleCtrl.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    const label = Text(
-      'Job Role',
-      style: TextStyle(fontWeight: FontWeight.w600),
-    );
-
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -58,56 +58,69 @@ class _HomeState extends State<Home> {
           style: TextStyle(color: Colors.black, fontSize: 18),
         ),
       ),
-      body: Padding(
+      body: ListView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            label,
-            const SizedBox(height: 8),
-            CustomDropdown(
-              hintText: 'Select job role',
-              items: list,
-              controller: jobRoleCtrl,
-            ),
-            const SizedBox(height: 24),
-            const Divider(height: 0),
-            const SizedBox(height: 24),
+        children: [
+          const Text('Job Roles Dropdown', style: _labelStyle),
+          const SizedBox(height: 8),
+          CustomDropdown(
+            hintText: 'Select job role',
+            items: list,
+            controller: jobRoleDropdownCtrl,
+            excludeSelected: false,
+          ),
+          const SizedBox(height: 24),
+          const Divider(height: 0),
+          const SizedBox(height: 24),
 
-            // using form for validation
-            Form(
-              key: formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  label,
-                  const SizedBox(height: 8),
-                  CustomDropdown(
-                    hintText: 'Select job role',
-                    items: list,
-                    controller: jobRoleFormCtrl,
-                    excludeSelected: false,
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (!formKey.currentState!.validate()) {
-                          return;
-                        }
-                      },
-                      child: const Text(
-                        'Submit',
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
+          // dropdown having search field
+          const Text('Job Roles Search Dropdown', style: _labelStyle),
+          const SizedBox(height: 8),
+          CustomDropdown.search(
+            hintText: 'Select job role',
+            items: list,
+            controller: jobRoleSearchDropdownCtrl,
+          ),
+          const SizedBox(height: 24),
+          const Divider(height: 0),
+          const SizedBox(height: 24),
+
+          // using form for validation
+          Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Job Roles Dropdown with Form validation',
+                  style: _labelStyle,
+                ),
+                const SizedBox(height: 8),
+                CustomDropdown(
+                  hintText: 'Select job role',
+                  items: list,
+                  controller: jobRoleFormDropdownCtrl,
+                  excludeSelected: false,
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (!formKey.currentState!.validate()) {
+                        return;
+                      }
+                    },
+                    child: const Text(
+                      'Submit',
+                      style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),
-                ],
-              ),
-            )
-          ],
-        ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
