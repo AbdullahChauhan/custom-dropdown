@@ -120,7 +120,6 @@ class _CustomDropdownState extends State<CustomDropdown> {
           hintText: hintText,
           listItemStyle: widget.listItemStyle,
           excludeSelected: widget.excludeSelected,
-          borderRadius: widget.borderRadius,
           canCloseOutsideBounds: widget.canCloseOutsideBounds,
           searchType: widget.searchType,
         );

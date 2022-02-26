@@ -20,7 +20,6 @@ class _DropdownOverlay extends StatefulWidget {
   final TextStyle? headerStyle;
   final TextStyle? listItemStyle;
   final bool? excludeSelected;
-  final BorderRadius? borderRadius;
   final bool? canCloseOutsideBounds;
   final _SearchType? searchType;
 
@@ -35,7 +34,6 @@ class _DropdownOverlay extends StatefulWidget {
     this.headerStyle,
     this.listItemStyle,
     this.excludeSelected,
-    this.borderRadius,
     this.canCloseOutsideBounds,
     this.searchType,
   }) : super(key: key);
@@ -90,7 +88,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
     final onListDataSearch = widget.searchType == _SearchType.onListData;
 
     // border radius
-    final borderRadius = widget.borderRadius ?? BorderRadius.circular(12);
+    final borderRadius = BorderRadius.circular(12);
 
     // overlay icon
     final overlayIcon = Icon(
