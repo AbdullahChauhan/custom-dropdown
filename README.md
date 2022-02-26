@@ -2,7 +2,9 @@
 **Custom Dropdown** package lets you add customizable animated dropdown widget.
 
 ## Features
-Lots of properties to use and customize dropdown widget as per your need. Also usable under Form widget for required validation.
+Lots of properties to use and customize dropdown widget as per your need. Also usable under Form widget for required validation. 
+- Custom dropdown using constructor **CustomDropdown()**.
+- Custom dropdown with search field using named constructor **CustomDropdown.search()**.
 
 <hr>
 
@@ -55,7 +57,7 @@ class _CustomDropdownExampleState extends State<CustomDropdownExample> {
 ## Todos
 
 - [x] Align on screen bottom so if space under widget is small, dropdown will open above the widget with proper animation.
-- [ ] Search on provided data.
+- [x] Search on provided data.
 - [ ] Search on API request.
 
 ## Issues & Feedback
