@@ -327,18 +327,27 @@ class _SearchFieldState extends State<_SearchField> {
     searchCtrl.dispose();
   }
 
+  void onSearch(String str) {
+    final result = widget.items
+        .where((item) => item.toLowerCase().contains(str.toLowerCase()))
+        .toList();
+    widget.onSearchedItems(result);
+  }
+
+  void onClear() {
+    if (searchCtrl.text.isNotEmpty) {
+      searchCtrl.clear();
+      widget.onSearchedItems(widget.items);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextField(
         controller: searchCtrl,
-        onChanged: (val) {
-          final result = widget.items
-              .where((item) => item.toLowerCase().contains(val.toLowerCase()))
-              .toList();
-          widget.onSearchedItems(result);
-        },
+        onChanged: onSearch,
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.grey[50],
@@ -348,12 +357,7 @@ class _SearchFieldState extends State<_SearchField> {
           hintStyle: const TextStyle(color: Colors.grey),
           prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 22),
           suffixIcon: GestureDetector(
-            onTap: () {
-              if (searchCtrl.text.isNotEmpty) {
-                searchCtrl.clear();
-                widget.onSearchedItems(widget.items);
-              }
-            },
+            onTap: onClear,
             child: const Icon(Icons.close, color: Colors.grey, size: 22),
           ),
           border: OutlineInputBorder(
