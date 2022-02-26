@@ -21,6 +21,7 @@ class _DropdownOverlay extends StatefulWidget {
   final TextStyle? listItemStyle;
   final bool? excludeSelected;
   final BorderRadius? borderRadius;
+  final bool? canCloseOutsideBounds;
   final _SearchType? searchType;
 
   const _DropdownOverlay({
@@ -35,6 +36,7 @@ class _DropdownOverlay extends StatefulWidget {
     this.listItemStyle,
     this.excludeSelected,
     this.borderRadius,
+    this.canCloseOutsideBounds,
     this.searchType,
   }) : super(key: key);
 
@@ -130,106 +132,95 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
             ),
           );
 
-    return GestureDetector(
-      onTap: () => setState(() => displayOverly = false),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        color: Colors.transparent,
-        child: Stack(
-          children: [
-            Positioned(
-              width: widget.size.width + 24,
-              child: CompositedTransformFollower(
-                link: widget.layerLink,
-                followerAnchor: displayOverlayBottom
-                    ? Alignment.topLeft
-                    : Alignment.bottomLeft,
-                showWhenUnlinked: false,
-                offset: overlayOffset,
-                child: Container(
-                  key: key1,
-                  padding: _overlayOuterPadding,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: borderRadius,
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 24.0,
-                          color: Colors.black.withOpacity(.08),
-                          offset: _overlayShadowOffset,
-                        ),
-                      ],
+    final child = Stack(
+      children: [
+        Positioned(
+          width: widget.size.width + 24,
+          child: CompositedTransformFollower(
+            link: widget.layerLink,
+            followerAnchor:
+                displayOverlayBottom ? Alignment.topLeft : Alignment.bottomLeft,
+            showWhenUnlinked: false,
+            offset: overlayOffset,
+            child: Container(
+              key: key1,
+              padding: _overlayOuterPadding,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: borderRadius,
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 24.0,
+                      color: Colors.black.withOpacity(.08),
+                      offset: _overlayShadowOffset,
                     ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: AnimatedSection(
-                        animationDismissed: widget.hideOverlay,
-                        expand: displayOverly,
-                        axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
-                        child: SizedBox(
-                          key: key2,
-                          height: items.length > 4
-                              ? onListDataSearch
-                                  ? 270
-                                  : 225
-                              : null,
-                          child: ClipRRect(
-                            borderRadius: borderRadius,
-                            child: NotificationListener<
-                                OverscrollIndicatorNotification>(
-                              onNotification: (notification) {
-                                notification.disallowIndicator();
-                                return true;
-                              },
-                              child: Theme(
-                                data: Theme.of(context).copyWith(
-                                  scrollbarTheme: ScrollbarThemeData(
-                                    isAlwaysShown: true,
-                                    thickness: MaterialStateProperty.all(5),
-                                    radius: const Radius.circular(4),
-                                    thumbColor: MaterialStateProperty.all(
-                                      Colors.grey[300],
-                                    ),
-                                  ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Padding(
-                                      padding: _headerPadding,
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              headerText.isNotEmpty
-                                                  ? headerText
-                                                  : widget.hintText,
-                                              style: widget.headerStyle,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 12),
-                                          overlayIcon,
-                                        ],
-                                      ),
-                                    ),
-                                    if (onListDataSearch)
-                                      _SearchField(
-                                        items: filteredItems,
-                                        onSearchedItems: (val) {
-                                          setState(() => items = val);
-                                        },
-                                      ),
-                                    items.length > 4
-                                        ? Expanded(child: list)
-                                        : list
-                                  ],
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: AnimatedSection(
+                    animationDismissed: widget.hideOverlay,
+                    expand: displayOverly,
+                    axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
+                    child: SizedBox(
+                      key: key2,
+                      height: items.length > 4
+                          ? onListDataSearch
+                              ? 270
+                              : 225
+                          : null,
+                      child: ClipRRect(
+                        borderRadius: borderRadius,
+                        child: NotificationListener<
+                            OverscrollIndicatorNotification>(
+                          onNotification: (notification) {
+                            notification.disallowIndicator();
+                            return true;
+                          },
+                          child: Theme(
+                            data: Theme.of(context).copyWith(
+                              scrollbarTheme: ScrollbarThemeData(
+                                isAlwaysShown: true,
+                                thickness: MaterialStateProperty.all(5),
+                                radius: const Radius.circular(4),
+                                thumbColor: MaterialStateProperty.all(
+                                  Colors.grey[300],
                                 ),
                               ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: _headerPadding,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          headerText.isNotEmpty
+                                              ? headerText
+                                              : widget.hintText,
+                                          style: widget.headerStyle,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      overlayIcon,
+                                    ],
+                                  ),
+                                ),
+                                if (onListDataSearch)
+                                  _SearchField(
+                                    items: filteredItems,
+                                    onSearchedItems: (val) {
+                                      setState(() => items = val);
+                                    },
+                                  ),
+                                items.length > 4 ? Expanded(child: list) : list
+                              ],
                             ),
                           ),
                         ),
@@ -239,9 +230,21 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                 ),
               ),
             ),
-          ],
+          ),
         ),
-      ),
+      ],
+    );
+
+    return GestureDetector(
+      onTap: () => setState(() => displayOverly = false),
+      child: widget.canCloseOutsideBounds!
+          ? Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Colors.transparent,
+              child: child,
+            )
+          : child,
     );
   }
 }

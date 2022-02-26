@@ -27,6 +27,7 @@ class CustomDropdown extends StatefulWidget {
   final Function(String)? onChanged;
   final bool? excludeSelected;
   final Color? fillColor;
+  final bool? canCloseOutsideBounds;
   final _SearchType? searchType;
 
   CustomDropdown({
@@ -52,6 +53,7 @@ class CustomDropdown extends StatefulWidget {
           'Controller value must match with one of the item in items list.',
         ),
         searchType = null,
+        canCloseOutsideBounds = true,
         super(key: key);
 
   CustomDropdown.search({
@@ -70,6 +72,7 @@ class CustomDropdown extends StatefulWidget {
     this.fieldSuffixIcon,
     this.onChanged,
     this.excludeSelected = true,
+    this.canCloseOutsideBounds = true,
     this.fillColor = Colors.white,
   })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
         assert(
@@ -118,6 +121,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           listItemStyle: widget.listItemStyle,
           excludeSelected: widget.excludeSelected,
           borderRadius: widget.borderRadius,
+          canCloseOutsideBounds: widget.canCloseOutsideBounds,
           searchType: widget.searchType,
         );
       },
