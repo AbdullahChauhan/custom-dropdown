@@ -13,7 +13,7 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 1. Add the latest version of package to your `pubspec.yaml` (and run `flutter pub get`):
 ```dart
 dependencies:
-  animated_custom_dropdown: 1.1.1
+  animated_custom_dropdown: 1.2.0
 ```
 2. Import the package and use it in your Flutter App.
 ```dart

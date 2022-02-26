@@ -1,3 +1,8 @@
+## 1.2.0
+* Add: Search field (Search on list data)
+* Fix: State mounted check on dropdown open or close.
+* Update readme.
+
 ## 1.1.1
 * Update: Suffix icon only allowed for dropdown field.
 * Fix: Empty list pass (assert added).
