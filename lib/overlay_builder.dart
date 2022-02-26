@@ -22,9 +22,12 @@ class _OverlayBuilderState extends State<_OverlayBuilder> {
   void showOverlay() {
     overlayEntry = OverlayEntry(
       builder: (_) {
-        final renderBox = context.findRenderObject() as RenderBox;
-        final size = renderBox.size;
-        return widget.overlay(size, hideOverlay);
+        if (mounted) {
+          final renderBox = context.findRenderObject() as RenderBox;
+          final size = renderBox.size;
+          return widget.overlay(size, hideOverlay);
+        }
+        return const SizedBox();
       },
     );
     addToOverlay(overlayEntry!);
@@ -35,6 +38,12 @@ class _OverlayBuilderState extends State<_OverlayBuilder> {
   void hideOverlay() {
     overlayEntry!.remove();
     overlayEntry = null;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    overlayEntry?.dispose();
   }
 
   @override
