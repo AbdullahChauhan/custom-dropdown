@@ -48,6 +48,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
   bool displayOverly = true;
   bool displayOverlayBottom = true;
   bool isSearchRequestLoading = false;
+  bool? mayFoundSearchRequestResult;
   late String headerText;
   late List<String> items;
   late List<String> filteredItems;
@@ -126,15 +127,19 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
               setState(() => displayOverly = false);
             },
           )
-        : const Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.0),
-              child: Text(
-                'No result found.',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          );
+        : (mayFoundSearchRequestResult != null &&
+                    !mayFoundSearchRequestResult!) ||
+                widget.searchType == _SearchType.onListData
+            ? const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.0),
+                  child: Text(
+                    'No result found.',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              )
+            : const SizedBox(height: 12);
 
     final child = Stack(
       children: [
@@ -238,6 +243,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                     onSearchedItems: (val) {
                                       setState(() => items = val);
                                     },
+                                    mayFoundResult: (val) =>
+                                        mayFoundSearchRequestResult = val,
                                   ),
                                 if (isSearchRequestLoading)
                                   const Padding(
@@ -351,6 +358,7 @@ class _SearchField extends StatefulWidget {
   final _SearchType? searchType;
   final Future<List<String>> Function(String)? futureRequest;
   final ValueChanged<bool>? onFutureRequestLoading;
+  final ValueChanged<bool>? mayFoundResult;
 
   const _SearchField.forListData({
     Key? key,
@@ -359,6 +367,7 @@ class _SearchField extends StatefulWidget {
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         onFutureRequestLoading = null,
+        mayFoundResult = null,
         super(key: key);
 
   const _SearchField.forRequestData({
@@ -367,6 +376,7 @@ class _SearchField extends StatefulWidget {
     required this.onSearchedItems,
     required this.futureRequest,
     required this.onFutureRequestLoading,
+    required this.mayFoundResult,
   })  : searchType = _SearchType.onRequestData,
         super(key: key);
 
@@ -415,8 +425,11 @@ class _SearchFieldState extends State<_SearchField> {
               widget.onFutureRequestLoading!(false);
             }
             widget.onSearchedItems(result ?? []);
-          } else {
+            widget.mayFoundResult!(result?.isNotEmpty ?? false);
+          } else if (widget.searchType == _SearchType.onListData) {
             onSearch(val);
+          } else {
+            widget.onSearchedItems(widget.items);
           }
         },
         controller: searchCtrl,

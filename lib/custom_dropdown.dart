@@ -1,8 +1,8 @@
 library animated_custom_dropdown;
 
-export 'custom_dropdown.dart';
-
 import 'package:flutter/material.dart';
+
+export 'custom_dropdown.dart';
 
 part 'animated_section.dart';
 part 'dropdown_field.dart';
@@ -12,7 +12,7 @@ part 'overlay_builder.dart';
 enum _SearchType { onListData, onRequestData }
 
 class CustomDropdown extends StatefulWidget {
-  final List<String> items;
+  final List<String>? items;
   final TextEditingController controller;
   final String? hintText;
   final TextStyle? hintStyle;
@@ -48,9 +48,9 @@ class CustomDropdown extends StatefulWidget {
     this.onChanged,
     this.excludeSelected = true,
     this.fillColor = Colors.white,
-  })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
+  })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
         assert(
-          controller.text.isEmpty || items.contains(controller.text),
+          controller.text.isEmpty || items!.contains(controller.text),
           'Controller value must match with one of the item in items list.',
         ),
         searchType = null,
@@ -76,20 +76,20 @@ class CustomDropdown extends StatefulWidget {
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.fillColor = Colors.white,
-  })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
+  })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
         assert(
-          controller.text.isEmpty || items.contains(controller.text),
+          controller.text.isEmpty || items!.contains(controller.text),
           'Controller value must match with one of the item in items list.',
         ),
         searchType = _SearchType.onListData,
         futureRequest = null,
         super(key: key);
 
-  CustomDropdown.searchRequest({
+  const CustomDropdown.searchRequest({
     Key? key,
-    required this.items,
     required this.controller,
     required this.futureRequest,
+    this.items,
     this.hintText,
     this.hintStyle,
     this.selectedStyle,
@@ -104,8 +104,7 @@ class CustomDropdown extends StatefulWidget {
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.fillColor = Colors.white,
-  })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
-        searchType = _SearchType.onRequestData,
+  })  : searchType = _SearchType.onRequestData,
         super(key: key);
 
   @override
@@ -136,7 +135,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
     return _OverlayBuilder(
       overlay: (size, hideCallback) {
         return _DropdownOverlay(
-          items: widget.items,
+          items: widget.items ?? [],
           controller: widget.controller,
           size: size,
           layerLink: layerLink,
