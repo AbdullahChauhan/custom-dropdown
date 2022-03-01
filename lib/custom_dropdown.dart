@@ -148,6 +148,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           excludeSelected: widget.excludeSelected,
           canCloseOutsideBounds: widget.canCloseOutsideBounds,
           searchType: widget.searchType,
+          futureRequest: widget.futureRequest,
         );
       },
       child: (showCallback) {

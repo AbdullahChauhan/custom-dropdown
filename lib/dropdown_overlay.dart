@@ -225,7 +225,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                     },
                                   )
                                 else if (onSearch &&
-                                    widget.searchType == _SearchType.onListData)
+                                    widget.searchType ==
+                                        _SearchType.onRequestData)
                                   _SearchField.forRequestData(
                                     items: filteredItems,
                                     onFutureRequestLoading: (val) {
