@@ -386,6 +386,7 @@ class _SearchField extends StatefulWidget {
 
 class _SearchFieldState extends State<_SearchField> {
   final searchCtrl = TextEditingController();
+  bool isFieldEmpty = false;
 
   @override
   void dispose() {
@@ -413,6 +414,10 @@ class _SearchFieldState extends State<_SearchField> {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextField(
         onChanged: (val) async {
+          if (val.isEmpty) {
+            isFieldEmpty = true;
+          }
+
           if (widget.searchType != null &&
               widget.searchType == _SearchType.onRequestData &&
               val.isNotEmpty) {
@@ -424,8 +429,12 @@ class _SearchFieldState extends State<_SearchField> {
             } catch (_) {
               widget.onFutureRequestLoading!(false);
             }
-            widget.onSearchedItems(result ?? []);
+            widget.onSearchedItems(isFieldEmpty ? widget.items : result ?? []);
             widget.mayFoundResult!(result?.isNotEmpty ?? false);
+
+            if (isFieldEmpty) {
+              isFieldEmpty = false;
+            }
           } else if (widget.searchType == _SearchType.onListData) {
             onSearch(val);
           } else {
