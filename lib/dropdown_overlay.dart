@@ -484,6 +484,8 @@ class _SearchFieldState extends State<_SearchField> {
         onChanged: (val) async {
           if (val.isEmpty) {
             isFieldEmpty = true;
+          } else if (isFieldEmpty) {
+            isFieldEmpty = false;
           }
 
           if (widget.searchType != null &&
