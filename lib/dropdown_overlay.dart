@@ -444,6 +444,16 @@ class _SearchField extends StatefulWidget {
 class _SearchFieldState extends State<_SearchField> {
   final searchCtrl = TextEditingController();
   bool isFieldEmpty = false;
+  FocusNode focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.searchType == _SearchType.onRequestData &&
+        widget.items.isEmpty) {
+      focusNode.requestFocus();
+    }
+  }
 
   @override
   void dispose() {
@@ -470,6 +480,7 @@ class _SearchFieldState extends State<_SearchField> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextField(
+        focusNode: focusNode,
         onChanged: (val) async {
           if (val.isEmpty) {
             isFieldEmpty = true;
