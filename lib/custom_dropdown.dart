@@ -28,6 +28,7 @@ class CustomDropdown extends StatefulWidget {
   final bool? excludeSelected;
   final Color? fillColor;
   final bool? canCloseOutsideBounds;
+  final bool? hideSelectedFieldWhenOpen;
   final Future<List<String>> Function(String)? futureRequest;
   final _SearchType? searchType;
 
@@ -56,6 +57,7 @@ class CustomDropdown extends StatefulWidget {
         searchType = null,
         futureRequest = null,
         canCloseOutsideBounds = true,
+        hideSelectedFieldWhenOpen = false,
         super(key: key);
 
   CustomDropdown.search({
@@ -75,6 +77,7 @@ class CustomDropdown extends StatefulWidget {
     this.onChanged,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
+    this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
   })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
         assert(
@@ -103,6 +106,7 @@ class CustomDropdown extends StatefulWidget {
     this.onChanged,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
+    this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
   })  : searchType = _SearchType.onRequestData,
         super(key: key);
@@ -148,6 +152,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           canCloseOutsideBounds: widget.canCloseOutsideBounds,
           searchType: widget.searchType,
           futureRequest: widget.futureRequest,
+          hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenOpen,
         );
       },
       child: (showCallback) {

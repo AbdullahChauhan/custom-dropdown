@@ -20,6 +20,7 @@ class _DropdownOverlay extends StatefulWidget {
   final TextStyle? headerStyle;
   final TextStyle? listItemStyle;
   final bool? excludeSelected;
+  final bool? hideSelectedFieldWhenOpen;
   final bool? canCloseOutsideBounds;
   final _SearchType? searchType;
   final Future<List<String>> Function(String)? futureRequest;
@@ -36,6 +37,7 @@ class _DropdownOverlay extends StatefulWidget {
     this.listItemStyle,
     this.excludeSelected,
     this.canCloseOutsideBounds,
+    this.hideSelectedFieldWhenOpen = false,
     this.searchType,
     this.futureRequest,
   }) : super(key: key);
@@ -202,50 +204,105 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Padding(
-                                  padding: _headerPadding,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          headerText.isNotEmpty
-                                              ? headerText
-                                              : widget.hintText,
-                                          style: widget.headerStyle,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                if (!widget.hideSelectedFieldWhenOpen!)
+                                  Padding(
+                                    padding: _headerPadding,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            headerText.isNotEmpty
+                                                ? headerText
+                                                : widget.hintText,
+                                            style: widget.headerStyle,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      overlayIcon,
-                                    ],
+                                        const SizedBox(width: 12),
+                                        overlayIcon,
+                                      ],
+                                    ),
                                   ),
-                                ),
                                 if (onSearch &&
                                     widget.searchType == _SearchType.onListData)
-                                  _SearchField.forListData(
-                                    items: filteredItems,
-                                    onSearchedItems: (val) {
-                                      setState(() => items = val);
-                                    },
-                                  )
+                                  if (!widget.hideSelectedFieldWhenOpen!)
+                                    _SearchField.forListData(
+                                      items: filteredItems,
+                                      onSearchedItems: (val) {
+                                        setState(() => items = val);
+                                      },
+                                    )
+                                  else
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 12.0,
+                                        left: 8.0,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: _SearchField.forListData(
+                                              items: filteredItems,
+                                              onSearchedItems: (val) {
+                                                setState(() => items = val);
+                                              },
+                                            ),
+                                          ),
+                                          overlayIcon,
+                                          const SizedBox(width: 14),
+                                        ],
+                                      ),
+                                    )
                                 else if (onSearch &&
                                     widget.searchType ==
                                         _SearchType.onRequestData)
-                                  _SearchField.forRequestData(
-                                    items: filteredItems,
-                                    onFutureRequestLoading: (val) {
-                                      setState(() {
-                                        isSearchRequestLoading = val;
-                                      });
-                                    },
-                                    futureRequest: widget.futureRequest,
-                                    onSearchedItems: (val) {
-                                      setState(() => items = val);
-                                    },
-                                    mayFoundResult: (val) =>
-                                        mayFoundSearchRequestResult = val,
-                                  ),
+                                  if (!widget.hideSelectedFieldWhenOpen!)
+                                    _SearchField.forRequestData(
+                                      items: filteredItems,
+                                      onFutureRequestLoading: (val) {
+                                        setState(() {
+                                          isSearchRequestLoading = val;
+                                        });
+                                      },
+                                      futureRequest: widget.futureRequest,
+                                      onSearchedItems: (val) {
+                                        setState(() => items = val);
+                                      },
+                                      mayFoundResult: (val) =>
+                                          mayFoundSearchRequestResult = val,
+                                    )
+                                  else
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 12.0,
+                                        left: 8.0,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: _SearchField.forRequestData(
+                                              items: filteredItems,
+                                              onFutureRequestLoading: (val) {
+                                                setState(() {
+                                                  isSearchRequestLoading = val;
+                                                });
+                                              },
+                                              futureRequest:
+                                                  widget.futureRequest,
+                                              onSearchedItems: (val) {
+                                                setState(() => items = val);
+                                              },
+                                              mayFoundResult: (val) =>
+                                                  mayFoundSearchRequestResult =
+                                                      val,
+                                            ),
+                                          ),
+                                          overlayIcon,
+                                          const SizedBox(width: 14),
+                                        ],
+                                      ),
+                                    ),
                                 if (isSearchRequestLoading)
                                   const Padding(
                                     padding:
