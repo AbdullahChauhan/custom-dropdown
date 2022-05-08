@@ -78,8 +78,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
 
   @override
   void dispose() {
-    super.dispose();
     scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -327,8 +327,8 @@ class _SearchFieldState extends State<_SearchField> {
 
   @override
   void dispose() {
-    super.dispose();
     searchCtrl.dispose();
+    super.dispose();
   }
 
   void onSearch(String str) {
