@@ -1,3 +1,6 @@
+## 1.2.1
+* Fix: State dispose calls
+
 ## 1.2.0
 * Add: Search field (Search on list data)
 * Fix: State mounted check on dropdown open or close.
