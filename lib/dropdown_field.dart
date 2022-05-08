@@ -60,8 +60,8 @@ class _DropDownFieldState extends State<_DropDownField> {
 
   @override
   void dispose() {
-    super.dispose();
     widget.controller.removeListener(listenItemChanges);
+    super.dispose();
   }
 
   @override
