@@ -54,7 +54,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final render1 = key1.currentContext?.findRenderObject() as RenderBox;
       final render2 = key2.currentContext?.findRenderObject() as RenderBox;
       final screenHeight = MediaQuery.of(context).size.height;
@@ -182,7 +182,9 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                           child: Theme(
                             data: Theme.of(context).copyWith(
                               scrollbarTheme: ScrollbarThemeData(
-                                isAlwaysShown: true,
+                                thumbVisibility: MaterialStateProperty.all(
+                                  true,
+                                ),
                                 thickness: MaterialStateProperty.all(5),
                                 radius: const Radius.circular(4),
                                 thumbColor: MaterialStateProperty.all(
