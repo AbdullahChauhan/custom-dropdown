@@ -1,3 +1,7 @@
+## 1.2.2
+
+- Update: Flutter version 3.0.1 changes
+
 ## 1.2.1
 
 - Fix: State dispose calls
