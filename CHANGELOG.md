@@ -1,21 +1,27 @@
 ## 1.2.1
-* Fix: State dispose calls
+
+- Fix: State dispose calls
 
 ## 1.2.0
-* Add: Search field (Search on list data)
-* Fix: State mounted check on dropdown open or close.
-* Update readme.
+
+- Add: Search field (Search on list data)
+- Fix: State mounted check on dropdown open or close.
+- Update readme.
 
 ## 1.1.1
-* Update: Suffix icon only allowed for dropdown field.
-* Fix: Empty list pass (assert added).
+
+- Update: Suffix icon only allowed for dropdown field.
+- Fix: Empty list pass (assert added).
 
 ## 1.1.0
-* Add: Dropdown overlay alignments (top, bottom) according to available screen space.
-* Update readme.
+
+- Add: Dropdown overlay alignments (top, bottom) according to available screen space.
+- Update readme.
 
 ## 1.0.1
-* Update readme, project description. Format files.
+
+- Update readme, project description. Format files.
 
 ## 1.0.0
-* Customizable animated dropdown widget.
+
+- Customizable animated dropdown widget.
