@@ -182,7 +182,9 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                           child: Theme(
                             data: Theme.of(context).copyWith(
                               scrollbarTheme: ScrollbarThemeData(
-                                isAlwaysShown: true,
+                                thumbVisibility: MaterialStateProperty.all(
+                                  true,
+                                ),
                                 thickness: MaterialStateProperty.all(5),
                                 radius: const Radius.circular(4),
                                 thumbColor: MaterialStateProperty.all(
