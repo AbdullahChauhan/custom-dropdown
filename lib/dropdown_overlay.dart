@@ -58,7 +58,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final render1 = key1.currentContext?.findRenderObject() as RenderBox;
       final render2 = key2.currentContext?.findRenderObject() as RenderBox;
       final screenHeight = MediaQuery.of(context).size.height;
@@ -82,8 +82,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
 
   @override
   void dispose() {
-    super.dispose();
     scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -190,7 +190,9 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                           child: Theme(
                             data: Theme.of(context).copyWith(
                               scrollbarTheme: ScrollbarThemeData(
-                                isAlwaysShown: true,
+                                thumbVisibility: MaterialStateProperty.all(
+                                  true,
+                                ),
                                 thickness: MaterialStateProperty.all(5),
                                 radius: const Radius.circular(4),
                                 thumbColor: MaterialStateProperty.all(
@@ -390,8 +392,8 @@ class _SearchFieldState extends State<_SearchField> {
 
   @override
   void dispose() {
-    super.dispose();
     searchCtrl.dispose();
+    super.dispose();
   }
 
   void onSearch(String str) {

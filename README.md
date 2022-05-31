@@ -1,8 +1,11 @@
 # Custom Dropdown
+
 **Custom Dropdown** package lets you add customizable animated dropdown widget.
 
 ## Features
-Lots of properties to use and customize dropdown widget as per your need. Also usable under Form widget for required validation. 
+
+Lots of properties to use and customize dropdown widget as per your need. Also usable under Form widget for required validation.
+
 - Custom dropdown using constructor **CustomDropdown()**.
 - Custom dropdown with search field using named constructor **CustomDropdown.search()**.
 
@@ -11,14 +14,18 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 ## Getting started
 
 1. Add the latest version of package to your `pubspec.yaml` (and run `flutter pub get`):
+
 ```dart
 dependencies:
-  animated_custom_dropdown: 1.2.0
+  animated_custom_dropdown: 1.2.2
 ```
+
 2. Import the package and use it in your Flutter App.
+
 ```dart
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 ```
+
 <hr>
 
 ## Example usage
@@ -36,7 +43,7 @@ class CustomDropdownExample extends StatefulWidget {
 
 class _CustomDropdownExampleState extends State<CustomDropdownExample> {
   final jobRoleCtrl = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     return CustomDropdown(
@@ -61,4 +68,5 @@ class _CustomDropdownExampleState extends State<CustomDropdownExample> {
 - [ ] Search on API request.
 
 ## Issues & Feedback
+
 Please file an [issue](https://github.com/AbdullahChauhan/custom-dropdown/issues) to send feedback or report a bug. Thank you!

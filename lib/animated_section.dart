@@ -61,8 +61,8 @@ class _AnimatedSectionState extends State<AnimatedSection>
 
   @override
   void dispose() {
-    super.dispose();
     animController.dispose();
+    super.dispose();
   }
 
   @override
