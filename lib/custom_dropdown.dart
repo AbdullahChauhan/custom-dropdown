@@ -10,6 +10,7 @@ part 'dropdown_overlay.dart';
 part 'overlay_builder.dart';
 
 enum _SearchType { onListData }
+typedef ResultWidget = Widget Function(BuildContext context, String result);
 
 class CustomDropdown extends StatefulWidget {
   final List<String> items;
@@ -29,6 +30,7 @@ class CustomDropdown extends StatefulWidget {
   final Color? fillColor;
   final bool? canCloseOutsideBounds;
   final _SearchType? searchType;
+  final ResultWidget? resultWidget;
 
   CustomDropdown({
     Key? key,
@@ -43,6 +45,7 @@ class CustomDropdown extends StatefulWidget {
     this.errorBorderSide,
     this.borderRadius,
     this.borderSide,
+    this.resultWidget,
     this.fieldSuffixIcon,
     this.onChanged,
     this.excludeSelected = true,
@@ -62,6 +65,7 @@ class CustomDropdown extends StatefulWidget {
     required this.controller,
     this.hintText,
     this.hintStyle,
+    this.resultWidget,
     this.selectedStyle,
     this.errorText,
     this.errorStyle,
@@ -113,6 +117,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           items: widget.items,
           controller: widget.controller,
           size: size,
+          resultWidget: widget.resultWidget,
           layerLink: layerLink,
           hideOverlay: hideCallback,
           headerStyle:
