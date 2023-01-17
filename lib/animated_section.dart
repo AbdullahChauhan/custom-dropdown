@@ -14,7 +14,7 @@ class AnimatedSection extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AnimatedSectionState createState() => _AnimatedSectionState();
+  State<AnimatedSection> createState() => _AnimatedSectionState();
 }
 
 class _AnimatedSectionState extends State<AnimatedSection>
