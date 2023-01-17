@@ -64,10 +64,12 @@ class _HomeState extends State<Home> {
           const Text('Job Roles Dropdown', style: _labelStyle),
           const SizedBox(height: 8),
           CustomDropdown(
+            contentPadding: EdgeInsets.all(20),
             hintText: 'Select job role',
+            hintStyle: TextStyle(fontSize: 20),
             items: list,
             controller: jobRoleDropdownCtrl,
-            excludeSelected: false,
+            // excludeSelected: false,
           ),
           const SizedBox(height: 24),
           const Divider(height: 0),

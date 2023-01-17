@@ -206,7 +206,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                               ? headerText
                                               : widget.hintText,
                                           style: widget.headerStyle,
-                                          maxLines: 1,
+                                          maxLines: 3,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -299,7 +299,7 @@ class _ItemsList extends StatelessWidget {
                 child: Text(
                   items[index],
                   style: listItemStyle,
-                  maxLines: 1,
+                  maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

@@ -27,6 +27,7 @@ class CustomDropdown extends StatefulWidget {
   final Function(String)? onChanged;
   final bool? excludeSelected;
   final Color? fillColor;
+  final EdgeInsets? contentPadding;
   final bool? canCloseOutsideBounds;
   final _SearchType? searchType;
 
@@ -45,6 +46,7 @@ class CustomDropdown extends StatefulWidget {
     this.borderSide,
     this.fieldSuffixIcon,
     this.onChanged,
+    this.contentPadding,
     this.excludeSelected = true,
     this.fillColor = Colors.white,
   })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
@@ -71,6 +73,7 @@ class CustomDropdown extends StatefulWidget {
     this.borderSide,
     this.fieldSuffixIcon,
     this.onChanged,
+    this.contentPadding,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.fillColor = Colors.white,
@@ -141,6 +144,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
             suffixIcon: widget.fieldSuffixIcon,
             onChanged: widget.onChanged,
             fillColor: widget.fillColor,
+            contentPadding: widget.contentPadding,
           ),
         );
       },
