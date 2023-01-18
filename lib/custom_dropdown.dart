@@ -30,7 +30,9 @@ class CustomDropdown extends StatefulWidget {
   final bool? excludeSelected;
   final Color? fillColor;
   final bool? canCloseOutsideBounds;
+  // ignore: library_private_types_in_public_api
   final _SearchType? searchType;
+  // ignore: library_private_types_in_public_api
   final _ListItemBuilder? listItemBuilder;
 
   CustomDropdown({
@@ -100,7 +102,7 @@ class CustomDropdown extends StatefulWidget {
         super(key: key);
 
   @override
-  _CustomDropdownState createState() => _CustomDropdownState();
+  State<CustomDropdown> createState() => _CustomDropdownState();
 }
 
 class _CustomDropdownState extends State<CustomDropdown> {
