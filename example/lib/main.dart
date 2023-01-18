@@ -35,6 +35,16 @@ class _HomeState extends State<Home> {
       jobRoleFormDropdownCtrl = TextEditingController(),
       jobRoleSearchDropdownCtrl = TextEditingController();
 
+  Future<List<String>> getFakeRequestData(String query) async {
+    List<String> data = ['Developer', 'Designer', 'Consultant', 'Student'];
+
+    return await Future.delayed(const Duration(seconds: 1), () {
+      return data.where((e) {
+        return e.toLowerCase().contains(query.toLowerCase());
+      }).toList();
+    });
+  }
+
   @override
   void dispose() {
     jobRoleDropdownCtrl.dispose();
@@ -78,7 +88,19 @@ class _HomeState extends State<Home> {
           const SizedBox(height: 8),
           CustomDropdown.search(
             hintText: 'Select job role',
+            controller: jobRoleSearchDropdownCtrl,
             items: list,
+          ),
+          const SizedBox(height: 24),
+          const Divider(height: 0),
+          const SizedBox(height: 24),
+
+          // dropdown having search request field (making fake call)
+          const Text('Job Roles Search Request Dropdown', style: _labelStyle),
+          const SizedBox(height: 8),
+          CustomDropdown.searchRequest(
+            futureRequest: getFakeRequestData,
+            hintText: 'Search job role',
             controller: jobRoleSearchDropdownCtrl,
           ),
           const SizedBox(height: 24),
