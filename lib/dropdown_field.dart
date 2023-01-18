@@ -13,7 +13,7 @@ const _errorBorderSide = BorderSide(color: Colors.redAccent, width: 2);
 class _DropDownField extends StatefulWidget {
   final TextEditingController controller;
   final VoidCallback onTap;
-  final Function(String)? onChanged;
+  // final Function(String)? onChanged;
   final String? hintText;
   final TextStyle? hintStyle;
   final TextStyle? style;
@@ -30,7 +30,7 @@ class _DropDownField extends StatefulWidget {
     Key? key,
     required this.controller,
     required this.onTap,
-    this.onChanged,
+    // this.onChanged,
     this.suffixIcon,
     this.hintText,
     this.hintStyle,
@@ -52,39 +52,39 @@ class _DropDownFieldState extends State<_DropDownField> {
   String? prevText;
   bool listenChanges = true;
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.onChanged != null) {
-      widget.controller.addListener(listenItemChanges);
-    }
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   if (widget.onChanged != null) {
+  //     widget.controller.addListener(listenItemChanges);
+  //   }
+  // }
 
-  @override
-  void dispose() {
-    widget.controller.removeListener(listenItemChanges);
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   widget.controller.removeListener(listenItemChanges);
+  //   super.dispose();
+  // }
 
-  @override
-  void didUpdateWidget(covariant _DropDownField oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.onChanged != null) {
-      widget.controller.addListener(listenItemChanges);
-    } else {
-      listenChanges = false;
-    }
-  }
+  // @override
+  // void didUpdateWidget(covariant _DropDownField oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   if (widget.onChanged != null) {
+  //     widget.controller.addListener(listenItemChanges);
+  //   } else {
+  //     listenChanges = false;
+  //   }
+  // }
 
-  void listenItemChanges() {
-    if (listenChanges) {
-      final text = widget.controller.text;
-      if (prevText != null && prevText != text && text.isNotEmpty) {
-        widget.onChanged!(text);
-      }
-      prevText = text;
-    }
-  }
+  // void listenItemChanges() {
+  //   if (listenChanges) {
+  //     final text = widget.controller.text;
+  //     if (prevText != null && prevText != text && text.isNotEmpty) {
+  //       widget.onChanged!(text);
+  //     }
+  //     prevText = text;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +100,6 @@ class _DropDownFieldState extends State<_DropDownField> {
 
     return InkWell(
       onTap: widget.onTap,
-      borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
       child: IgnorePointer(
         ignoring: true,
         child: TextFormField(
@@ -111,7 +110,7 @@ class _DropDownFieldState extends State<_DropDownField> {
           },
           readOnly: true,
           onTap: widget.onTap,
-          onChanged: widget.onChanged,
+          // onChanged: widget.onChanged,
           style: widget.style,
           decoration: InputDecoration(
             isDense: true,

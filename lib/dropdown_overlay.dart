@@ -22,6 +22,7 @@ class _DropdownOverlay extends StatefulWidget {
   final bool? excludeSelected;
   final bool? canCloseOutsideBounds;
   final _SearchType? searchType;
+  final Function(String)? onChanged;
 
   const _DropdownOverlay({
     Key? key,
@@ -36,6 +37,7 @@ class _DropdownOverlay extends StatefulWidget {
     this.excludeSelected,
     this.canCloseOutsideBounds,
     this.searchType,
+    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -50,10 +52,25 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
   late List<String> filteredItems;
   final key1 = GlobalKey(), key2 = GlobalKey();
   final scrollController = ScrollController();
+  String? prevText;
+  bool listenChanges = true;
+
+  void listenItemChanges() {
+    if (listenChanges) {
+      final text = widget.controller.text;
+      if (prevText != null && prevText != text && text.isNotEmpty) {
+        widget.onChanged!(text);
+      }
+      prevText = text;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    if (widget.onChanged != null) {
+      widget.controller.addListener(listenItemChanges);
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final render1 = key1.currentContext?.findRenderObject() as RenderBox;
       final render2 = key2.currentContext?.findRenderObject() as RenderBox;
@@ -79,7 +96,19 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
   @override
   void dispose() {
     scrollController.dispose();
+    widget.controller.removeListener(listenItemChanges);
+
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _DropdownOverlay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.onChanged != null) {
+      widget.controller.addListener(listenItemChanges);
+    } else {
+      listenChanges = false;
+    }
   }
 
   @override
@@ -119,6 +148,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
             onItemSelect: (value) {
               if (headerText != value) {
                 widget.controller.text = value;
+                widget.onChanged?.call(widget.controller.text);
               }
               setState(() => displayOverly = false);
             },

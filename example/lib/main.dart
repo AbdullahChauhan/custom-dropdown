@@ -69,6 +69,9 @@ class _HomeState extends State<Home> {
             hintStyle: TextStyle(fontSize: 20),
             items: list,
             controller: jobRoleDropdownCtrl,
+            onChanged: (value) {
+              print('AAAAASASASASASASASASASASASSAS1111111${value}');
+            },
             // excludeSelected: false,
           ),
           const SizedBox(height: 24),
@@ -82,6 +85,10 @@ class _HomeState extends State<Home> {
             hintText: 'Select job role',
             items: list,
             controller: jobRoleSearchDropdownCtrl,
+            onChanged: (value) {
+              print('AAAAASASASASASASASASASASASSAS222${value}');
+            },
+            excludeSelected: false,
           ),
           const SizedBox(height: 24),
           const Divider(height: 0),
@@ -103,6 +110,9 @@ class _HomeState extends State<Home> {
                   items: list,
                   controller: jobRoleFormDropdownCtrl,
                   excludeSelected: false,
+                  onChanged: (value) {
+                    print('AAAAASASASASASASASASASASASSAS3333333${value}');
+                  },
                 ),
                 const SizedBox(height: 16),
                 SizedBox(

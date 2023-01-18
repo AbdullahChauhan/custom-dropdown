@@ -74,7 +74,7 @@ class CustomDropdown extends StatefulWidget {
     this.fieldSuffixIcon,
     this.onChanged,
     this.contentPadding,
-    this.excludeSelected = true,
+    this.excludeSelected = false,
     this.canCloseOutsideBounds = true,
     this.fillColor = Colors.white,
   })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
@@ -125,6 +125,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           excludeSelected: widget.excludeSelected,
           canCloseOutsideBounds: widget.canCloseOutsideBounds,
           searchType: widget.searchType,
+          onChanged: widget.onChanged,
         );
       },
       child: (showCallback) {
@@ -142,7 +143,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
             hintStyle: hintStyle,
             hintText: hintText,
             suffixIcon: widget.fieldSuffixIcon,
-            onChanged: widget.onChanged,
+            // onChanged: widget.onChanged,
             fillColor: widget.fillColor,
             contentPadding: widget.contentPadding,
           ),
