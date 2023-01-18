@@ -17,7 +17,7 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 
 ```dart
 dependencies:
-  animated_custom_dropdown: 1.2.2
+  animated_custom_dropdown: 1.3.0
 ```
 
 2. Import the package and use it in your Flutter App.
@@ -38,7 +38,7 @@ class CustomDropdownExample extends StatefulWidget {
   const CustomDropdownExample({Key? key}) : super(key: key);
 
   @override
-  _CustomDropdownExampleState createState() => _CustomDropdownExampleState();
+  State<CustomDropdownExample> createState() => _CustomDropdownExampleState();
 }
 
 class _CustomDropdownExampleState extends State<CustomDropdownExample> {
@@ -66,6 +66,7 @@ class _CustomDropdownExampleState extends State<CustomDropdownExample> {
 - [x] Align on screen bottom so if space under widget is small, dropdown will open above the widget with proper animation.
 - [x] Search on provided data.
 - [ ] Search on API request.
+- [ ] Dropdown field/header builder.
 
 ## Issues & Feedback
 
