@@ -25,6 +25,7 @@ class _DropdownOverlay extends StatefulWidget {
   final _SearchType? searchType;
   final Future<List<String>> Function(String)? futureRequest;
 
+  final _ListItemBuilder? listItemBuilder;
   const _DropdownOverlay({
     Key? key,
     required this.items,
@@ -40,6 +41,7 @@ class _DropdownOverlay extends StatefulWidget {
     this.hideSelectedFieldWhenOpen = false,
     this.searchType,
     this.futureRequest,
+    this.listItemBuilder,
   }) : super(key: key);
 
   @override
@@ -51,11 +53,24 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
   bool displayOverlayBottom = true;
   bool isSearchRequestLoading = false;
   bool? mayFoundSearchRequestResult;
+
   late String headerText;
   late List<String> items;
   late List<String> filteredItems;
   final key1 = GlobalKey(), key2 = GlobalKey();
   final scrollController = ScrollController();
+
+  // default list item builder
+  Widget defaultListItemBuilder(BuildContext context, String result) {
+    return Text(
+      result,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
+        fontSize: 16,
+      ).merge(widget.listItemStyle),
+    );
+  }
 
   @override
   void initState() {
@@ -116,6 +131,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
     final list = items.isNotEmpty
         ? _ItemsList(
             scrollController: scrollController,
+            listItemBuilder: widget.listItemBuilder ?? defaultListItemBuilder,
             excludeSelected:
                 widget.items.length > 1 ? widget.excludeSelected! : false,
             items: items,
@@ -360,6 +376,7 @@ class _ItemsList extends StatelessWidget {
   final ValueSetter<String> onItemSelect;
   final EdgeInsets padding;
   final TextStyle? itemTextStyle;
+  final _ListItemBuilder listItemBuilder;
 
   const _ItemsList({
     Key? key,
@@ -368,16 +385,13 @@ class _ItemsList extends StatelessWidget {
     required this.excludeSelected,
     required this.headerText,
     required this.onItemSelect,
+    required this.listItemBuilder,
     required this.padding,
     this.itemTextStyle,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final listItemStyle = const TextStyle(
-      fontSize: 16,
-    ).merge(itemTextStyle);
-
     return Scrollbar(
       controller: scrollController,
       child: ListView.builder(
@@ -396,12 +410,7 @@ class _ItemsList extends StatelessWidget {
               child: Container(
                 color: selected ? Colors.grey[100] : Colors.transparent,
                 padding: _listItemPadding,
-                child: Text(
-                  items[index],
-                  style: listItemStyle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                child: listItemBuilder(context, items[index]),
               ),
             ),
           );

@@ -11,6 +11,8 @@ part 'overlay_builder.dart';
 
 enum _SearchType { onListData, onRequestData }
 
+typedef _ListItemBuilder = Widget Function(BuildContext context, String result);
+
 class CustomDropdown extends StatefulWidget {
   final List<String>? items;
   final TextEditingController controller;
@@ -32,6 +34,8 @@ class CustomDropdown extends StatefulWidget {
   final Future<List<String>> Function(String)? futureRequest;
   // ignore: library_private_types_in_public_api
   final _SearchType? searchType;
+  // ignore: library_private_types_in_public_api
+  final _ListItemBuilder? listItemBuilder;
 
   CustomDropdown({
     Key? key,
@@ -46,6 +50,7 @@ class CustomDropdown extends StatefulWidget {
     this.errorBorderSide,
     this.borderRadius,
     this.borderSide,
+    this.listItemBuilder,
     this.fieldSuffixIcon,
     this.onChanged,
     this.excludeSelected = true,
@@ -54,6 +59,12 @@ class CustomDropdown extends StatefulWidget {
         assert(
           controller.text.isEmpty || items!.contains(controller.text),
           'Controller value must match with one of the item in items list.',
+        ),
+        assert(
+          (listItemBuilder == null && listItemStyle == null) ||
+              (listItemBuilder == null && listItemStyle != null) ||
+              (listItemBuilder != null && listItemStyle == null),
+          'Cannot use both listItemBuilder and listItemStyle.',
         ),
         searchType = null,
         futureRequest = null,
@@ -67,6 +78,7 @@ class CustomDropdown extends StatefulWidget {
     required this.controller,
     this.hintText,
     this.hintStyle,
+    this.listItemBuilder,
     this.selectedStyle,
     this.errorText,
     this.errorStyle,
@@ -85,11 +97,17 @@ class CustomDropdown extends StatefulWidget {
           controller.text.isEmpty || items!.contains(controller.text),
           'Controller value must match with one of the item in items list.',
         ),
+        assert(
+          (listItemBuilder == null && listItemStyle == null) ||
+              (listItemBuilder == null && listItemStyle != null) ||
+              (listItemBuilder != null && listItemStyle == null),
+          'Cannot use both listItemBuilder and listItemStyle.',
+        ),
         searchType = _SearchType.onListData,
         futureRequest = null,
         super(key: key);
 
-  const CustomDropdown.searchRequest({
+  CustomDropdown.searchRequest({
     Key? key,
     required this.controller,
     required this.futureRequest,
@@ -100,6 +118,7 @@ class CustomDropdown extends StatefulWidget {
     this.errorText,
     this.errorStyle,
     this.listItemStyle,
+    this.listItemBuilder,
     this.errorBorderSide,
     this.borderRadius,
     this.borderSide,
@@ -109,7 +128,17 @@ class CustomDropdown extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
-  })  : searchType = _SearchType.onRequestData,
+  })  : assert(
+          controller.text.isEmpty || items!.contains(controller.text),
+          'Controller value must match with one of the item in items list.',
+        ),
+        assert(
+          (listItemBuilder == null && listItemStyle == null) ||
+              (listItemBuilder == null && listItemStyle != null) ||
+              (listItemBuilder != null && listItemStyle == null),
+          'Cannot use both listItemBuilder and listItemStyle.',
+        ),
+        searchType = _SearchType.onRequestData,
         super(key: key);
 
   @override
@@ -143,6 +172,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           items: widget.items ?? [],
           controller: widget.controller,
           size: size,
+          listItemBuilder: widget.listItemBuilder,
           layerLink: layerLink,
           hideOverlay: hideCallback,
           headerStyle:

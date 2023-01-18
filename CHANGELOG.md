@@ -1,3 +1,8 @@
+## 1.3.0
+
+- Update: Flutter version 3.3.9 changes
+- Add: List item builder support (Thanks [@Mohamed25885 for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/14))
+
 ## 1.2.2
 
 - Update: Flutter version 3.0.1 changes

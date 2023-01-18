@@ -123,6 +123,12 @@ class _HomeState extends State<Home> {
                   items: list,
                   controller: jobRoleFormDropdownCtrl,
                   excludeSelected: false,
+                  listItemBuilder: (context, result) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [Text(result), const Icon(Icons.person)],
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
