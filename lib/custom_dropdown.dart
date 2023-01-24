@@ -109,7 +109,7 @@ class CustomDropdown extends StatefulWidget {
         futureRequest = null,
         super(key: key);
 
-  CustomDropdown.searchRequest({
+  const CustomDropdown.searchRequest({
     Key? key,
     required this.controller,
     required this.futureRequest,
@@ -131,10 +131,6 @@ class CustomDropdown extends StatefulWidget {
     this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
   })  : assert(
-          controller.text.isEmpty || items!.contains(controller.text),
-          'Controller value must match with one of the item in items list.',
-        ),
-        assert(
           (listItemBuilder == null && listItemStyle == null) ||
               (listItemBuilder == null && listItemStyle != null) ||
               (listItemBuilder != null && listItemStyle == null),
