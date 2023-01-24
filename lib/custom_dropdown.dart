@@ -1,20 +1,22 @@
 library animated_custom_dropdown;
 
-export 'custom_dropdown.dart';
-
 import 'package:flutter/material.dart';
+
+export 'custom_dropdown.dart';
 
 part 'animated_section.dart';
 part 'dropdown_field.dart';
-part 'dropdown_overlay.dart';
+part 'dropdown_overlay/dropdown_overlay.dart';
+part 'dropdown_overlay/widgets/search_field.dart';
+part 'dropdown_overlay/widgets/items_list.dart';
 part 'overlay_builder.dart';
 
-enum _SearchType { onListData }
+enum _SearchType { onListData, onRequestData }
 
 typedef _ListItemBuilder = Widget Function(BuildContext context, String result);
 
 class CustomDropdown extends StatefulWidget {
-  final List<String> items;
+  final List<String>? items;
   final TextEditingController controller;
   final String? hintText;
   final TextStyle? hintStyle;
@@ -30,6 +32,8 @@ class CustomDropdown extends StatefulWidget {
   final bool? excludeSelected;
   final Color? fillColor;
   final bool? canCloseOutsideBounds;
+  final bool? hideSelectedFieldWhenOpen;
+  final Future<List<String>> Function(String)? futureRequest;
   // ignore: library_private_types_in_public_api
   final _SearchType? searchType;
   // ignore: library_private_types_in_public_api
@@ -53,9 +57,9 @@ class CustomDropdown extends StatefulWidget {
     this.onChanged,
     this.excludeSelected = true,
     this.fillColor = Colors.white,
-  })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
+  })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
         assert(
-          controller.text.isEmpty || items.contains(controller.text),
+          controller.text.isEmpty || items!.contains(controller.text),
           'Controller value must match with one of the item in items list.',
         ),
         assert(
@@ -65,7 +69,9 @@ class CustomDropdown extends StatefulWidget {
           'Cannot use both listItemBuilder and listItemStyle.',
         ),
         searchType = null,
+        futureRequest = null,
         canCloseOutsideBounds = true,
+        hideSelectedFieldWhenOpen = false,
         super(key: key);
 
   CustomDropdown.search({
@@ -86,10 +92,11 @@ class CustomDropdown extends StatefulWidget {
     this.onChanged,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
+    this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
-  })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
+  })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
         assert(
-          controller.text.isEmpty || items.contains(controller.text),
+          controller.text.isEmpty || items!.contains(controller.text),
           'Controller value must match with one of the item in items list.',
         ),
         assert(
@@ -99,6 +106,37 @@ class CustomDropdown extends StatefulWidget {
           'Cannot use both listItemBuilder and listItemStyle.',
         ),
         searchType = _SearchType.onListData,
+        futureRequest = null,
+        super(key: key);
+
+  const CustomDropdown.searchRequest({
+    Key? key,
+    required this.controller,
+    required this.futureRequest,
+    this.items,
+    this.hintText,
+    this.hintStyle,
+    this.selectedStyle,
+    this.errorText,
+    this.errorStyle,
+    this.listItemStyle,
+    this.listItemBuilder,
+    this.errorBorderSide,
+    this.borderRadius,
+    this.borderSide,
+    this.fieldSuffixIcon,
+    this.onChanged,
+    this.excludeSelected = true,
+    this.canCloseOutsideBounds = true,
+    this.hideSelectedFieldWhenOpen = false,
+    this.fillColor = Colors.white,
+  })  : assert(
+          (listItemBuilder == null && listItemStyle == null) ||
+              (listItemBuilder == null && listItemStyle != null) ||
+              (listItemBuilder != null && listItemStyle == null),
+          'Cannot use both listItemBuilder and listItemStyle.',
+        ),
+        searchType = _SearchType.onRequestData,
         super(key: key);
 
   @override
@@ -129,7 +167,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
     return _OverlayBuilder(
       overlay: (size, hideCallback) {
         return _DropdownOverlay(
-          items: widget.items,
+          items: widget.items ?? [],
           controller: widget.controller,
           size: size,
           listItemBuilder: widget.listItemBuilder,
@@ -142,6 +180,8 @@ class _CustomDropdownState extends State<CustomDropdown> {
           excludeSelected: widget.excludeSelected,
           canCloseOutsideBounds: widget.canCloseOutsideBounds,
           searchType: widget.searchType,
+          futureRequest: widget.futureRequest,
+          hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenOpen,
         );
       },
       child: (showCallback) {
