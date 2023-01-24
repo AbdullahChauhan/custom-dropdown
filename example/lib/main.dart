@@ -33,7 +33,8 @@ class _HomeState extends State<Home> {
   final List<String> list = ['Developer', 'Designer', 'Consultant', 'Student'];
   final jobRoleDropdownCtrl = TextEditingController(),
       jobRoleFormDropdownCtrl = TextEditingController(),
-      jobRoleSearchDropdownCtrl = TextEditingController();
+      jobRoleSearchDropdownCtrl = TextEditingController(),
+      jobRoleSearchRequestDropdownCtrl = TextEditingController();
 
   Future<List<String>> getFakeRequestData(String query) async {
     List<String> data = ['Developer', 'Designer', 'Consultant', 'Student'];
@@ -50,6 +51,7 @@ class _HomeState extends State<Home> {
     jobRoleDropdownCtrl.dispose();
     jobRoleFormDropdownCtrl.dispose();
     jobRoleSearchDropdownCtrl.dispose();
+    jobRoleSearchRequestDropdownCtrl.dispose();
     super.dispose();
   }
 
@@ -101,7 +103,7 @@ class _HomeState extends State<Home> {
           CustomDropdown.searchRequest(
             futureRequest: getFakeRequestData,
             hintText: 'Search job role',
-            controller: jobRoleSearchDropdownCtrl,
+            controller: jobRoleSearchRequestDropdownCtrl,
           ),
           const SizedBox(height: 24),
           const Divider(height: 0),
