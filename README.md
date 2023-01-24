@@ -27,7 +27,7 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 
 ```dart
 dependencies:
-  animated_custom_dropdown: 1.3.0
+  animated_custom_dropdown: 1.4.0
 ```
 
 2. Import the package and use it in your Flutter App.

@@ -1,3 +1,8 @@
+## 1.4.0
+
+- Add: Search request API (Search on provided request)
+- Update readme.
+
 ## 1.3.0
 
 - Update: Flutter version 3.3.9 changes
