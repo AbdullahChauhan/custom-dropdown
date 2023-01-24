@@ -6,7 +6,9 @@ export 'custom_dropdown.dart';
 
 part 'animated_section.dart';
 part 'dropdown_field.dart';
-part 'dropdown_overlay.dart';
+part 'dropdown_overlay/dropdown_overlay.dart';
+part 'dropdown_overlay/widgets/search_field.dart';
+part 'dropdown_overlay/widgets/items_list.dart';
 part 'overlay_builder.dart';
 
 enum _SearchType { onListData, onRequestData }
