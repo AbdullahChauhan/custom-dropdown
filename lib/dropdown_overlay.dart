@@ -59,7 +59,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
     if (listenChanges) {
       final text = widget.controller.text;
       if (prevText != null && prevText != text && text.isNotEmpty) {
-        widget.onChanged!(text);
+        // widget.onChanged!(text);
       }
       prevText = text;
     }
