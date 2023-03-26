@@ -5,6 +5,7 @@ class _SearchField extends StatefulWidget {
   final ValueChanged<List<String>> onSearchedItems;
   final _SearchType? searchType;
   final Future<List<String>> Function(String)? futureRequest;
+  final Duration? futureRequestDelay;
   final ValueChanged<bool>? onFutureRequestLoading;
   final ValueChanged<bool>? mayFoundResult;
 
@@ -14,6 +15,7 @@ class _SearchField extends StatefulWidget {
     required this.onSearchedItems,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
+        futureRequestDelay = null,
         onFutureRequestLoading = null,
         mayFoundResult = null,
         super(key: key);
@@ -23,6 +25,7 @@ class _SearchField extends StatefulWidget {
     required this.items,
     required this.onSearchedItems,
     required this.futureRequest,
+    required this.futureRequestDelay,
     required this.onFutureRequestLoading,
     required this.mayFoundResult,
   })  : searchType = _SearchType.onRequestData,
@@ -36,12 +39,12 @@ class _SearchFieldState extends State<_SearchField> {
   final searchCtrl = TextEditingController();
   bool isFieldEmpty = false;
   FocusNode focusNode = FocusNode();
+  Timer? _delayTimer;
 
   @override
   void initState() {
     super.initState();
-    if (widget.searchType == _SearchType.onRequestData &&
-        widget.items.isEmpty) {
+    if (widget.searchType == _SearchType.onRequestData && widget.items.isEmpty) {
       focusNode.requestFocus();
     }
   }
@@ -49,13 +52,12 @@ class _SearchFieldState extends State<_SearchField> {
   @override
   void dispose() {
     searchCtrl.dispose();
+    _delayTimer?.cancel();
     super.dispose();
   }
 
   void onSearch(String str) {
-    final result = widget.items
-        .where((item) => item.toLowerCase().contains(str.toLowerCase()))
-        .toList();
+    final result = widget.items.where((item) => item.toLowerCase().contains(str.toLowerCase())).toList();
     widget.onSearchedItems(result);
   }
 
@@ -79,23 +81,26 @@ class _SearchFieldState extends State<_SearchField> {
             isFieldEmpty = false;
           }
 
-          if (widget.searchType != null &&
-              widget.searchType == _SearchType.onRequestData &&
-              val.isNotEmpty) {
-            List<String>? result;
-            widget.onFutureRequestLoading!(true);
-            try {
-              result = await widget.futureRequest!(val);
-              widget.onFutureRequestLoading!(false);
-            } catch (_) {
-              widget.onFutureRequestLoading!(false);
-            }
-            widget.onSearchedItems(isFieldEmpty ? widget.items : result ?? []);
-            widget.mayFoundResult!(result?.isNotEmpty ?? false);
+          if (widget.searchType != null && widget.searchType == _SearchType.onRequestData && val.isNotEmpty) {
+            _delayTimer?.cancel();
 
-            if (isFieldEmpty) {
-              isFieldEmpty = false;
-            }
+            _delayTimer = Timer(widget.futureRequestDelay ?? const Duration(), () async {
+              List<String>? result;
+              widget.onFutureRequestLoading!(true);
+
+              try {
+                result = await widget.futureRequest!(val);
+                widget.onFutureRequestLoading!(false);
+              } catch (_) {
+                widget.onFutureRequestLoading!(false);
+              }
+              widget.onSearchedItems(isFieldEmpty ? widget.items : result ?? []);
+              widget.mayFoundResult!(result?.isNotEmpty ?? false);
+
+              if (isFieldEmpty) {
+                isFieldEmpty = false;
+              }
+            });
           } else if (widget.searchType == _SearchType.onListData) {
             onSearch(val);
           } else {

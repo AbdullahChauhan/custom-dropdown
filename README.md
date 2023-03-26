@@ -126,6 +126,7 @@ class _CustomDropdownExampleState extends State<CustomDropdownExample> {
       futureRequest: getFakeRequestData,
       hintText: 'Search job role',
       controller: jobRoleCtrl,
+      futureRequestDelay: const Duration(seconds: 3),//it waits 3 seconds before start searching (before execute the 'futureRequest' function)
     );
   }
 }

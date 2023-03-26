@@ -104,6 +104,7 @@ class _HomeState extends State<Home> {
             futureRequest: getFakeRequestData,
             hintText: 'Search job role',
             controller: jobRoleSearchRequestDropdownCtrl,
+            futureRequestDelay: const Duration(seconds: 3),//it waits 3 seconds before start searching (before execute the 'futureRequest' function)
           ),
           const SizedBox(height: 24),
           const Divider(height: 0),
