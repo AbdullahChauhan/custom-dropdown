@@ -84,10 +84,10 @@ class _SearchFieldState extends State<_SearchField> {
           if (widget.searchType != null && widget.searchType == _SearchType.onRequestData && val.isNotEmpty) {
             _delayTimer?.cancel();
 
-            _delayTimer = Timer(widget.futureRequestDelay ?? const Duration(), () async {
-              List<String>? result;
-              widget.onFutureRequestLoading!(true);
+            List<String>? result;
+            widget.onFutureRequestLoading!(true);
 
+            _delayTimer = Timer(widget.futureRequestDelay ?? const Duration(), () async {
               try {
                 result = await widget.futureRequest!(val);
                 widget.onFutureRequestLoading!(false);
