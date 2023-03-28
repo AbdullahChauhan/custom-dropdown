@@ -68,6 +68,22 @@ class _SearchFieldState extends State<_SearchField> {
     }
   }
 
+  void searchRequest(String val) async {
+    List<String> result = [];
+    try {
+      result = await widget.futureRequest!(val);
+      widget.onFutureRequestLoading!(false);
+    } catch (_) {
+      widget.onFutureRequestLoading!(false);
+    }
+    widget.onSearchedItems(isFieldEmpty ? widget.items : result);
+    widget.mayFoundResult!(result.isNotEmpty);
+
+    if (isFieldEmpty) {
+      isFieldEmpty = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -82,25 +98,16 @@ class _SearchFieldState extends State<_SearchField> {
           }
 
           if (widget.searchType != null && widget.searchType == _SearchType.onRequestData && val.isNotEmpty) {
-            _delayTimer?.cancel();
-
-            List<String>? result;
             widget.onFutureRequestLoading!(true);
 
-            _delayTimer = Timer(widget.futureRequestDelay ?? const Duration(), () async {
-              try {
-                result = await widget.futureRequest!(val);
-                widget.onFutureRequestLoading!(false);
-              } catch (_) {
-                widget.onFutureRequestLoading!(false);
-              }
-              widget.onSearchedItems(isFieldEmpty ? widget.items : result ?? []);
-              widget.mayFoundResult!(result?.isNotEmpty ?? false);
-
-              if (isFieldEmpty) {
-                isFieldEmpty = false;
-              }
-            });
+            if (widget.futureRequestDelay != null) {
+              _delayTimer?.cancel();
+              _delayTimer = Timer(widget.futureRequestDelay ?? Duration.zero, () {
+                searchRequest(val);
+              });
+            } else {
+              searchRequest(val);
+            }
           } else if (widget.searchType == _SearchType.onListData) {
             onSearch(val);
           } else {
