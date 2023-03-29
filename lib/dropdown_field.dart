@@ -14,10 +14,7 @@ class _DropDownField<T> extends StatefulWidget {
   final TextEditingController controller = TextEditingController();
   final VoidCallback onTap;
 
-  //final Function(T)? onChanged;
   final String? hintText;
-  final TextStyle? hintStyle;
-  final TextStyle? style;
   final String? errorText;
   final TextStyle? errorStyle;
   final BorderSide? borderSide;
@@ -26,14 +23,18 @@ class _DropDownField<T> extends StatefulWidget {
   final Widget? suffixIcon;
   final Color? fillColor;
 
+  ValueNotifier<T?> selectedItemNotifier;
+  final Widget Function(BuildContext context, T result)? headerBuilder;
+  final Widget Function(BuildContext context, String hint)? hintBuilder;
+
   _DropDownField({
     Key? key,
     required this.onTap,
-    //this.onChanged,
+    required this.selectedItemNotifier,
+    this.headerBuilder,
     this.suffixIcon,
     this.hintText,
-    this.hintStyle,
-    this.style,
+    this.hintBuilder,
     this.errorText,
     this.errorStyle,
     this.borderSide,
@@ -43,46 +44,54 @@ class _DropDownField<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<_DropDownField> createState() => _DropDownFieldState();
+  State<_DropDownField<T>> createState() => _DropDownFieldState<T>();
 }
 
-class _DropDownFieldState extends State<_DropDownField> {
+class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   String? prevText;
   bool listenChanges = true;
 
   @override
   void initState() {
     super.initState();
-    /*if (widget.onChanged != null) {
-      widget.controller.addListener(listenItemChanges);
-    }*/
+
+    widget.selectedItemNotifier.addListener(() {
+      if (widget.selectedItemNotifier.value == null) {
+        widget.controller.text = '';
+      } else {
+        widget.controller.text = widget.selectedItemNotifier.value!.toString();
+      }
+    });
   }
 
   @override
   void dispose() {
-    //widget.controller.removeListener(listenItemChanges);
     super.dispose();
   }
 
-  @override
-  void didUpdateWidget(covariant _DropDownField oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    /*if (widget.onChanged != null) {
-      widget.controller.addListener(listenItemChanges);
-    } else {
-      listenChanges = false;
-    }*/
+  // default list item builder
+  Widget defaultListItemBuilder(BuildContext context, T result) {
+    return Text(
+      result.toString(),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
+        fontSize: 16,
+      ),
+    );
   }
 
-  /*void listenItemChanges() {
-    if (listenChanges) {
-      final text = widget.controller.text;
-      if (prevText != null && prevText != text && text.isNotEmpty) {
-        widget.onChanged!(text);
-      }
-      prevText = text;
-    }
-  }*/
+  // default header builder
+  Widget defaultHeaderBuilder(BuildContext context, T result) {
+    return Text(
+      result.toString(),
+      maxLines: 1,
+      style: const TextStyle(
+        fontSize: 16,
+      ),
+      overflow: TextOverflow.ellipsis,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,14 +113,13 @@ class _DropDownFieldState extends State<_DropDownField> {
       },
       readOnly: true,
       onTap: widget.onTap,
-      //onChanged: widget.onChanged,
-      style: widget.style,
+      //style: widget.style,
       decoration: InputDecoration(
         isDense: true,
         contentPadding: _contentPadding,
         suffixIcon: widget.suffixIcon ?? _textFieldIcon,
         hintText: widget.hintText,
-        hintStyle: widget.hintStyle,
+        //hintStyle: widget.hintStyle,
         fillColor: widget.fillColor,
         filled: true,
         errorStyle: widget.errorText != null ? widget.errorStyle : _noTextStyle,

@@ -17,7 +17,6 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final LayerLink layerLink;
   final VoidCallback hideOverlay;
   final String hintText;
-  final TextStyle? headerStyle;
   final bool excludeSelected;
   final bool? hideSelectedFieldWhenOpen;
   final bool? canCloseOutsideBounds;
@@ -26,6 +25,8 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final Duration? futureRequestDelay;
 
   final Widget Function(BuildContext context, T result)? listItemBuilder;
+  final Widget Function(BuildContext context, T result)? headerBuilder;
+  final Widget Function(BuildContext context, String hint)? hintBuilder;
 
   _DropdownOverlay({
     Key? key,
@@ -36,7 +37,8 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.hintText,
     required this.selectedItemNotifier,
     required this.excludeSelected,
-    this.headerStyle,
+    this.headerBuilder,
+    this.hintBuilder,
     this.canCloseOutsideBounds,
     this.hideSelectedFieldWhenOpen = false,
     this.searchType,
@@ -74,11 +76,27 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   }
 
   // default header builder
-  Widget defaultHeaderBuilder(BuildContext context, T? result) {
+  Widget defaultHeaderBuilder(BuildContext context, T result) {
     return Text(
-      result != null ? headerText : widget.hintText,
-      style: widget.headerStyle,
+      result.toString(),
       maxLines: 1,
+      style: const TextStyle(
+        fontSize: 16,
+      ),
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  // default header builder
+  Widget defaultHintBuilder(BuildContext context, String hint) {
+    return Text(
+      hint,
+      maxLines: 1,
+      style: const TextStyle(
+        fontSize: 16,
+        color: Color(0xFFA7A7A7),
+        fontWeight: FontWeight.w400,
+      ),
       overflow: TextOverflow.ellipsis,
     );
   }
@@ -233,7 +251,13 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          child: defaultHeaderBuilder(context, widget.selectedItemNotifier.value),
+                                          child: widget.selectedItemNotifier.value == null
+                                              ? widget.hintBuilder != null
+                                                  ? widget.hintBuilder!(context, widget.hintText)
+                                                  : defaultHintBuilder(context, widget.hintText)
+                                              : widget.headerBuilder != null
+                                                  ? widget.headerBuilder!(context, widget.selectedItemNotifier.value!)
+                                                  : defaultHeaderBuilder(context, widget.selectedItemNotifier.value!),
                                         ),
                                         const SizedBox(width: 12),
                                         overlayIcon,

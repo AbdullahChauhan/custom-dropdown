@@ -21,11 +21,9 @@ part 'overlay_builder.dart';
 enum _SearchType { onListData, onRequestData }
 
 class CustomDropdown<T> extends StatefulWidget {
-
+  ValueNotifier<T?> selectedItemNotifier;
   final List<T>? items;
-  final TextEditingController controller;
   final String? hintText;
-  final TextStyle? hintStyle;
   final TextStyle? selectedStyle;
   final String? errorText;
   final TextStyle? errorStyle;
@@ -34,7 +32,7 @@ class CustomDropdown<T> extends StatefulWidget {
   final BorderRadius? borderRadius;
   final Widget? fieldSuffixIcon;
   final Function(T)? onChanged;
-  final bool? excludeSelected;
+  final bool excludeSelected;
   final Color? fillColor;
   final bool? canCloseOutsideBounds;
   final bool? hideSelectedFieldWhenOpen;
@@ -50,14 +48,16 @@ class CustomDropdown<T> extends StatefulWidget {
   final Widget Function(BuildContext context, T result)? listItemBuilder;
 
   // ignore: library_private_types_in_public_api
-  final Widget Function(BuildContext context, T result)? selectedItemBuilder;
+  final Widget Function(BuildContext context, T result)? headerBuilder;
+
+  // ignore: library_private_types_in_public_api
+  final Widget Function(BuildContext context, String hint)? hintBuilder;
 
   CustomDropdown({
     Key? key,
     required this.items,
-    required this.controller,
+    T? selectedItem,
     this.hintText,
-    this.hintStyle,
     this.selectedStyle,
     this.errorText,
     this.errorStyle,
@@ -65,31 +65,29 @@ class CustomDropdown<T> extends StatefulWidget {
     this.borderRadius,
     this.borderSide,
     this.listItemBuilder,
-    this.selectedItemBuilder,
+    this.headerBuilder,
+    this.hintBuilder,
     this.fieldSuffixIcon,
     this.onChanged,
     this.excludeSelected = true,
     this.fillColor = Colors.white,
   })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
-        assert(
-          controller.text.isEmpty || items!.contains(controller.text),
-          'Controller value must match with one of the item in items list.',
-        ),
         searchType = null,
         futureRequest = null,
         futureRequestDelay = null,
         canCloseOutsideBounds = true,
         hideSelectedFieldWhenOpen = false,
+        selectedItemNotifier = ValueNotifier(selectedItem),
         super(key: key);
 
   CustomDropdown.search({
     Key? key,
     required this.items,
-    required this.controller,
+    T? selectedItem,
     this.hintText,
-    this.hintStyle,
     this.listItemBuilder,
-    this.selectedItemBuilder,
+    this.headerBuilder,
+    this.hintBuilder,
     this.selectedStyle,
     this.errorText,
     this.errorStyle,
@@ -103,28 +101,25 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
   })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
-        assert(
-          controller.text.isEmpty || items!.contains(controller.text),
-          'Controller value must match with one of the item in items list.',
-        ),
         searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
+        selectedItemNotifier = ValueNotifier(selectedItem),
         super(key: key);
 
-  const CustomDropdown.searchRequest({
+  CustomDropdown.searchRequest({
     Key? key,
-    required this.controller,
     required this.futureRequest,
     this.futureRequestDelay,
+    T? selectedItem,
     this.items,
     this.hintText,
-    this.hintStyle,
     this.selectedStyle,
     this.errorText,
     this.errorStyle,
     this.listItemBuilder,
-    this.selectedItemBuilder,
+    this.headerBuilder,
+    this.hintBuilder,
     this.errorBorderSide,
     this.borderRadius,
     this.borderSide,
@@ -135,6 +130,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
   })  : searchType = _SearchType.onRequestData,
+        selectedItemNotifier = ValueNotifier(selectedItem),
         super(key: key);
 
   @override
@@ -145,35 +141,35 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   final layerLink = LayerLink();
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.onChanged != null) {
+      widget.selectedItemNotifier.addListener(() {
+        if (widget.selectedItemNotifier.value != null) {
+          widget.onChanged!(widget.selectedItemNotifier.value!);
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     /// hint text
     final hintText = widget.hintText ?? 'Select value';
-
-    // hint style :: if provided then merge with default
-    final hintStyle = const TextStyle(
-      fontSize: 16,
-      color: Color(0xFFA7A7A7),
-      fontWeight: FontWeight.w400,
-    ).merge(widget.hintStyle);
-
-    // selected item style :: if provided then merge with default
-    final selectedStyle = const TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w500,
-    ).merge(widget.selectedStyle);
 
     return _OverlayBuilder(
       overlay: (size, hideCallback) {
         return _DropdownOverlay<T>(
           items: widget.items ?? [],
-          controller: widget.controller,
+          selectedItemNotifier: widget.selectedItemNotifier,
           size: size,
           listItemBuilder: widget.listItemBuilder,
-          onChanged: widget.onChanged,
           layerLink: layerLink,
           hideOverlay: hideCallback,
-          headerStyle: widget.controller.text.isNotEmpty ? selectedStyle : hintStyle,
+          headerBuilder: widget.headerBuilder,
           hintText: hintText,
+          hintBuilder: widget.hintBuilder,
           excludeSelected: widget.excludeSelected,
           canCloseOutsideBounds: widget.canCloseOutsideBounds,
           searchType: widget.searchType,
@@ -186,15 +182,13 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
         return CompositedTransformTarget(
           link: layerLink,
           child: _DropDownField<T>(
-            controller: widget.controller,
             onTap: showCallback,
-            style: selectedStyle,
+            selectedItemNotifier: widget.selectedItemNotifier,
             borderRadius: widget.borderRadius,
             borderSide: widget.borderSide,
             errorBorderSide: widget.errorBorderSide,
             errorStyle: widget.errorStyle,
             errorText: widget.errorText,
-            hintStyle: hintStyle,
             hintText: hintText,
             suffixIcon: widget.fieldSuffixIcon,
             //onChanged: widget.onChanged,
