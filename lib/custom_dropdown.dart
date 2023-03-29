@@ -75,7 +75,9 @@ class CustomDropdown extends StatefulWidget {
           'Controller value must match with one of the item in items list.',
         ),
         assert(
-          (listItemBuilder == null && listItemStyle == null) || (listItemBuilder == null && listItemStyle != null) || (listItemBuilder != null && listItemStyle == null),
+          (listItemBuilder == null && listItemStyle == null) ||
+              (listItemBuilder == null && listItemStyle != null) ||
+              (listItemBuilder != null && listItemStyle == null),
           'Cannot use both listItemBuilder and listItemStyle.',
         ),
         searchType = null,
@@ -111,7 +113,9 @@ class CustomDropdown extends StatefulWidget {
           'Controller value must match with one of the item in items list.',
         ),
         assert(
-          (listItemBuilder == null && listItemStyle == null) || (listItemBuilder == null && listItemStyle != null) || (listItemBuilder != null && listItemStyle == null),
+          (listItemBuilder == null && listItemStyle == null) ||
+              (listItemBuilder == null && listItemStyle != null) ||
+              (listItemBuilder != null && listItemStyle == null),
           'Cannot use both listItemBuilder and listItemStyle.',
         ),
         searchType = _SearchType.onListData,
@@ -142,7 +146,9 @@ class CustomDropdown extends StatefulWidget {
     this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
   })  : assert(
-          (listItemBuilder == null && listItemStyle == null) || (listItemBuilder == null && listItemStyle != null) || (listItemBuilder != null && listItemStyle == null),
+          (listItemBuilder == null && listItemStyle == null) ||
+              (listItemBuilder == null && listItemStyle != null) ||
+              (listItemBuilder != null && listItemStyle == null),
           'Cannot use both listItemBuilder and listItemStyle.',
         ),
         searchType = _SearchType.onRequestData,
@@ -182,7 +188,8 @@ class _CustomDropdownState extends State<CustomDropdown> {
           listItemBuilder: widget.listItemBuilder,
           layerLink: layerLink,
           hideOverlay: hideCallback,
-          headerStyle: widget.controller.text.isNotEmpty ? selectedStyle : hintStyle,
+          headerStyle:
+              widget.controller.text.isNotEmpty ? selectedStyle : hintStyle,
           hintText: hintText,
           listItemStyle: widget.listItemStyle,
           excludeSelected: widget.excludeSelected,
