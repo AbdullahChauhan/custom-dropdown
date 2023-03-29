@@ -11,8 +11,9 @@ const _borderSide = BorderSide(color: Colors.transparent);
 const _errorBorderSide = BorderSide(color: Colors.redAccent, width: 2);
 
 class _DropDownField<T> extends StatefulWidget {
-  final TextEditingController controller;
+  final TextEditingController controller = TextEditingController();
   final VoidCallback onTap;
+
   //final Function(T)? onChanged;
   final String? hintText;
   final TextStyle? hintStyle;
@@ -25,9 +26,8 @@ class _DropDownField<T> extends StatefulWidget {
   final Widget? suffixIcon;
   final Color? fillColor;
 
-  const _DropDownField({
+  _DropDownField({
     Key? key,
-    required this.controller,
     required this.onTap,
     //this.onChanged,
     this.suffixIcon,

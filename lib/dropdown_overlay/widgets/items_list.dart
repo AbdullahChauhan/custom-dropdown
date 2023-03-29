@@ -4,8 +4,8 @@ class _ItemsList<T> extends StatelessWidget {
   final ScrollController scrollController;
   final List<T> items;
   final bool excludeSelected;
-  final String headerText;
   final ValueSetter<T> onItemSelect;
+  final T? selectedItem;
   final EdgeInsets padding;
   final Widget Function(BuildContext context, T result) listItemBuilder;
 
@@ -14,7 +14,7 @@ class _ItemsList<T> extends StatelessWidget {
     required this.scrollController,
     required this.items,
     required this.excludeSelected,
-    required this.headerText,
+    required this.selectedItem,
     required this.onItemSelect,
     required this.listItemBuilder,
     required this.padding,
@@ -30,7 +30,7 @@ class _ItemsList<T> extends StatelessWidget {
         padding: padding,
         itemCount: items.length,
         itemBuilder: (_, index) {
-          final selected = !excludeSelected && headerText == items[index];
+          final selected = !excludeSelected && selectedItem == items[index];
           return Material(
             color: Colors.transparent,
             child: InkWell(

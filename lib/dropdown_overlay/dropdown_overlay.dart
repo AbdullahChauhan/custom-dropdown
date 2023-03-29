@@ -12,14 +12,13 @@ const _listItemPadding = EdgeInsets.symmetric(vertical: 12, horizontal: 16);
 
 class _DropdownOverlay<T> extends StatefulWidget {
   final List<T> items;
-  final Function(T)? onChanged;
-  final TextEditingController controller;
+  ValueNotifier<T?> selectedItemNotifier;
   final Size size;
   final LayerLink layerLink;
   final VoidCallback hideOverlay;
   final String hintText;
   final TextStyle? headerStyle;
-  final bool? excludeSelected;
+  final bool excludeSelected;
   final bool? hideSelectedFieldWhenOpen;
   final bool? canCloseOutsideBounds;
   final _SearchType? searchType;
@@ -31,14 +30,13 @@ class _DropdownOverlay<T> extends StatefulWidget {
   _DropdownOverlay({
     Key? key,
     required this.items,
-    required this.controller,
     required this.size,
     required this.layerLink,
     required this.hideOverlay,
     required this.hintText,
-    required this.onChanged,
+    required this.selectedItemNotifier,
+    required this.excludeSelected,
     this.headerStyle,
-    this.excludeSelected,
     this.canCloseOutsideBounds,
     this.hideSelectedFieldWhenOpen = false,
     this.searchType,
@@ -75,6 +73,16 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     );
   }
 
+  // default header builder
+  Widget defaultHeaderBuilder(BuildContext context, T? result) {
+    return Text(
+      result != null ? headerText : widget.hintText,
+      style: widget.headerStyle,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -89,11 +97,16 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
       }
     });
 
-    headerText = widget.controller.text;
-    if (widget.excludeSelected! && widget.items.length > 1 && widget.controller.text.isNotEmpty) {
-      items = widget.items.where((item) => item != headerText).toList();
+    if (widget.excludeSelected && widget.items.length > 1 && widget.selectedItemNotifier.value != null) {
+      T value = widget.selectedItemNotifier.value!;
+      items = widget.items.where((item) => item != value).toList();
     } else {
       items = widget.items;
+    }
+    if (widget.selectedItemNotifier.value != null) {
+      headerText = widget.selectedItemNotifier.value.toString();
+    } else {
+      headerText = widget.hintText;
     }
     filteredItems = items;
   }
@@ -127,17 +140,16 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
     // items list
     final list = items.isNotEmpty
-        ? _ItemsList(
+        ? _ItemsList<T>(
             scrollController: scrollController,
             listItemBuilder: widget.listItemBuilder ?? defaultListItemBuilder,
             excludeSelected: widget.items.length > 1 ? widget.excludeSelected! : false,
+            selectedItem: widget.selectedItemNotifier.value,
             items: items,
             padding: listPadding,
-            headerText: headerText,
             onItemSelect: (T value) {
               if (headerText != value) {
-                widget.onChanged!(value);
-                widget.controller.text = value.toString();
+                widget.selectedItemNotifier.value = value;
               }
               setState(() => displayOverly = false);
             },
@@ -221,12 +233,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          child: Text(
-                                            headerText.isNotEmpty ? headerText : widget.hintText,
-                                            style: widget.headerStyle,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
+                                          child: defaultHeaderBuilder(context, widget.selectedItemNotifier.value),
                                         ),
                                         const SizedBox(width: 12),
                                         overlayIcon,
