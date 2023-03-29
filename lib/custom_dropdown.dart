@@ -172,6 +172,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
           futureRequest: widget.futureRequest,
           futureRequestDelay: widget.futureRequestDelay,
           hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenOpen,
+          fillColor: widget.fillColor,
         );
       },
       child: (showCallback) {

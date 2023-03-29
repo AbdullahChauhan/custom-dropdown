@@ -23,6 +23,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final _SearchType? searchType;
   final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
+  final Color? fillColor;
 
   final Widget Function(BuildContext context, T result)? listItemBuilder;
   final Widget Function(BuildContext context, T result)? headerBuilder;
@@ -45,6 +46,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     this.futureRequest,
     this.futureRequestDelay,
     this.listItemBuilder,
+    this.fillColor
   }) : super(key: key);
 
   @override
@@ -198,7 +200,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
               padding: _overlayOuterPadding,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: widget.fillColor,
                   borderRadius: borderRadius,
                   boxShadow: [
                     BoxShadow(

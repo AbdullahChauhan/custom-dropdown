@@ -126,7 +126,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       onTap: widget.onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: widget.fillColor,
           border: widget.isError ? errorBorder : border,
           borderRadius: borderRadius
         ),
