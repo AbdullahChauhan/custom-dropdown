@@ -27,6 +27,8 @@ class _DropDownField<T> extends StatefulWidget {
   final Widget Function(BuildContext context, T result)? headerBuilder;
   final Widget Function(BuildContext context, String hint)? hintBuilder;
 
+  bool isError = false;
+
   _DropDownField({
     Key? key,
     required this.onTap,
@@ -49,7 +51,6 @@ class _DropDownField<T> extends StatefulWidget {
 
 class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   String? prevText;
-  bool listenChanges = true;
 
   @override
   void initState() {
@@ -61,8 +62,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       } else {
         widget.controller.text = widget.selectedItemNotifier.value!.toString();
       }
-      setState(() {
-      });
+      setState(() {});
     });
   }
 
@@ -99,15 +99,21 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final border = OutlineInputBorder(
+    /*final border = OutlineInputBorder(
       borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
       borderSide: widget.borderSide ?? _borderSide,
     );
 
-    final errorBorder = OutlineInputBorder(
+    final errorBorder = BoxBorder(
       borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
       borderSide: widget.errorBorderSide ?? _errorBorderSide,
-    );
+    );*/
+
+    // border radius
+    final borderRadius = widget.borderRadius ?? BorderRadius.circular(12);
+
+    final border = Border.all(color: Colors.transparent);
+    final errorBorder = Border.all(color: Colors.red);
 
     // overlay icon
     const overlayIcon = Icon(
@@ -121,6 +127,8 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
+          border: widget.isError ? errorBorder : border,
+          borderRadius: borderRadius
         ),
         child: Padding(
           padding: _headerPadding,
