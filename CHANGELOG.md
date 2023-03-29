@@ -1,3 +1,7 @@
+## 1.5.0
+
+- Add: Request delay support for Search request API (Thanks [@JesusHdez960717 for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/19))
+
 ## 1.4.0
 
 - Add: Search request API (Search on provided request)
