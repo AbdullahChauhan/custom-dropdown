@@ -5,6 +5,7 @@ class _SearchField extends StatefulWidget {
   final ValueChanged<List<String>> onSearchedItems;
   final _SearchType? searchType;
   final Future<List<String>> Function(String)? futureRequest;
+  final Duration? futureRequestDelay;
   final ValueChanged<bool>? onFutureRequestLoading;
   final ValueChanged<bool>? mayFoundResult;
 
@@ -14,6 +15,7 @@ class _SearchField extends StatefulWidget {
     required this.onSearchedItems,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
+        futureRequestDelay = null,
         onFutureRequestLoading = null,
         mayFoundResult = null,
         super(key: key);
@@ -23,6 +25,7 @@ class _SearchField extends StatefulWidget {
     required this.items,
     required this.onSearchedItems,
     required this.futureRequest,
+    required this.futureRequestDelay,
     required this.onFutureRequestLoading,
     required this.mayFoundResult,
   })  : searchType = _SearchType.onRequestData,
@@ -36,6 +39,7 @@ class _SearchFieldState extends State<_SearchField> {
   final searchCtrl = TextEditingController();
   bool isFieldEmpty = false;
   FocusNode focusNode = FocusNode();
+  Timer? _delayTimer;
 
   @override
   void initState() {
@@ -49,6 +53,7 @@ class _SearchFieldState extends State<_SearchField> {
   @override
   void dispose() {
     searchCtrl.dispose();
+    _delayTimer?.cancel();
     super.dispose();
   }
 
@@ -63,6 +68,22 @@ class _SearchFieldState extends State<_SearchField> {
     if (searchCtrl.text.isNotEmpty) {
       searchCtrl.clear();
       widget.onSearchedItems(widget.items);
+    }
+  }
+
+  void searchRequest(String val) async {
+    List<String> result = [];
+    try {
+      result = await widget.futureRequest!(val);
+      widget.onFutureRequestLoading!(false);
+    } catch (_) {
+      widget.onFutureRequestLoading!(false);
+    }
+    widget.onSearchedItems(isFieldEmpty ? widget.items : result);
+    widget.mayFoundResult!(result.isNotEmpty);
+
+    if (isFieldEmpty) {
+      isFieldEmpty = false;
     }
   }
 
@@ -82,19 +103,16 @@ class _SearchFieldState extends State<_SearchField> {
           if (widget.searchType != null &&
               widget.searchType == _SearchType.onRequestData &&
               val.isNotEmpty) {
-            List<String>? result;
             widget.onFutureRequestLoading!(true);
-            try {
-              result = await widget.futureRequest!(val);
-              widget.onFutureRequestLoading!(false);
-            } catch (_) {
-              widget.onFutureRequestLoading!(false);
-            }
-            widget.onSearchedItems(isFieldEmpty ? widget.items : result ?? []);
-            widget.mayFoundResult!(result?.isNotEmpty ?? false);
 
-            if (isFieldEmpty) {
-              isFieldEmpty = false;
+            if (widget.futureRequestDelay != null) {
+              _delayTimer?.cancel();
+              _delayTimer =
+                  Timer(widget.futureRequestDelay ?? Duration.zero, () {
+                searchRequest(val);
+              });
+            } else {
+              searchRequest(val);
             }
           } else if (widget.searchType == _SearchType.onListData) {
             onSearch(val);

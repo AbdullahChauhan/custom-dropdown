@@ -24,8 +24,10 @@ class _DropdownOverlay extends StatefulWidget {
   final bool? canCloseOutsideBounds;
   final _SearchType? searchType;
   final Future<List<String>> Function(String)? futureRequest;
+  final Duration? futureRequestDelay;
 
   final _ListItemBuilder? listItemBuilder;
+
   const _DropdownOverlay({
     Key? key,
     required this.items,
@@ -41,6 +43,7 @@ class _DropdownOverlay extends StatefulWidget {
     this.hideSelectedFieldWhenOpen = false,
     this.searchType,
     this.futureRequest,
+    this.futureRequestDelay,
     this.listItemBuilder,
   }) : super(key: key);
 
@@ -284,6 +287,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                         });
                                       },
                                       futureRequest: widget.futureRequest,
+                                      futureRequestDelay:
+                                          widget.futureRequestDelay,
                                       onSearchedItems: (val) {
                                         setState(() => items = val);
                                       },
@@ -308,6 +313,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                               },
                                               futureRequest:
                                                   widget.futureRequest,
+                                              futureRequestDelay:
+                                                  widget.futureRequestDelay,
                                               onSearchedItems: (val) {
                                                 setState(() => items = val);
                                               },

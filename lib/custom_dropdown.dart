@@ -1,14 +1,21 @@
 library animated_custom_dropdown;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 export 'custom_dropdown.dart';
 
 part 'animated_section.dart';
+
 part 'dropdown_field.dart';
+
 part 'dropdown_overlay/dropdown_overlay.dart';
-part 'dropdown_overlay/widgets/search_field.dart';
+
 part 'dropdown_overlay/widgets/items_list.dart';
+
+part 'dropdown_overlay/widgets/search_field.dart';
+
 part 'overlay_builder.dart';
 
 enum _SearchType { onListData, onRequestData }
@@ -34,8 +41,13 @@ class CustomDropdown extends StatefulWidget {
   final bool? canCloseOutsideBounds;
   final bool? hideSelectedFieldWhenOpen;
   final Future<List<String>> Function(String)? futureRequest;
+
+  //duration after which the 'futureRequest' is to be executed
+  final Duration? futureRequestDelay;
+
   // ignore: library_private_types_in_public_api
   final _SearchType? searchType;
+
   // ignore: library_private_types_in_public_api
   final _ListItemBuilder? listItemBuilder;
 
@@ -70,6 +82,7 @@ class CustomDropdown extends StatefulWidget {
         ),
         searchType = null,
         futureRequest = null,
+        futureRequestDelay = null,
         canCloseOutsideBounds = true,
         hideSelectedFieldWhenOpen = false,
         super(key: key);
@@ -107,12 +120,14 @@ class CustomDropdown extends StatefulWidget {
         ),
         searchType = _SearchType.onListData,
         futureRequest = null,
+        futureRequestDelay = null,
         super(key: key);
 
   const CustomDropdown.searchRequest({
     Key? key,
     required this.controller,
     required this.futureRequest,
+    this.futureRequestDelay,
     this.items,
     this.hintText,
     this.hintStyle,
@@ -181,6 +196,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           canCloseOutsideBounds: widget.canCloseOutsideBounds,
           searchType: widget.searchType,
           futureRequest: widget.futureRequest,
+          futureRequestDelay: widget.futureRequestDelay,
           hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenOpen,
         );
       },
