@@ -44,7 +44,8 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
   @override
   void initState() {
     super.initState();
-    if (widget.searchType == _SearchType.onRequestData && widget.items.isEmpty) {
+    if (widget.searchType == _SearchType.onRequestData &&
+        widget.items.isEmpty) {
       focusNode.requestFocus();
     }
   }
@@ -97,12 +98,15 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
             isFieldEmpty = false;
           }
 
-          if (widget.searchType != null && widget.searchType == _SearchType.onRequestData && val.isNotEmpty) {
+          if (widget.searchType != null &&
+              widget.searchType == _SearchType.onRequestData &&
+              val.isNotEmpty) {
             widget.onFutureRequestLoading!(true);
 
             if (widget.futureRequestDelay != null) {
               _delayTimer?.cancel();
-              _delayTimer = Timer(widget.futureRequestDelay ?? Duration.zero, () {
+              _delayTimer =
+                  Timer(widget.futureRequestDelay ?? Duration.zero, () {
                 searchRequest(val);
               });
             } else {
