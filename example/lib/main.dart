@@ -28,20 +28,37 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
+class Job {
+  String name;
+  IconData icon;
+
+  Job(this.name, this.icon);
+
+  @override
+  String toString() {
+    return '$name';
+  }
+}
+
 class _HomeState extends State<Home> {
   final formKey = GlobalKey<FormState>();
-  final List<String> list = ['Developer', 'Designer', 'Consultant', 'Student'];
+
+  final List<Job> list = [
+    Job('Developer', Icons.developer_mode),
+    Job('Designer', Icons.design_services),
+    Job('Consultant', Icons.account_balance),
+    Job('Student', Icons.school),
+  ];
+
   final jobRoleDropdownCtrl = TextEditingController(),
       jobRoleFormDropdownCtrl = TextEditingController(),
       jobRoleSearchDropdownCtrl = TextEditingController(),
       jobRoleSearchRequestDropdownCtrl = TextEditingController();
 
-  Future<List<String>> getFakeRequestData(String query) async {
-    List<String> data = ['Developer', 'Designer', 'Consultant', 'Student'];
-
+  Future<List<Job>> getFakeRequestData(String query) async {
     return await Future.delayed(const Duration(seconds: 1), () {
-      return data.where((e) {
-        return e.toLowerCase().contains(query.toLowerCase());
+      return list.where((e) {
+        return e.name.toLowerCase().contains(query.toLowerCase());
       }).toList();
     });
   }
@@ -53,6 +70,37 @@ class _HomeState extends State<Home> {
     jobRoleSearchDropdownCtrl.dispose();
     jobRoleSearchRequestDropdownCtrl.dispose();
     super.dispose();
+  }
+
+  //function to be called with every item how it's gona be sho in the dropdown list
+  Widget listItemBuilder(BuildContext context, Job job) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Text(job.name),
+        Icon(job.icon),
+      ],
+    );
+  }
+
+  //function to be called when a item is selected
+  Widget selectedHeaderBuilder(BuildContext context, Job job) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Text(job.name),
+      ],
+    );
+  }
+
+  //function to be called when a item is selected
+  Widget hintBuilder(BuildContext context, String hint) {
+    return Row(
+      children: [
+        Text(hint),
+        const Icon(Icons.question_mark),
+      ],
+    );
   }
 
   @override
@@ -75,11 +123,17 @@ class _HomeState extends State<Home> {
         children: [
           const Text('Job Roles Dropdown', style: _labelStyle),
           const SizedBox(height: 8),
-          CustomDropdown(
+          CustomDropdown<Job>(
             hintText: 'Select job role',
             items: list,
-            controller: jobRoleDropdownCtrl,
+            selectedItem: list[0],
             excludeSelected: false,
+            onChanged: (value) {
+              print('changing value to: $value');
+            },
+            listItemBuilder: (context, result) => listItemBuilder(context, result),
+            headerBuilder: (context, result) => selectedHeaderBuilder(context, result),
+            hintBuilder: (context, result) => hintBuilder(context, result),
           ),
           const SizedBox(height: 24),
           const Divider(height: 0),
@@ -88,10 +142,16 @@ class _HomeState extends State<Home> {
           // dropdown having search field
           const Text('Job Roles Search Dropdown', style: _labelStyle),
           const SizedBox(height: 8),
-          CustomDropdown.search(
+          CustomDropdown<Job>.search(
             hintText: 'Select job role',
-            controller: jobRoleSearchDropdownCtrl,
             items: list,
+            onChanged: (value) {
+              print('changing value to: $value');
+            },
+            excludeSelected: false,
+            fillColor: Colors.red,
+            listItemBuilder: (context, result) => listItemBuilder(context, result),
+            headerBuilder: (context, result) => selectedHeaderBuilder(context, result),
           ),
           const SizedBox(height: 24),
           const Divider(height: 0),
@@ -100,11 +160,17 @@ class _HomeState extends State<Home> {
           // dropdown having search request field (making fake call)
           const Text('Job Roles Search Request Dropdown', style: _labelStyle),
           const SizedBox(height: 8),
-          CustomDropdown.searchRequest(
+          CustomDropdown<Job>.searchRequest(
             futureRequest: getFakeRequestData,
             hintText: 'Search job role',
-            controller: jobRoleSearchRequestDropdownCtrl,
-            futureRequestDelay: const Duration(seconds: 3),//it waits 3 seconds before start searching (before execute the 'futureRequest' function)
+            items: list,
+            onChanged: (value) {
+              print('changing value to: $value');
+            },
+            listItemBuilder: (context, result) => listItemBuilder(context, result),
+            headerBuilder: (context, result) => selectedHeaderBuilder(context, result),
+            hintBuilder: (context, result) => hintBuilder(context, result),
+            futureRequestDelay: const Duration(milliseconds: 150), //it waits 150 ms before start searching (before execute the 'futureRequest' function)
           ),
           const SizedBox(height: 24),
           const Divider(height: 0),
@@ -121,16 +187,12 @@ class _HomeState extends State<Home> {
                   style: _labelStyle,
                 ),
                 const SizedBox(height: 8),
-                CustomDropdown(
+                CustomDropdown<Job>(
                   hintText: 'Select job role',
                   items: list,
-                  controller: jobRoleFormDropdownCtrl,
                   excludeSelected: false,
-                  listItemBuilder: (context, result) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text(result), const Icon(Icons.person)],
-                    );
+                  onChanged: (value) {
+                    print('changing value to: $value');
                   },
                 ),
                 const SizedBox(height: 16),
