@@ -24,7 +24,6 @@ class CustomDropdown<T> extends StatefulWidget {
   ValueNotifier<T?> selectedItemNotifier;
   final List<T>? items;
   final String? hintText;
-  final TextStyle? selectedStyle;
   final String? errorText;
   final TextStyle? errorStyle;
   final BorderSide? borderSide;
@@ -58,7 +57,6 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.items,
     T? selectedItem,
     this.hintText,
-    this.selectedStyle,
     this.errorText,
     this.errorStyle,
     this.errorBorderSide,
@@ -88,7 +86,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
-    this.selectedStyle,
     this.errorText,
     this.errorStyle,
     this.errorBorderSide,
@@ -114,7 +111,6 @@ class CustomDropdown<T> extends StatefulWidget {
     T? selectedItem,
     this.items,
     this.hintText,
-    this.selectedStyle,
     this.errorText,
     this.errorStyle,
     this.listItemBuilder,
@@ -190,6 +186,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
             errorStyle: widget.errorStyle,
             errorText: widget.errorText,
             hintText: hintText,
+            hintBuilder: widget.hintBuilder,
+            headerBuilder: widget.headerBuilder,
             suffixIcon: widget.fieldSuffixIcon,
             //onChanged: widget.onChanged,
             fillColor: widget.fillColor,

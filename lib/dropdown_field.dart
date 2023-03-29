@@ -14,7 +14,7 @@ class _DropDownField<T> extends StatefulWidget {
   final TextEditingController controller = TextEditingController();
   final VoidCallback onTap;
 
-  final String? hintText;
+  final String hintText;
   final String? errorText;
   final TextStyle? errorStyle;
   final BorderSide? borderSide;
@@ -33,7 +33,7 @@ class _DropDownField<T> extends StatefulWidget {
     required this.selectedItemNotifier,
     this.headerBuilder,
     this.suffixIcon,
-    this.hintText,
+    this.hintText = 'Select value',
     this.hintBuilder,
     this.errorText,
     this.errorStyle,
@@ -61,24 +61,14 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       } else {
         widget.controller.text = widget.selectedItemNotifier.value!.toString();
       }
+      setState(() {
+      });
     });
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  // default list item builder
-  Widget defaultListItemBuilder(BuildContext context, T result) {
-    return Text(
-      result.toString(),
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
-        fontSize: 16,
-      ),
-    );
   }
 
   // default header builder
@@ -88,6 +78,20 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       maxLines: 1,
       style: const TextStyle(
         fontSize: 16,
+      ),
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  // default hint builder
+  Widget defaultHintBuilder(BuildContext context, String result) {
+    return Text(
+      result,
+      maxLines: 1,
+      style: const TextStyle(
+        fontSize: 16,
+        color: Color(0xFFA7A7A7),
+        fontWeight: FontWeight.w400,
       ),
       overflow: TextOverflow.ellipsis,
     );
@@ -105,6 +109,41 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       borderSide: widget.errorBorderSide ?? _errorBorderSide,
     );
 
+    // overlay icon
+    const overlayIcon = Icon(
+      Icons.keyboard_arrow_down_rounded,
+      color: Colors.black,
+      size: 20,
+    );
+
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Padding(
+          padding: _headerPadding,
+          child: Row(
+            children: [
+              Expanded(
+                child: widget.selectedItemNotifier.value == null
+                    ? widget.hintBuilder != null
+                        ? widget.hintBuilder!(context, widget.hintText)
+                        : defaultHintBuilder(context, widget.hintText)
+                    : widget.headerBuilder != null
+                        ? widget.headerBuilder!(context, widget.selectedItemNotifier.value!)
+                        : defaultHeaderBuilder(context, widget.selectedItemNotifier.value!),
+              ),
+              const SizedBox(width: 12),
+              overlayIcon,
+            ],
+          ),
+        ),
+      ),
+    );
+
+/*
     return TextFormField(
       controller: widget.controller,
       validator: (val) {
@@ -119,7 +158,8 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
         contentPadding: _contentPadding,
         suffixIcon: widget.suffixIcon ?? _textFieldIcon,
         hintText: widget.hintText,
-        //hintStyle: widget.hintStyle,
+        hintStyle: defaultHintBuilder(),
+        //widget.hintStyle,
         fillColor: widget.fillColor,
         filled: true,
         errorStyle: widget.errorText != null ? widget.errorStyle : _noTextStyle,
@@ -129,6 +169,6 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
         errorBorder: errorBorder,
         focusedErrorBorder: errorBorder,
       ),
-    );
+    );*/
   }
 }
