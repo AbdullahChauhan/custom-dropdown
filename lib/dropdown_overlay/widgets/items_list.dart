@@ -1,14 +1,13 @@
 part of '../../custom_dropdown.dart';
 
-class _ItemsList extends StatelessWidget {
+class _ItemsList<T> extends StatelessWidget {
   final ScrollController scrollController;
-  final List<String> items;
+  final List<T> items;
   final bool excludeSelected;
   final String headerText;
-  final ValueSetter<String> onItemSelect;
+  final ValueSetter<T> onItemSelect;
   final EdgeInsets padding;
-  final TextStyle? itemTextStyle;
-  final _ListItemBuilder listItemBuilder;
+  final Widget Function(BuildContext context, T result) listItemBuilder;
 
   const _ItemsList({
     Key? key,
@@ -19,7 +18,6 @@ class _ItemsList extends StatelessWidget {
     required this.onItemSelect,
     required this.listItemBuilder,
     required this.padding,
-    this.itemTextStyle,
   }) : super(key: key);
 
   @override

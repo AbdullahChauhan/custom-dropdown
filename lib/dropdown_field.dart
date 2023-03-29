@@ -10,10 +10,10 @@ const _noTextStyle = TextStyle(height: 0);
 const _borderSide = BorderSide(color: Colors.transparent);
 const _errorBorderSide = BorderSide(color: Colors.redAccent, width: 2);
 
-class _DropDownField extends StatefulWidget {
+class _DropDownField<T> extends StatefulWidget {
   final TextEditingController controller;
   final VoidCallback onTap;
-  final Function(String)? onChanged;
+  //final Function(T)? onChanged;
   final String? hintText;
   final TextStyle? hintStyle;
   final TextStyle? style;
@@ -29,7 +29,7 @@ class _DropDownField extends StatefulWidget {
     Key? key,
     required this.controller,
     required this.onTap,
-    this.onChanged,
+    //this.onChanged,
     this.suffixIcon,
     this.hintText,
     this.hintStyle,
@@ -53,28 +53,28 @@ class _DropDownFieldState extends State<_DropDownField> {
   @override
   void initState() {
     super.initState();
-    if (widget.onChanged != null) {
+    /*if (widget.onChanged != null) {
       widget.controller.addListener(listenItemChanges);
-    }
+    }*/
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(listenItemChanges);
+    //widget.controller.removeListener(listenItemChanges);
     super.dispose();
   }
 
   @override
   void didUpdateWidget(covariant _DropDownField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.onChanged != null) {
+    /*if (widget.onChanged != null) {
       widget.controller.addListener(listenItemChanges);
     } else {
       listenChanges = false;
-    }
+    }*/
   }
 
-  void listenItemChanges() {
+  /*void listenItemChanges() {
     if (listenChanges) {
       final text = widget.controller.text;
       if (prevText != null && prevText != text && text.isNotEmpty) {
@@ -82,7 +82,7 @@ class _DropDownFieldState extends State<_DropDownField> {
       }
       prevText = text;
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +104,7 @@ class _DropDownFieldState extends State<_DropDownField> {
       },
       readOnly: true,
       onTap: widget.onTap,
-      onChanged: widget.onChanged,
+      //onChanged: widget.onChanged,
       style: widget.style,
       decoration: InputDecoration(
         isDense: true,

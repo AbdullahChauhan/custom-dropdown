@@ -10,25 +10,25 @@ const _overlayOuterPadding = EdgeInsets.only(bottom: 12, left: 12, right: 12);
 const _overlayShadowOffset = Offset(0, 6);
 const _listItemPadding = EdgeInsets.symmetric(vertical: 12, horizontal: 16);
 
-class _DropdownOverlay extends StatefulWidget {
-  final List<String> items;
+class _DropdownOverlay<T> extends StatefulWidget {
+  final List<T> items;
+  final Function(T)? onChanged;
   final TextEditingController controller;
   final Size size;
   final LayerLink layerLink;
   final VoidCallback hideOverlay;
   final String hintText;
   final TextStyle? headerStyle;
-  final TextStyle? listItemStyle;
   final bool? excludeSelected;
   final bool? hideSelectedFieldWhenOpen;
   final bool? canCloseOutsideBounds;
   final _SearchType? searchType;
-  final Future<List<String>> Function(String)? futureRequest;
+  final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
 
-  final _ListItemBuilder? listItemBuilder;
+  final Widget Function(BuildContext context, T result)? listItemBuilder;
 
-  const _DropdownOverlay({
+  _DropdownOverlay({
     Key? key,
     required this.items,
     required this.controller,
@@ -36,8 +36,8 @@ class _DropdownOverlay extends StatefulWidget {
     required this.layerLink,
     required this.hideOverlay,
     required this.hintText,
+    required this.onChanged,
     this.headerStyle,
-    this.listItemStyle,
     this.excludeSelected,
     this.canCloseOutsideBounds,
     this.hideSelectedFieldWhenOpen = false,
@@ -48,30 +48,30 @@ class _DropdownOverlay extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DropdownOverlayState createState() => _DropdownOverlayState();
+  _DropdownOverlayState<T> createState() => _DropdownOverlayState<T>();
 }
 
-class _DropdownOverlayState extends State<_DropdownOverlay> {
+class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   bool displayOverly = true;
   bool displayOverlayBottom = true;
   bool isSearchRequestLoading = false;
   bool? mayFoundSearchRequestResult;
 
   late String headerText;
-  late List<String> items;
-  late List<String> filteredItems;
+  late List<T> items;
+  late List<T> filteredItems;
   final key1 = GlobalKey(), key2 = GlobalKey();
   final scrollController = ScrollController();
 
   // default list item builder
-  Widget defaultListItemBuilder(BuildContext context, String result) {
+  Widget defaultListItemBuilder(BuildContext context, T result) {
     return Text(
-      result,
+      result.toString(),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
         fontSize: 16,
-      ).merge(widget.listItemStyle),
+      ),
     );
   }
 
@@ -134,10 +134,10 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
             items: items,
             padding: listPadding,
             headerText: headerText,
-            itemTextStyle: widget.listItemStyle,
-            onItemSelect: (value) {
+            onItemSelect: (T value) {
               if (headerText != value) {
-                widget.controller.text = value;
+                widget.onChanged!(value);
+                widget.controller.text = value.toString();
               }
               setState(() => displayOverly = false);
             },
@@ -235,7 +235,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                   ),
                                 if (onSearch && widget.searchType == _SearchType.onListData)
                                   if (!widget.hideSelectedFieldWhenOpen!)
-                                    _SearchField.forListData(
+                                    _SearchField<T>.forListData(
                                       items: filteredItems,
                                       onSearchedItems: (val) {
                                         setState(() => items = val);
@@ -250,7 +250,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                       child: Row(
                                         children: [
                                           Expanded(
-                                            child: _SearchField.forListData(
+                                            child: _SearchField<T>.forListData(
                                               items: filteredItems,
                                               onSearchedItems: (val) {
                                                 setState(() => items = val);
@@ -264,7 +264,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                     )
                                 else if (onSearch && widget.searchType == _SearchType.onRequestData)
                                   if (!widget.hideSelectedFieldWhenOpen!)
-                                    _SearchField.forRequestData(
+                                    _SearchField<T>.forRequestData(
                                       items: filteredItems,
                                       onFutureRequestLoading: (val) {
                                         setState(() {
@@ -287,7 +287,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                       child: Row(
                                         children: [
                                           Expanded(
-                                            child: _SearchField.forRequestData(
+                                            child: _SearchField<T>.forRequestData(
                                               items: filteredItems,
                                               onFutureRequestLoading: (val) {
                                                 setState(() {

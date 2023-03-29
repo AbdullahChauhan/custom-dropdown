@@ -20,27 +20,25 @@ part 'overlay_builder.dart';
 
 enum _SearchType { onListData, onRequestData }
 
-typedef _ListItemBuilder = Widget Function(BuildContext context, String result);
+class CustomDropdown<T> extends StatefulWidget {
 
-class CustomDropdown extends StatefulWidget {
-  final List<String>? items;
+  final List<T>? items;
   final TextEditingController controller;
   final String? hintText;
   final TextStyle? hintStyle;
   final TextStyle? selectedStyle;
   final String? errorText;
   final TextStyle? errorStyle;
-  final TextStyle? listItemStyle;
   final BorderSide? borderSide;
   final BorderSide? errorBorderSide;
   final BorderRadius? borderRadius;
   final Widget? fieldSuffixIcon;
-  final Function(String)? onChanged;
+  final Function(T)? onChanged;
   final bool? excludeSelected;
   final Color? fillColor;
   final bool? canCloseOutsideBounds;
   final bool? hideSelectedFieldWhenOpen;
-  final Future<List<String>> Function(String)? futureRequest;
+  final Future<List<T>> Function(String)? futureRequest;
 
   //duration after which the 'futureRequest' is to be executed
   final Duration? futureRequestDelay;
@@ -49,7 +47,10 @@ class CustomDropdown extends StatefulWidget {
   final _SearchType? searchType;
 
   // ignore: library_private_types_in_public_api
-  final _ListItemBuilder? listItemBuilder;
+  final Widget Function(BuildContext context, T result)? listItemBuilder;
+
+  // ignore: library_private_types_in_public_api
+  final Widget Function(BuildContext context, T result)? selectedItemBuilder;
 
   CustomDropdown({
     Key? key,
@@ -60,11 +61,11 @@ class CustomDropdown extends StatefulWidget {
     this.selectedStyle,
     this.errorText,
     this.errorStyle,
-    this.listItemStyle,
     this.errorBorderSide,
     this.borderRadius,
     this.borderSide,
     this.listItemBuilder,
+    this.selectedItemBuilder,
     this.fieldSuffixIcon,
     this.onChanged,
     this.excludeSelected = true,
@@ -73,10 +74,6 @@ class CustomDropdown extends StatefulWidget {
         assert(
           controller.text.isEmpty || items!.contains(controller.text),
           'Controller value must match with one of the item in items list.',
-        ),
-        assert(
-          (listItemBuilder == null && listItemStyle == null) || (listItemBuilder == null && listItemStyle != null) || (listItemBuilder != null && listItemStyle == null),
-          'Cannot use both listItemBuilder and listItemStyle.',
         ),
         searchType = null,
         futureRequest = null,
@@ -92,10 +89,10 @@ class CustomDropdown extends StatefulWidget {
     this.hintText,
     this.hintStyle,
     this.listItemBuilder,
+    this.selectedItemBuilder,
     this.selectedStyle,
     this.errorText,
     this.errorStyle,
-    this.listItemStyle,
     this.errorBorderSide,
     this.borderRadius,
     this.borderSide,
@@ -109,10 +106,6 @@ class CustomDropdown extends StatefulWidget {
         assert(
           controller.text.isEmpty || items!.contains(controller.text),
           'Controller value must match with one of the item in items list.',
-        ),
-        assert(
-          (listItemBuilder == null && listItemStyle == null) || (listItemBuilder == null && listItemStyle != null) || (listItemBuilder != null && listItemStyle == null),
-          'Cannot use both listItemBuilder and listItemStyle.',
         ),
         searchType = _SearchType.onListData,
         futureRequest = null,
@@ -130,8 +123,8 @@ class CustomDropdown extends StatefulWidget {
     this.selectedStyle,
     this.errorText,
     this.errorStyle,
-    this.listItemStyle,
     this.listItemBuilder,
+    this.selectedItemBuilder,
     this.errorBorderSide,
     this.borderRadius,
     this.borderSide,
@@ -141,18 +134,14 @@ class CustomDropdown extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
-  })  : assert(
-          (listItemBuilder == null && listItemStyle == null) || (listItemBuilder == null && listItemStyle != null) || (listItemBuilder != null && listItemStyle == null),
-          'Cannot use both listItemBuilder and listItemStyle.',
-        ),
-        searchType = _SearchType.onRequestData,
+  })  : searchType = _SearchType.onRequestData,
         super(key: key);
 
   @override
-  State<CustomDropdown> createState() => _CustomDropdownState();
+  State<CustomDropdown<T>> createState() => _CustomDropdownState<T>();
 }
 
-class _CustomDropdownState extends State<CustomDropdown> {
+class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   final layerLink = LayerLink();
 
   @override
@@ -175,16 +164,16 @@ class _CustomDropdownState extends State<CustomDropdown> {
 
     return _OverlayBuilder(
       overlay: (size, hideCallback) {
-        return _DropdownOverlay(
+        return _DropdownOverlay<T>(
           items: widget.items ?? [],
           controller: widget.controller,
           size: size,
           listItemBuilder: widget.listItemBuilder,
+          onChanged: widget.onChanged,
           layerLink: layerLink,
           hideOverlay: hideCallback,
           headerStyle: widget.controller.text.isNotEmpty ? selectedStyle : hintStyle,
           hintText: hintText,
-          listItemStyle: widget.listItemStyle,
           excludeSelected: widget.excludeSelected,
           canCloseOutsideBounds: widget.canCloseOutsideBounds,
           searchType: widget.searchType,
@@ -196,7 +185,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
       child: (showCallback) {
         return CompositedTransformTarget(
           link: layerLink,
-          child: _DropDownField(
+          child: _DropDownField<T>(
             controller: widget.controller,
             onTap: showCallback,
             style: selectedStyle,
@@ -208,7 +197,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
             hintStyle: hintStyle,
             hintText: hintText,
             suffixIcon: widget.fieldSuffixIcon,
-            onChanged: widget.onChanged,
+            //onChanged: widget.onChanged,
             fillColor: widget.fillColor,
           ),
         );
