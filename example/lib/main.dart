@@ -121,6 +121,35 @@ class _HomeState extends State<Home> {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
+          const Text('Full customized', style: _labelStyle),
+          const SizedBox(height: 8),
+          CustomDropdown<Job>.search(
+            hintText: 'Select job role',
+            items: list,
+            onChanged: (value) {
+              print('changing value to: $value');
+            },
+            excludeSelected: false,
+            closedFillColor: Colors.pink,
+            expandedFillColor: Colors.red[900],
+            closedBorder: Border.all(
+              color: Colors.blue,
+              width: 2,
+            ),
+            closedBorderRadius: BorderRadius.circular(15),
+            expandedBorder: Border.all(
+              color: Colors.orangeAccent,
+              width: 5,
+            ),
+            expandedBorderRadius: BorderRadius.circular(5),
+            listItemBuilder: (context, result) => listItemBuilder(context, result),
+            headerBuilder: (context, result) => selectedHeaderBuilder(context, result),
+            hintBuilder: (context, result) => hintBuilder(context, result),
+          ),
+          const SizedBox(height: 24),
+          const Divider(height: 0),
+          const SizedBox(height: 24),
+
           const Text('Job Roles Dropdown', style: _labelStyle),
           const SizedBox(height: 8),
           CustomDropdown<Job>(
@@ -131,9 +160,6 @@ class _HomeState extends State<Home> {
             onChanged: (value) {
               print('changing value to: $value');
             },
-            listItemBuilder: (context, result) => listItemBuilder(context, result),
-            headerBuilder: (context, result) => selectedHeaderBuilder(context, result),
-            hintBuilder: (context, result) => hintBuilder(context, result),
           ),
           const SizedBox(height: 24),
           const Divider(height: 0),
@@ -149,9 +175,6 @@ class _HomeState extends State<Home> {
               print('changing value to: $value');
             },
             excludeSelected: false,
-            fillColor: Colors.red,
-            listItemBuilder: (context, result) => listItemBuilder(context, result),
-            headerBuilder: (context, result) => selectedHeaderBuilder(context, result),
           ),
           const SizedBox(height: 24),
           const Divider(height: 0),
@@ -167,10 +190,6 @@ class _HomeState extends State<Home> {
             onChanged: (value) {
               print('changing value to: $value');
             },
-            listItemBuilder: (context, result) => listItemBuilder(context, result),
-            headerBuilder: (context, result) => selectedHeaderBuilder(context, result),
-            hintBuilder: (context, result) => hintBuilder(context, result),
-            futureRequestDelay: const Duration(milliseconds: 150), //it waits 150 ms before start searching (before execute the 'futureRequest' function)
           ),
           const SizedBox(height: 24),
           const Divider(height: 0),
