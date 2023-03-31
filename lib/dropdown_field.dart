@@ -17,9 +17,14 @@ class _DropDownField<T> extends StatefulWidget {
   final String hintText;
   final String? errorText;
   final TextStyle? errorStyle;
-  final BorderSide? borderSide;
-  final BorderSide? errorBorderSide;
+
+  //border
+  final BoxBorder? border;
   final BorderRadius? borderRadius;
+
+  //error border
+  final BorderSide? errorBorderSide;
+
   final Widget? suffixIcon;
   final Color? fillColor;
 
@@ -39,9 +44,9 @@ class _DropDownField<T> extends StatefulWidget {
     this.hintBuilder,
     this.errorText,
     this.errorStyle,
-    this.borderSide,
-    this.errorBorderSide,
+    this.border,
     this.borderRadius,
+    this.errorBorderSide,
     this.fillColor,
   }) : super(key: key);
 
@@ -112,8 +117,8 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
     // border radius
     final borderRadius = widget.borderRadius ?? BorderRadius.circular(12);
 
-    final border = Border.all(color: Colors.transparent);
-    final errorBorder = Border.all(color: Colors.red);
+    //final border = Border.all(color: Colors.transparent);
+    //final errorBorder = Border.all(color: Colors.red);
 
     // overlay icon
     const overlayIcon = Icon(
@@ -127,8 +132,8 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       child: Container(
         decoration: BoxDecoration(
           color: widget.fillColor,
-          border: widget.isError ? errorBorder : border,
-          borderRadius: borderRadius
+          border: widget.border,
+          borderRadius: borderRadius,
         ),
         child: Padding(
           padding: _headerPadding,

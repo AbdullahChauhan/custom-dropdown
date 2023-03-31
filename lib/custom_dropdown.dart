@@ -26,13 +26,22 @@ class CustomDropdown<T> extends StatefulWidget {
   final String? hintText;
   final String? errorText;
   final TextStyle? errorStyle;
-  final BorderSide? borderSide;
+
+  //border
+  //closed
+  final BoxBorder? closedBorder;
+  final BorderRadius? closedBorderRadius;
+  //expanded
+  final BoxBorder? expandedBorder;
+  final BorderRadius? expandedBorderRadius;
+  //error
   final BorderSide? errorBorderSide;
-  final BorderRadius? borderRadius;
+
   final Widget? fieldSuffixIcon;
   final Function(T)? onChanged;
   final bool excludeSelected;
-  final Color? fillColor;
+  final Color? closedFillColor;
+  final Color? expandedFillColor;
   final bool? canCloseOutsideBounds;
   final bool? hideSelectedFieldWhenOpen;
   final Future<List<T>> Function(String)? futureRequest;
@@ -57,18 +66,24 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.items,
     T? selectedItem,
     this.hintText,
+    //error
     this.errorText,
     this.errorStyle,
     this.errorBorderSide,
-    this.borderRadius,
-    this.borderSide,
+    //closed border
+    this.closedBorder,
+    this.closedBorderRadius,
+    //open border
+    this.expandedBorder,
+    this.expandedBorderRadius,
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
     this.fieldSuffixIcon,
     this.onChanged,
     this.excludeSelected = true,
-    this.fillColor = Colors.white,
+    this.closedFillColor = Colors.white,
+    this.expandedFillColor = Colors.white,
   })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
         searchType = null,
         futureRequest = null,
@@ -89,14 +104,19 @@ class CustomDropdown<T> extends StatefulWidget {
     this.errorText,
     this.errorStyle,
     this.errorBorderSide,
-    this.borderRadius,
-    this.borderSide,
+    //border
+    this.closedBorder,
+    this.closedBorderRadius,
+    //open border
+    this.expandedBorder,
+    this.expandedBorderRadius,
     this.fieldSuffixIcon,
     this.onChanged,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenOpen = false,
-    this.fillColor = Colors.white,
+    this.closedFillColor = Colors.white,
+    this.expandedFillColor = Colors.white,
   })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
         searchType = _SearchType.onListData,
         futureRequest = null,
@@ -117,14 +137,19 @@ class CustomDropdown<T> extends StatefulWidget {
     this.headerBuilder,
     this.hintBuilder,
     this.errorBorderSide,
-    this.borderRadius,
-    this.borderSide,
+    //border
+    this.closedBorder,
+    this.closedBorderRadius,
+    //open border
+    this.expandedBorder,
+    this.expandedBorderRadius,
     this.fieldSuffixIcon,
     this.onChanged,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenOpen = false,
-    this.fillColor = Colors.white,
+    this.closedFillColor = Colors.white,
+    this.expandedFillColor = Colors.white,
   })  : searchType = _SearchType.onRequestData,
         selectedItemNotifier = ValueNotifier(selectedItem),
         super(key: key);
@@ -169,10 +194,12 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
           excludeSelected: widget.excludeSelected,
           canCloseOutsideBounds: widget.canCloseOutsideBounds,
           searchType: widget.searchType,
+          border: widget.expandedBorder,
+          borderRadius: widget.expandedBorderRadius,
           futureRequest: widget.futureRequest,
           futureRequestDelay: widget.futureRequestDelay,
           hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenOpen,
-          fillColor: widget.fillColor,
+          fillColor: widget.expandedFillColor,
         );
       },
       child: (showCallback) {
@@ -181,8 +208,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
           child: _DropDownField<T>(
             onTap: showCallback,
             selectedItemNotifier: widget.selectedItemNotifier,
-            borderRadius: widget.borderRadius,
-            borderSide: widget.borderSide,
+            border: widget.closedBorder,
+            borderRadius: widget.closedBorderRadius,
             errorBorderSide: widget.errorBorderSide,
             errorStyle: widget.errorStyle,
             errorText: widget.errorText,
@@ -191,7 +218,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
             headerBuilder: widget.headerBuilder,
             suffixIcon: widget.fieldSuffixIcon,
             //onChanged: widget.onChanged,
-            fillColor: widget.fillColor,
+            fillColor: widget.closedFillColor,
           ),
         );
       },
