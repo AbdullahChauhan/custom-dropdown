@@ -5,10 +5,6 @@ const _textFieldIcon = Icon(
   color: Colors.black,
   size: 20,
 );
-const _contentPadding = EdgeInsets.only(left: 16);
-const _noTextStyle = TextStyle(height: 0);
-const _borderSide = BorderSide(color: Colors.transparent);
-const _errorBorderSide = BorderSide(color: Colors.redAccent, width: 2);
 
 class _DropDownField<T> extends StatefulWidget {
   final TextEditingController controller = TextEditingController();
@@ -77,7 +73,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   }
 
   // default header builder
-  Widget defaultHeaderBuilder(BuildContext context, T result) {
+  Widget _defaultHeaderBuilder(T result) {
     return Text(
       result.toString(),
       maxLines: 1,
@@ -89,9 +85,9 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   }
 
   // default hint builder
-  Widget defaultHintBuilder(BuildContext context, String result) {
+  Widget _defaultHintBuilder(String hint) {
     return Text(
-      result,
+      hint,
       maxLines: 1,
       style: const TextStyle(
         fontSize: 16,
@@ -114,9 +110,6 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       borderSide: widget.errorBorderSide ?? _errorBorderSide,
     );*/
 
-    // border radius
-    final borderRadius = widget.borderRadius ?? BorderRadius.circular(12);
-
     //final border = Border.all(color: Colors.transparent);
     //final errorBorder = Border.all(color: Colors.red);
 
@@ -131,9 +124,9 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       onTap: widget.onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: widget.fillColor,
+          color: widget.fillColor ?? _defaultFillColor,
           border: widget.border,
-          borderRadius: borderRadius,
+          borderRadius: widget.borderRadius ?? _defaultBorderRadius,
         ),
         child: Padding(
           padding: _headerPadding,
@@ -143,10 +136,10 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
                 child: widget.selectedItemNotifier.value == null
                     ? widget.hintBuilder != null
                         ? widget.hintBuilder!(context, widget.hintText)
-                        : defaultHintBuilder(context, widget.hintText)
+                        : _defaultHintBuilder(widget.hintText)
                     : widget.headerBuilder != null
                         ? widget.headerBuilder!(context, widget.selectedItemNotifier.value!)
-                        : defaultHeaderBuilder(context, widget.selectedItemNotifier.value!),
+                        : _defaultHeaderBuilder(widget.selectedItemNotifier.value!),
               ),
               const SizedBox(width: 12),
               overlayIcon,

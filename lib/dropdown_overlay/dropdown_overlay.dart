@@ -32,27 +32,27 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final Widget Function(BuildContext context, T result)? headerBuilder;
   final Widget Function(BuildContext context, String hint)? hintBuilder;
 
-  _DropdownOverlay({
-    Key? key,
-    required this.items,
-    required this.size,
-    required this.layerLink,
-    required this.hideOverlay,
-    required this.hintText,
-    required this.selectedItemNotifier,
-    required this.excludeSelected,
-    this.headerBuilder,
-    this.hintBuilder,
-    this.canCloseOutsideBounds,
-    this.hideSelectedFieldWhenOpen = false,
-    this.searchType,
-    this.futureRequest,
-    this.futureRequestDelay,
-    this.listItemBuilder,
-    this.border,
-    this.borderRadius,
-    this.fillColor
-  }) : super(key: key);
+  _DropdownOverlay(
+      {Key? key,
+      required this.items,
+      required this.size,
+      required this.layerLink,
+      required this.hideOverlay,
+      required this.hintText,
+      required this.selectedItemNotifier,
+      required this.excludeSelected,
+      this.headerBuilder,
+      this.hintBuilder,
+      this.canCloseOutsideBounds,
+      this.hideSelectedFieldWhenOpen = false,
+      this.searchType,
+      this.futureRequest,
+      this.futureRequestDelay,
+      this.listItemBuilder,
+      this.border,
+      this.borderRadius,
+      this.fillColor})
+      : super(key: key);
 
   @override
   _DropdownOverlayState<T> createState() => _DropdownOverlayState<T>();
@@ -152,9 +152,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
     // overlay icon
     final overlayIcon = Icon(
-      displayOverlayBottom
-          ? Icons.keyboard_arrow_up_rounded
-          : Icons.keyboard_arrow_down_rounded,
+      displayOverlayBottom ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
       color: Colors.black,
       size: 20,
     );
@@ -163,8 +161,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     final overlayOffset = Offset(-12, displayOverlayBottom ? 0 : 60);
 
     // list padding
-    final listPadding =
-        onSearch ? const EdgeInsets.only(top: 8) : EdgeInsets.zero;
+    final listPadding = onSearch ? const EdgeInsets.only(top: 8) : EdgeInsets.zero;
 
     // items list
     final list = items.isNotEmpty
@@ -182,9 +179,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
               setState(() => displayOverly = false);
             },
           )
-        : (mayFoundSearchRequestResult != null &&
-                    !mayFoundSearchRequestResult!) ||
-                widget.searchType == _SearchType.onListData
+        : (mayFoundSearchRequestResult != null && !mayFoundSearchRequestResult!) || widget.searchType == _SearchType.onListData
             ? const Center(
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 12.0),
@@ -202,8 +197,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
           width: widget.size.width + 24,
           child: CompositedTransformFollower(
             link: widget.layerLink,
-            followerAnchor:
-                displayOverlayBottom ? Alignment.topLeft : Alignment.bottomLeft,
+            followerAnchor: displayOverlayBottom ? Alignment.topLeft : Alignment.bottomLeft,
             showWhenUnlinked: false,
             offset: overlayOffset,
             child: Container(
@@ -211,9 +205,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
               padding: _overlayOuterPadding,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: widget.fillColor,
+                  color: widget.fillColor ?? _defaultFillColor,
                   border: widget.border,
-                  borderRadius: widget.borderRadius,
+                  borderRadius: widget.borderRadius ?? _defaultBorderRadius,
                   boxShadow: [
                     BoxShadow(
                       blurRadius: 24.0,
@@ -237,8 +231,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                           : null,
                       child: ClipRRect(
                         borderRadius: borderRadius,
-                        child: NotificationListener<
-                            OverscrollIndicatorNotification>(
+                        child: NotificationListener<OverscrollIndicatorNotification>(
                           onNotification: (notification) {
                             notification.disallowIndicator();
                             return true;
@@ -279,8 +272,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                       ],
                                     ),
                                   ),
-                                if (onSearch &&
-                                    widget.searchType == _SearchType.onListData)
+                                if (onSearch && widget.searchType == _SearchType.onListData)
                                   if (!widget.hideSelectedFieldWhenOpen!)
                                     _SearchField<T>.forListData(
                                       items: filteredItems,
@@ -309,9 +301,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         ],
                                       ),
                                     )
-                                else if (onSearch &&
-                                    widget.searchType ==
-                                        _SearchType.onRequestData)
+                                else if (onSearch && widget.searchType == _SearchType.onRequestData)
                                   if (!widget.hideSelectedFieldWhenOpen!)
                                     _SearchField<T>.forRequestData(
                                       items: filteredItems,
@@ -321,13 +311,11 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         });
                                       },
                                       futureRequest: widget.futureRequest,
-                                      futureRequestDelay:
-                                          widget.futureRequestDelay,
+                                      futureRequestDelay: widget.futureRequestDelay,
                                       onSearchedItems: (val) {
                                         setState(() => items = val);
                                       },
-                                      mayFoundResult: (val) =>
-                                          mayFoundSearchRequestResult = val,
+                                      mayFoundResult: (val) => mayFoundSearchRequestResult = val,
                                     )
                                   else
                                     Padding(
@@ -345,16 +333,12 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                                   isSearchRequestLoading = val;
                                                 });
                                               },
-                                              futureRequest:
-                                                  widget.futureRequest,
-                                              futureRequestDelay:
-                                                  widget.futureRequestDelay,
+                                              futureRequest: widget.futureRequest,
+                                              futureRequestDelay: widget.futureRequestDelay,
                                               onSearchedItems: (val) {
                                                 setState(() => items = val);
                                               },
-                                              mayFoundResult: (val) =>
-                                                  mayFoundSearchRequestResult =
-                                                      val,
+                                              mayFoundResult: (val) => mayFoundSearchRequestResult = val,
                                             ),
                                           ),
                                           overlayIcon,
@@ -364,8 +348,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     ),
                                 if (isSearchRequestLoading)
                                   const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 20.0),
+                                    padding: EdgeInsets.symmetric(vertical: 20.0),
                                     child: Center(
                                         child: SizedBox(
                                       width: 25,
@@ -377,9 +360,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     )),
                                   )
                                 else
-                                  items.length > 4
-                                      ? Expanded(child: list)
-                                      : list
+                                  items.length > 4 ? Expanded(child: list) : list
                               ],
                             ),
                           ),

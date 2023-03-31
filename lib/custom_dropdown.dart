@@ -20,6 +20,14 @@ part 'overlay_builder.dart';
 
 enum _SearchType { onListData, onRequestData }
 
+const _defaultFillColor = Colors.white;
+// the BorderRadius.circular isn't const
+const _defaultBorderRadius = BorderRadius.all(
+  Radius.circular(12),
+);
+
+const _defaultHintValue = 'Select value';
+
 class CustomDropdown<T> extends StatefulWidget {
   ValueNotifier<T?> selectedItemNotifier;
   final List<T>? items;
@@ -31,9 +39,11 @@ class CustomDropdown<T> extends StatefulWidget {
   //closed
   final BoxBorder? closedBorder;
   final BorderRadius? closedBorderRadius;
+
   //expanded
   final BoxBorder? expandedBorder;
   final BorderRadius? expandedBorderRadius;
+
   //error
   final BorderSide? errorBorderSide;
 
@@ -177,7 +187,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   @override
   Widget build(BuildContext context) {
     /// hint text
-    final hintText = widget.hintText ?? 'Select value';
+    final hintText = widget.hintText ?? _defaultHintValue;
 
     return _OverlayBuilder(
       overlay: (size, hideCallback) {
