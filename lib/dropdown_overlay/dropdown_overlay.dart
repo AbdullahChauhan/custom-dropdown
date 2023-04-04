@@ -1,5 +1,12 @@
 part of '../custom_dropdown.dart';
 
+// overlay icon
+const _defaultOverlayIconUp = Icon(
+  Icons.keyboard_arrow_up_rounded,
+  color: Colors.black,
+  size: 20,
+);
+
 const _headerPadding = EdgeInsets.only(
   left: 16.0,
   top: 16,
@@ -28,6 +35,8 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final BoxBorder? border;
   final BorderRadius? borderRadius;
 
+  final Widget? suffixIcon;
+
   final Widget Function(BuildContext context, T result)? listItemBuilder;
   final Widget Function(BuildContext context, T result)? headerBuilder;
   final Widget Function(BuildContext context, String hint)? hintBuilder;
@@ -42,6 +51,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
       required this.selectedItemNotifier,
       required this.excludeSelected,
       required this.onItemSelect,
+      this.suffixIcon,
       this.headerBuilder,
       this.hintBuilder,
       this.canCloseOutsideBounds,
@@ -150,13 +160,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
     // border radius
     final borderRadius = BorderRadius.circular(12);
-
-    // overlay icon
-    final overlayIcon = Icon(
-      displayOverlayBottom ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-      color: Colors.black,
-      size: 20,
-    );
 
     // overlay offset
     final overlayOffset = Offset(-12, displayOverlayBottom ? 0 : 60);
@@ -267,7 +270,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                                   : defaultHeaderBuilder(context, widget.selectedItemNotifier.value!),
                                         ),
                                         const SizedBox(width: 12),
-                                        overlayIcon,
+                                        widget.suffixIcon ?? _defaultOverlayIconUp,
                                       ],
                                     ),
                                   ),
@@ -295,7 +298,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                               },
                                             ),
                                           ),
-                                          overlayIcon,
+                                          widget.suffixIcon ?? _defaultOverlayIconUp,
                                           const SizedBox(width: 14),
                                         ],
                                       ),
@@ -340,7 +343,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                               mayFoundResult: (val) => mayFoundSearchRequestResult = val,
                                             ),
                                           ),
-                                          overlayIcon,
+                                          widget.suffixIcon ?? _defaultOverlayIconUp,
                                           const SizedBox(width: 14),
                                         ],
                                       ),

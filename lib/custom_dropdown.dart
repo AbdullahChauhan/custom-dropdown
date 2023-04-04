@@ -64,7 +64,9 @@ class CustomDropdown<T> extends StatefulWidget {
   final TextStyle? errorStyle;
   final bool validateOnChange;
 
-  final Widget? fieldSuffixIcon;
+  final Widget? closedSuffixIcon;
+  final Widget? expandedSuffixIcon;
+
   final Function(T)? onChanged;
   final bool excludeSelected;
   final Color? closedFillColor;
@@ -104,13 +106,15 @@ class CustomDropdown<T> extends StatefulWidget {
     //closed border
     this.closedBorder,
     this.closedBorderRadius,
-    //open border
+    //expanded border
     this.expandedBorder,
     this.expandedBorderRadius,
+    //sufix icon
+    this.closedSuffixIcon,
+    this.expandedSuffixIcon,
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
-    this.fieldSuffixIcon,
     this.onChanged,
     this.excludeSelected = true,
     this.closedFillColor = Colors.white,
@@ -143,10 +147,12 @@ class CustomDropdown<T> extends StatefulWidget {
     //border
     this.closedBorder,
     this.closedBorderRadius,
+    //sufix icon
+    this.closedSuffixIcon,
+    this.expandedSuffixIcon,
     //open border
     this.expandedBorder,
     this.expandedBorderRadius,
-    this.fieldSuffixIcon,
     this.onChanged,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
@@ -184,7 +190,9 @@ class CustomDropdown<T> extends StatefulWidget {
     //open border
     this.expandedBorder,
     this.expandedBorderRadius,
-    this.fieldSuffixIcon,
+    //sufix icon
+    this.closedSuffixIcon,
+    this.expandedSuffixIcon,
     this.onChanged,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
@@ -261,6 +269,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   futureRequestDelay: widget.futureRequestDelay,
                   hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenOpen,
                   fillColor: widget.expandedFillColor,
+                  suffixIcon: widget.expandedSuffixIcon,
                 );
               },
               child: (showCallback) {
@@ -274,8 +283,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     hintText: hintText,
                     hintBuilder: widget.hintBuilder,
                     headerBuilder: widget.headerBuilder,
-                    suffixIcon: widget.fieldSuffixIcon,
-                    //onChanged: widget.onChanged,
+                    suffixIcon: widget.closedSuffixIcon,
                     fillColor: widget.closedFillColor,
                   ),
                 );

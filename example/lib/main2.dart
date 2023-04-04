@@ -121,9 +121,11 @@ class _HomeState extends State<Home> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Full customized', style: _labelStyle),
+                const Text('Awful but full customized', style: _labelStyle),
                 const SizedBox(height: 8),
                 CustomDropdown<Job>.search(
+                  closedSuffixIcon: Icon(Icons.account_balance),
+                  expandedSuffixIcon: Icon(Icons.access_alarm),
                   hintText: 'Select job role',
                   items: list,
                   onChanged: (value) {
@@ -132,34 +134,41 @@ class _HomeState extends State<Home> {
                   excludeSelected: false,
                   closedFillColor: Colors.pink,
                   expandedFillColor: Colors.red[900],
+
                   closedBorder: Border.all(
-                    color: Colors.blue,
-                    width: 2,
+                    color: Colors.black,
+                    width: 5,
                   ),
                   closedBorderRadius: BorderRadius.circular(15),
+
                   expandedBorder: Border.all(
                     color: Colors.orangeAccent,
                     width: 5,
                   ),
                   expandedBorderRadius: BorderRadius.circular(5),
+
                   listItemBuilder: (context, result) => listItemBuilder(context, result),
                   headerBuilder: (context, result) => selectedHeaderBuilder(context, result),
                   hintBuilder: (context, result) => hintBuilder(context, result),
+
                   closedErrorBorder: Border.all(
                     color: Colors.blue,
-                    width: 2,
+                    width: 10,
                   ),
                   closedErrorBorderRadius: BorderRadius.circular(15),
+
                   expandedErrorBorder: Border.all(
-                    color: Colors.blue,
-                    width: 2,
+                    color: Colors.cyan,
+                    width: 10,
                   ),
                   expandedErrorBorderRadius: BorderRadius.circular(15),
+
+
                   errorStyle: const TextStyle(
-                    color: Colors.blue,
-                    fontSize: 14,
+                    color: Colors.deepPurple,
+                    fontSize: 18,
                   ),
-                  validateOnChange: false,
+                  validateOnChange: true,
                   validator: (value) {
                     if (value == null) {
                       return "Must not be null";
