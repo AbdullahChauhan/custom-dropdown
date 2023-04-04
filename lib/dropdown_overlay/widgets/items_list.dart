@@ -4,7 +4,7 @@ class _ItemsList<T> extends StatelessWidget {
   final ScrollController scrollController;
   final List<T> items;
   final bool excludeSelected;
-  final ValueSetter<T> onItemSelect;
+  final Function(T) onItemSelect;
   final T? selectedItem;
   final EdgeInsets padding;
   final Widget Function(BuildContext context, T result) listItemBuilder;

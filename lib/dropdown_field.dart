@@ -28,8 +28,6 @@ class _DropDownField<T> extends StatefulWidget {
   final Widget Function(BuildContext context, T result)? headerBuilder;
   final Widget Function(BuildContext context, String hint)? hintBuilder;
 
-  bool isError = false;
-
   _DropDownField({
     Key? key,
     required this.onTap,

@@ -12,7 +12,8 @@ const _listItemPadding = EdgeInsets.symmetric(vertical: 12, horizontal: 16);
 
 class _DropdownOverlay<T> extends StatefulWidget {
   final List<T> items;
-  ValueNotifier<T?> selectedItemNotifier;
+  final ValueNotifier<T?> selectedItemNotifier;
+  final Function(T) onItemSelect;
   final Size size;
   final LayerLink layerLink;
   final VoidCallback hideOverlay;
@@ -24,7 +25,6 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
   final Color? fillColor;
-
   final BoxBorder? border;
   final BorderRadius? borderRadius;
 
@@ -41,6 +41,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
       required this.hintText,
       required this.selectedItemNotifier,
       required this.excludeSelected,
+      required this.onItemSelect,
       this.headerBuilder,
       this.hintBuilder,
       this.canCloseOutsideBounds,
@@ -173,9 +174,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             items: items,
             padding: listPadding,
             onItemSelect: (T value) {
-              if (headerText != value) {
-                widget.selectedItemNotifier.value = value;
-              }
+              widget.onItemSelect(value);
               setState(() => displayOverly = false);
             },
           )

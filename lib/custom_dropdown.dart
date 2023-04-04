@@ -21,9 +21,22 @@ part 'overlay_builder.dart';
 enum _SearchType { onListData, onRequestData }
 
 const _defaultFillColor = Colors.white;
+
+const _defaultErrorColor = Colors.red;
+
 // the BorderRadius.circular isn't const
 const _defaultBorderRadius = BorderRadius.all(
   Radius.circular(12),
+);
+
+final Border _defaultErrorBorder = Border.all(
+  color: _defaultErrorColor,
+  width: 1.5,
+);
+
+const _defaultErrorStyle = TextStyle(
+  color: _defaultErrorColor,
+  fontSize: 14,
 );
 
 const _defaultHintValue = 'Select value';
@@ -32,8 +45,6 @@ class CustomDropdown<T> extends StatefulWidget {
   ValueNotifier<T?> selectedItemNotifier;
   final List<T>? items;
   final String? hintText;
-  final String? errorText;
-  final TextStyle? errorStyle;
 
   //border
   //closed
@@ -45,7 +56,13 @@ class CustomDropdown<T> extends StatefulWidget {
   final BorderRadius? expandedBorderRadius;
 
   //error
-  final BorderSide? errorBorderSide;
+  final String? Function(T?)? validator;
+  final BoxBorder? closedErrorBorder;
+  final BoxBorder? expandedErrorBorder;
+  final BorderRadius? closedErrorBorderRadius;
+  final BorderRadius? expandedErrorBorderRadius;
+  final TextStyle? errorStyle;
+  final bool validateOnChange;
 
   final Widget? fieldSuffixIcon;
   final Function(T)? onChanged;
@@ -77,9 +94,13 @@ class CustomDropdown<T> extends StatefulWidget {
     T? selectedItem,
     this.hintText,
     //error
-    this.errorText,
     this.errorStyle,
-    this.errorBorderSide,
+    this.closedErrorBorder,
+    this.closedErrorBorderRadius,
+    this.expandedErrorBorder,
+    this.expandedErrorBorderRadius,
+    this.validator,
+    this.validateOnChange = true,
     //closed border
     this.closedBorder,
     this.closedBorderRadius,
@@ -111,9 +132,14 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
-    this.errorText,
+    //error
     this.errorStyle,
-    this.errorBorderSide,
+    this.closedErrorBorder,
+    this.closedErrorBorderRadius,
+    this.expandedErrorBorder,
+    this.expandedErrorBorderRadius,
+    this.validator,
+    this.validateOnChange = true,
     //border
     this.closedBorder,
     this.closedBorderRadius,
@@ -141,12 +167,17 @@ class CustomDropdown<T> extends StatefulWidget {
     T? selectedItem,
     this.items,
     this.hintText,
-    this.errorText,
-    this.errorStyle,
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
-    this.errorBorderSide,
+    //error
+    this.errorStyle,
+    this.closedErrorBorder,
+    this.closedErrorBorderRadius,
+    this.expandedErrorBorder,
+    this.expandedErrorBorderRadius,
+    this.validator,
+    this.validateOnChange = true,
     //border
     this.closedBorder,
     this.closedBorderRadius,
@@ -177,9 +208,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
 
     if (widget.onChanged != null) {
       widget.selectedItemNotifier.addListener(() {
-        if (widget.selectedItemNotifier.value != null) {
-          widget.onChanged!(widget.selectedItemNotifier.value!);
-        }
+        widget.onChanged!(widget.selectedItemNotifier.value!);
       });
     }
   }
@@ -189,49 +218,70 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
     /// hint text
     final hintText = widget.hintText ?? _defaultHintValue;
 
-    return _OverlayBuilder(
-      overlay: (size, hideCallback) {
-        return _DropdownOverlay<T>(
-          items: widget.items ?? [],
-          selectedItemNotifier: widget.selectedItemNotifier,
-          size: size,
-          listItemBuilder: widget.listItemBuilder,
-          layerLink: layerLink,
-          hideOverlay: hideCallback,
-          headerBuilder: widget.headerBuilder,
-          hintText: hintText,
-          hintBuilder: widget.hintBuilder,
-          excludeSelected: widget.excludeSelected,
-          canCloseOutsideBounds: widget.canCloseOutsideBounds,
-          searchType: widget.searchType,
-          border: widget.expandedBorder,
-          borderRadius: widget.expandedBorderRadius,
-          futureRequest: widget.futureRequest,
-          futureRequestDelay: widget.futureRequestDelay,
-          hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenOpen,
-          fillColor: widget.expandedFillColor,
-        );
-      },
-      child: (showCallback) {
-        return CompositedTransformTarget(
-          link: layerLink,
-          child: _DropDownField<T>(
-            onTap: showCallback,
-            selectedItemNotifier: widget.selectedItemNotifier,
-            border: widget.closedBorder,
-            borderRadius: widget.closedBorderRadius,
-            errorBorderSide: widget.errorBorderSide,
-            errorStyle: widget.errorStyle,
-            errorText: widget.errorText,
-            hintText: hintText,
-            hintBuilder: widget.hintBuilder,
-            headerBuilder: widget.headerBuilder,
-            suffixIcon: widget.fieldSuffixIcon,
-            //onChanged: widget.onChanged,
-            fillColor: widget.closedFillColor,
-          ),
-        );
-      },
-    );
+    return FormField<T>(
+        initialValue: widget.selectedItemNotifier.value,
+        validator: (val) {
+          if (widget.validator != null) {
+            return widget.validator!(val);
+          }
+          return null;
+        },
+        builder: (FormFieldState<T> formFieldState) {
+          return InputDecorator(
+            decoration: InputDecoration(
+              errorStyle: widget.errorStyle ?? _defaultErrorStyle,
+              errorText: formFieldState.errorText,
+              border: InputBorder.none,
+            ),
+            child: _OverlayBuilder(
+              overlay: (size, hideCallback) {
+                return _DropdownOverlay<T>(
+                  onItemSelect: (T value) {
+                    widget.selectedItemNotifier.value = value;
+                    formFieldState.didChange(value);
+                    if (widget.validateOnChange) {
+                      formFieldState.validate();
+                    }
+                  },
+                  items: widget.items ?? [],
+                  selectedItemNotifier: widget.selectedItemNotifier,
+                  size: size,
+                  listItemBuilder: widget.listItemBuilder,
+                  layerLink: layerLink,
+                  hideOverlay: hideCallback,
+                  headerBuilder: widget.headerBuilder,
+                  hintText: hintText,
+                  hintBuilder: widget.hintBuilder,
+                  excludeSelected: widget.excludeSelected,
+                  canCloseOutsideBounds: widget.canCloseOutsideBounds,
+                  searchType: widget.searchType,
+                  border: !formFieldState.hasError ? widget.expandedBorder : widget.expandedErrorBorder ?? _defaultErrorBorder,
+                  borderRadius: !formFieldState.hasError ? widget.expandedBorderRadius : widget.expandedErrorBorderRadius,
+                  futureRequest: widget.futureRequest,
+                  futureRequestDelay: widget.futureRequestDelay,
+                  hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenOpen,
+                  fillColor: widget.expandedFillColor,
+                );
+              },
+              child: (showCallback) {
+                return CompositedTransformTarget(
+                  link: layerLink,
+                  child: _DropDownField<T>(
+                    onTap: showCallback,
+                    selectedItemNotifier: widget.selectedItemNotifier,
+                    border: !formFieldState.hasError ? widget.closedBorder : widget.closedErrorBorder ?? _defaultErrorBorder,
+                    borderRadius: !formFieldState.hasError ? widget.closedBorderRadius : widget.closedErrorBorderRadius,
+                    hintText: hintText,
+                    hintBuilder: widget.hintBuilder,
+                    headerBuilder: widget.headerBuilder,
+                    suffixIcon: widget.fieldSuffixIcon,
+                    //onChanged: widget.onChanged,
+                    fillColor: widget.closedFillColor,
+                  ),
+                );
+              },
+            ),
+          );
+        });
   }
 }
