@@ -72,37 +72,6 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
-  //function to be called with every item how it's gona be sho in the dropdown list
-  Widget listItemBuilder(BuildContext context, Job job) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text(job.name),
-        Icon(job.icon),
-      ],
-    );
-  }
-
-  //function to be called when a item is selected
-  Widget selectedHeaderBuilder(BuildContext context, Job job) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text(job.name),
-      ],
-    );
-  }
-
-  //function to be called when a item is selected
-  Widget hintBuilder(BuildContext context, String hint) {
-    return Row(
-      children: [
-        Text(hint),
-        const Icon(Icons.question_mark),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,35 +90,6 @@ class _HomeState extends State<Home> {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          const Text('Full customized', style: _labelStyle),
-          const SizedBox(height: 8),
-          CustomDropdown<Job>.search(
-            hintText: 'Select job role',
-            items: list,
-            onChanged: (value) {
-              print('changing value to: $value');
-            },
-            excludeSelected: false,
-            closedFillColor: Colors.pink,
-            expandedFillColor: Colors.red[900],
-            closedBorder: Border.all(
-              color: Colors.blue,
-              width: 2,
-            ),
-            closedBorderRadius: BorderRadius.circular(15),
-            expandedBorder: Border.all(
-              color: Colors.orangeAccent,
-              width: 5,
-            ),
-            expandedBorderRadius: BorderRadius.circular(5),
-            listItemBuilder: (context, result) => listItemBuilder(context, result),
-            headerBuilder: (context, result) => selectedHeaderBuilder(context, result),
-            hintBuilder: (context, result) => hintBuilder(context, result),
-          ),
-          const SizedBox(height: 24),
-          const Divider(height: 0),
-          const SizedBox(height: 24),
-
           const Text('Job Roles Dropdown', style: _labelStyle),
           const SizedBox(height: 8),
           CustomDropdown<Job>(
@@ -206,12 +146,18 @@ class _HomeState extends State<Home> {
                   style: _labelStyle,
                 ),
                 const SizedBox(height: 8),
-                CustomDropdown<Job>(
+                CustomDropdown<Job?>(
                   hintText: 'Select job role',
                   items: list,
                   excludeSelected: false,
                   onChanged: (value) {
                     print('changing value to: $value');
+                  },
+                  validator: (value) {
+                    if (value == null) {
+                      return "Must not be null";
+                    }
+                    return null;
                   },
                 ),
                 const SizedBox(height: 16),
