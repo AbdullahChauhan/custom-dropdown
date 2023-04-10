@@ -24,6 +24,11 @@ const _defaultFillColor = Colors.white;
 
 const _defaultErrorColor = Colors.red;
 
+mixin CustomDropdownListFilter {
+  //used to test elements against query on CustomDropdown<T>.search
+  bool test(String query);
+}
+
 // the BorderRadius.circular isn't const
 const _defaultBorderRadius = BorderRadius.all(
   Radius.circular(12),
