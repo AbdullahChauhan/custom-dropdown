@@ -123,7 +123,7 @@ class SearchDropDown extends StatelessWidget {
 ```
 
 ### **3. Custom dropdown with search request:** *A custom dropdown with a search request to load the items.*
-Let's use a presonalized object for the items:
+Let's use a personalized object for the items:
 ```dart
 class Pair {
   String text;
