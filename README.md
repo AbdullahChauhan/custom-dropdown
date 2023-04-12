@@ -249,10 +249,6 @@ For a complete customization of the package, go to the [example](https://github.
 
 <hr>
 
-## Todos
-
-- [ ] Dropdown field/header builder.
-
 ## Issues & Feedback
 
 Please file an [issue](https://github.com/AbdullahChauhan/custom-dropdown/issues) to send feedback or report a bug. Thank you!
