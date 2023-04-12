@@ -27,7 +27,7 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 
 ```dart
 dependencies:
-  animated_custom_dropdown: 1.4.0
+  animated_custom_dropdown: ^latest_version
 ```
 
 2. Import the package and use it in your Flutter App.
@@ -40,97 +40,208 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 
 ## Example usage
 
-### 1. Custom dropdown
-
+### **1. Custom dropdown**
 ```dart
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 
-class CustomDropdownExample extends StatefulWidget {
-  const CustomDropdownExample({Key? key}) : super(key: key);
+class SimpleDropDown extends StatelessWidget {
+  final List<String> list = [
+    'Developer',
+    'Designer',
+    'Consultant',
+    'Student',
+  ];
 
-  @override
-  State<CustomDropdownExample> createState() => _CustomDropdownExampleState();
-}
-
-class _CustomDropdownExampleState extends State<CustomDropdownExample> {
-  final jobRoleCtrl = TextEditingController();
+  SimpleDropDown({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return CustomDropdown(
+    return CustomDropdown<String>(
       hintText: 'Select job role',
-      items: const ['Developer', 'Designer', 'Consultant', 'Student'],
-      controller: jobRoleCtrl,
+      items: list,
+      selectedItem: list[0],
+      onChanged: (value) {
+        print('changing value to: $value');
+      },
     );
   }
 }
 ```
 
-### 2. Custom dropdown with search
+### **2. Custom dropdown with search:** *A custom dropdown with the possibility to filter the items.*
+Let's start with the type of object we are going to work with:
+```dart
+class Job with CustomDropdownListFilter {
+  String name;
+  IconData icon;
+
+  Job(this.name, this.icon);
+
+  @override
+  String toString() {
+    return '$name';
+  }
+
+  @override
+  bool test(String query) {
+    return name.contains(query);
+  }
+}
+```
+By default the list is filtered by applying a `item.toString().toLowerCase().contains(query.toLowerCase())` on every item, so we would need to implement toString() to improve the precision of the filter. </br>
+But if the filter on the object is more complex, you can add the `CustomDropdownListFilter` mixin to it, which gives you access to the `test(query)` method, and by this the items of the list will be filtered.
+
+Now the widget:
 
 ```dart
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 
-class CustomDropdownExample extends StatefulWidget {
-  const CustomDropdownExample({Key? key}) : super(key: key);
+class SearchDropDown extends StatelessWidget {
+  final List<Job> list = [
+    Job('Developer', Icons.developer_mode),
+    Job('Designer', Icons.design_services),
+    Job('Consultant', Icons.account_balance),
+    Job('Student', Icons.school),
+  ];
 
-  @override
-  State<CustomDropdownExample> createState() => _CustomDropdownExampleState();
-}
-
-class _CustomDropdownExampleState extends State<CustomDropdownExample> {
-  final jobRoleCtrl = TextEditingController();
+  SearchDropDown({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return CustomDropdown.search(
+    return CustomDropdown<Job>.search(
       hintText: 'Select job role',
-      items: const ['Developer', 'Designer', 'Consultant', 'Student'],
-      controller: jobRoleCtrl,
+      items: list,
+      onChanged: (value) {
+        print('changing value to: $value');
+      },
+      excludeSelected: true,
     );
   }
 }
 ```
 
-### 3. Custom dropdown with search request
+### **3. Custom dropdown with search request:** *A custom dropdown with a search request to load the items.*
+Let's use a presonalized object for the items:
+```dart
+class Pair {
+  String text;
+  IconData icon;
+
+  Pair(this.text, this.icon);
+
+  @override
+  String toString() {
+    return text;
+  }
+}
+```
+
+Now the widget:
 
 ```dart
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 
-class CustomDropdownExample extends StatefulWidget {
-  const CustomDropdownExample({Key? key}) : super(key: key);
+class SearchRequestDropDown extends StatelessWidget {
+  final List<Pair> list = [
+    Pair('Developer', Icons.developer_board),
+    Pair('Designer', Icons.deblur_sharp),
+    Pair('Consultant', Icons.money_off),
+    Pair('Student', Icons.edit),
+  ];
 
-  @override
-  State<CustomDropdownExample> createState() => _CustomDropdownExampleState();
-}
-
-class _CustomDropdownExampleState extends State<CustomDropdownExample> {
-  final jobRoleCtrl = TextEditingController();
-
-  Future<List<String>> getFakeRequestData(String query) async {
-    List<String> data = ['Developer', 'Designer', 'Consultant', 'Student'];
-
+  ///this should be a call to the api or service or similar
+  Future<List<Pair>> getFakeRequestData(String query) async {
     return await Future.delayed(const Duration(seconds: 1), () {
-      return data.where((e) {
-        return e.toLowerCase().contains(query.toLowerCase());
+      return list.where((e) {
+        return e.text.toLowerCase().contains(query.toLowerCase());
       }).toList();
     });
   }
 
+  SearchRequestDropDown({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return CustomDropdown.searchRequest(
+    return CustomDropdown<Pair>.searchRequest(
       futureRequest: getFakeRequestData,
       hintText: 'Search job role',
-      controller: jobRoleCtrl,
-      futureRequestDelay: const Duration(seconds: 3),//it waits 3 seconds before start searching (before execute the 'futureRequest' function)
+      excludeSelected: true,
+      items: list,
+      onChanged: (value) {
+        print('changing value to: $value');
+      },
     );
   }
 }
 ```
+
+### **4. Custom dropdown with validation:** *A custom dropdown with validation.*
+
+```dart
+class ValidationDropDown extends StatelessWidget {
+  final formKey = GlobalKey<FormState>();
+  String? selected = null;
+
+  final List<String> list = [
+    'Developer',
+    'Designer',
+    'Consultant',
+    'Student',
+  ];
+
+  ValidationDropDown({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomDropdown<String>(
+            selectedItem: selected,
+            hintText: 'Select job role',
+            items: list,
+            excludeSelected: false,
+            validateOnChange: true,//run validation on item selected
+            onChanged: (value) {
+              print('changing value to: $value');
+              selected = value;//store the value
+            },
+            validator: (value) {//function to validate is the current selected item is valid or not
+              if (value == null) {
+                return "Must not be null";
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                if (!formKey.currentState!.validate()) {
+                  return;
+                }
+              },
+              child: const Text(
+                'Submit',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+## Customization
+For a complete customization of the package, go to the [example](https://github.com/AbdullahChauhan/custom-dropdown/blob/master/example/lib/main.dart).
 
 ## Preview
 

@@ -170,7 +170,7 @@ class Pair {
 
   @override
   String toString() {
-    return 'Pair{text: $text, icon: $icon}';
+    return text;
   }
 }
 
