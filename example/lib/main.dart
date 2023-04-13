@@ -30,7 +30,12 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final formKey = GlobalKey<FormState>();
-  final List<String> list = ['Developer', 'Designer', 'Consultant', 'Student'];
+  final List<Map<String, dynamic>> list = [
+    {"id": 1, 'job': 'Developer'},
+    {"id": 2, 'job': 'Designer'},
+    {"id": 3, 'job': 'Consultant'},
+    {"id": 4, 'job': 'Student'},
+  ];
   final jobRoleDropdownCtrl = TextEditingController(),
       jobRoleFormDropdownCtrl = TextEditingController(),
       jobRoleSearchDropdownCtrl = TextEditingController();
@@ -67,13 +72,15 @@ class _HomeState extends State<Home> {
             contentPadding: EdgeInsets.all(20),
             hintText: 'Select job role',
             hintStyle: TextStyle(fontSize: 20),
-            items: list,
-            controller: jobRoleDropdownCtrl,
+            excludeSelected: false,
+            items: [],
+            nameKey: "job",
             onChanged: (value) {
-              print('AAAAASASASASASASASASASASASSAS1111111${value}');
+              print('XXXXXXX${value}');
             },
             // excludeSelected: false,
           ),
+
           const SizedBox(height: 24),
           const Divider(height: 0),
           const SizedBox(height: 24),
@@ -83,12 +90,13 @@ class _HomeState extends State<Home> {
           const SizedBox(height: 8),
           CustomDropdown.search(
             hintText: 'Select job role',
+            excludeSelected: true,
             items: list,
-            controller: jobRoleSearchDropdownCtrl,
+            nameKey: "job",
+            selectedValue: {"id": 3, 'job': 'Consultant'},
             onChanged: (value) {
               print('AAAAASASASASASASASASASASASSAS222${value}');
             },
-            excludeSelected: false,
           ),
           const SizedBox(height: 24),
           const Divider(height: 0),
@@ -105,15 +113,16 @@ class _HomeState extends State<Home> {
                   style: _labelStyle,
                 ),
                 const SizedBox(height: 8),
-                CustomDropdown(
-                  hintText: 'Select job role',
-                  items: list,
-                  controller: jobRoleFormDropdownCtrl,
-                  excludeSelected: false,
-                  onChanged: (value) {
-                    print('AAAAASASASASASASASASASASASSAS3333333${value}');
-                  },
-                ),
+                // CustomDropdown(
+                //   hintText: 'Select job role',
+                //   items: list,
+                //   controller: jobRoleFormDropdownCtrl,
+                //   excludeSelected: true,
+                //   onChanged: (value) {
+                //     print('AAAAASASASASASASASASASASASSAS3333333${value}');
+                //   },
+                // ),
+
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,

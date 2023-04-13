@@ -12,8 +12,9 @@ part 'overlay_builder.dart';
 enum _SearchType { onListData }
 
 class CustomDropdown extends StatefulWidget {
-  final List<String> items;
-  final TextEditingController controller;
+  final List<Map<String, dynamic>>? items;
+  final Map<String, dynamic>? selectedValue;
+  final String? nameKey;
   final String? hintText;
   final TextStyle? hintStyle;
   final TextStyle? selectedStyle;
@@ -24,18 +25,19 @@ class CustomDropdown extends StatefulWidget {
   final BorderSide? errorBorderSide;
   final BorderRadius? borderRadius;
   final Widget? fieldSuffixIcon;
-  final Function(String)? onChanged;
+  final Function(Map<String, dynamic>)? onChanged;
   final bool? excludeSelected;
   final Color? fillColor;
   final EdgeInsets? contentPadding;
   final bool? canCloseOutsideBounds;
   final _SearchType? searchType;
 
-  CustomDropdown({
+  const CustomDropdown({
     Key? key,
-    required this.items,
-    required this.controller,
+    this.nameKey,
+    this.items,
     this.hintText,
+    this.selectedValue,
     this.hintStyle,
     this.selectedStyle,
     this.errorText,
@@ -49,20 +51,16 @@ class CustomDropdown extends StatefulWidget {
     this.contentPadding,
     this.excludeSelected = true,
     this.fillColor = Colors.white,
-  })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
-        assert(
-          controller.text.isEmpty || items.contains(controller.text),
-          'Controller value must match with one of the item in items list.',
-        ),
-        searchType = null,
+  })  : searchType = null,
         canCloseOutsideBounds = true,
         super(key: key);
 
-  CustomDropdown.search({
+  const CustomDropdown.search({
     Key? key,
-    required this.items,
-    required this.controller,
+    this.items,
+    this.nameKey,
     this.hintText,
+    this.selectedValue,
     this.hintStyle,
     this.selectedStyle,
     this.errorText,
@@ -77,12 +75,7 @@ class CustomDropdown extends StatefulWidget {
     this.excludeSelected = false,
     this.canCloseOutsideBounds = true,
     this.fillColor = Colors.white,
-  })  : assert(items.isNotEmpty, 'Items list must contain at least one item.'),
-        assert(
-          controller.text.isEmpty || items.contains(controller.text),
-          'Controller value must match with one of the item in items list.',
-        ),
-        searchType = _SearchType.onListData,
+  })  : searchType = _SearchType.onListData,
         super(key: key);
 
   @override
@@ -91,6 +84,35 @@ class CustomDropdown extends StatefulWidget {
 
 class _CustomDropdownState extends State<CustomDropdown> {
   final layerLink = LayerLink();
+
+  late TextEditingController textEditingController;
+  List<String> dataItems = [];
+
+  @override
+  void initState() {
+    init();
+
+    super.initState();
+  }
+
+  void init() {
+    textEditingController =
+        TextEditingController(text: widget.selectedValue?[widget.nameKey]);
+    dataItems = widget.items
+            ?.map((element) => element[widget.nameKey].toString())
+            .toList() ??
+        [];
+  }
+
+  void onChangeEx(String value) {
+    var result = widget.items?.indexWhere((e) => e[widget.nameKey] == value);
+
+    if (result != -1) {
+      widget.onChanged?.call(widget.items?[result ?? 0] ?? {});
+    } else {
+      widget.onChanged?.call({});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,45 +132,52 @@ class _CustomDropdownState extends State<CustomDropdown> {
       fontWeight: FontWeight.w500,
     ).merge(widget.selectedStyle);
 
-    return _OverlayBuilder(
-      overlay: (size, hideCallback) {
-        return _DropdownOverlay(
-          items: widget.items,
-          controller: widget.controller,
-          size: size,
-          layerLink: layerLink,
-          hideOverlay: hideCallback,
-          headerStyle:
-              widget.controller.text.isNotEmpty ? selectedStyle : hintStyle,
-          hintText: hintText,
-          listItemStyle: widget.listItemStyle,
-          excludeSelected: widget.excludeSelected,
-          canCloseOutsideBounds: widget.canCloseOutsideBounds,
-          searchType: widget.searchType,
-          onChanged: widget.onChanged,
-        );
-      },
-      child: (showCallback) {
-        return CompositedTransformTarget(
-          link: layerLink,
-          child: _DropDownField(
-            controller: widget.controller,
-            onTap: showCallback,
-            style: selectedStyle,
-            borderRadius: widget.borderRadius,
-            borderSide: widget.borderSide,
-            errorBorderSide: widget.errorBorderSide,
-            errorStyle: widget.errorStyle,
-            errorText: widget.errorText,
-            hintStyle: hintStyle,
+    return AbsorbPointer(
+      absorbing: ((widget.items == null) || (widget.items?.isEmpty ?? false))
+          ? true
+          : false,
+      child: _OverlayBuilder(
+        overlay: (size, hideCallback) {
+          return _DropdownOverlay(
+            items: dataItems,
+            controller: textEditingController,
+            size: size,
+            layerLink: layerLink,
+            hideOverlay: hideCallback,
+            headerStyle: (textEditingController.text.isNotEmpty)
+                ? selectedStyle
+                : hintStyle,
             hintText: hintText,
-            suffixIcon: widget.fieldSuffixIcon,
-            // onChanged: widget.onChanged,
-            fillColor: widget.fillColor,
-            contentPadding: widget.contentPadding,
-          ),
-        );
-      },
+            listItemStyle: widget.listItemStyle,
+            excludeSelected: widget.excludeSelected,
+            canCloseOutsideBounds: widget.canCloseOutsideBounds,
+            searchType: widget.searchType,
+            onChanged: (value) => onChangeEx(value),
+          );
+        },
+        child: (showCallback) {
+          return CompositedTransformTarget(
+            link: layerLink,
+            child: _DropDownField(
+              isItemsNullOrEmpty: dataItems.isEmpty,
+              controller: textEditingController,
+              onTap: showCallback,
+              style: selectedStyle,
+              borderRadius: widget.borderRadius,
+              borderSide: widget.borderSide,
+              errorBorderSide: widget.errorBorderSide,
+              errorStyle: widget.errorStyle,
+              errorText: widget.errorText,
+              hintStyle: hintStyle,
+              hintText: hintText,
+              suffixIcon: widget.fieldSuffixIcon,
+              // onChanged: widget.onChanged,
+              fillColor: widget.fillColor,
+              contentPadding: widget.contentPadding,
+            ),
+          );
+        },
+      ),
     );
   }
 }
