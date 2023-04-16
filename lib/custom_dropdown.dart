@@ -15,6 +15,7 @@ class CustomDropdown extends StatefulWidget {
   final List<Map<String, dynamic>>? items;
   final Map<String, dynamic>? selectedValue;
   final String? nameKey;
+  final String? nameMapKey;
   final String? hintText;
   final TextStyle? hintStyle;
   final TextStyle? selectedStyle;
@@ -30,11 +31,13 @@ class CustomDropdown extends StatefulWidget {
   final Color? fillColor;
   final EdgeInsets? contentPadding;
   final bool? canCloseOutsideBounds;
+
   final _SearchType? searchType;
 
   const CustomDropdown({
     Key? key,
     this.nameKey,
+    this.nameMapKey,
     this.items,
     this.hintText,
     this.selectedValue,
@@ -59,6 +62,7 @@ class CustomDropdown extends StatefulWidget {
     Key? key,
     this.items,
     this.nameKey,
+    this.nameMapKey,
     this.hintText,
     this.selectedValue,
     this.hintStyle,
@@ -96,16 +100,24 @@ class _CustomDropdownState extends State<CustomDropdown> {
   }
 
   void init() {
-    textEditingController =
-        TextEditingController(text: widget.selectedValue?[widget.nameKey]);
+    textEditingController = TextEditingController(
+        text: (widget.selectedValue?[widget.nameKey] is Map)
+            ? (widget.selectedValue?[widget.nameKey][widget.nameMapKey])
+            : widget.selectedValue?[widget.nameKey]);
     dataItems = widget.items
-            ?.map((element) => element[widget.nameKey].toString())
+            ?.map((element) => (element[widget.nameKey] is Map)
+                ? (element[widget.nameKey][widget.nameMapKey]).toString()
+                : element[widget.nameKey].toString())
             .toList() ??
         [];
   }
 
   void onChangeEx(String value) {
-    var result = widget.items?.indexWhere((e) => e[widget.nameKey] == value);
+    var result = widget.items?.indexWhere((e) =>
+        ((e[widget.nameKey] is Map)
+            ? e[widget.nameKey][widget.nameMapKey]
+            : e[widget.nameKey]) ==
+        value);
 
     if (result != -1) {
       widget.onChanged?.call(widget.items?[result ?? 0] ?? {});

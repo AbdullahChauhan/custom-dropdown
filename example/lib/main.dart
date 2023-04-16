@@ -31,10 +31,22 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final formKey = GlobalKey<FormState>();
   final List<Map<String, dynamic>> list = [
-    {"id": 1, 'job': 'Developer'},
-    {"id": 2, 'job': 'Designer'},
-    {"id": 3, 'job': 'Consultant'},
-    {"id": 4, 'job': 'Student'},
+    {
+      "id": 1,
+      'name': {'ar': 'develperAr', 'en': 'develperEn'}
+    },
+    {
+      "id": 2,
+      'name': {'ar': 'enginnerAr', 'en': 'enginnerEn'}
+    },
+    {
+      "id": 3,
+      'name': {'ar': 'mechnaicAr', 'en': 'mechnaicEn'}
+    },
+    {
+      "id": 4,
+      'name': {'ar': 'driverAr', 'en': 'driverEn'}
+    },
   ];
   final jobRoleDropdownCtrl = TextEditingController(),
       jobRoleFormDropdownCtrl = TextEditingController(),
@@ -73,8 +85,9 @@ class _HomeState extends State<Home> {
             hintText: 'Select job role',
             hintStyle: TextStyle(fontSize: 20),
             excludeSelected: false,
-            items: [],
-            nameKey: "job",
+            items: list,
+            nameKey: "name",
+            nameMapKey: 'en',
             onChanged: (value) {
               print('XXXXXXX${value}');
             },
