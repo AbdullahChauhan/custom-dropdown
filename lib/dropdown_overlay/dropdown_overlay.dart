@@ -170,7 +170,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
         ? _ItemsList<T>(
             scrollController: scrollController,
             listItemBuilder: widget.listItemBuilder ?? defaultListItemBuilder,
-            excludeSelected: items.length > 1 ? widget.excludeSelected! : true,
+            excludeSelected: items.length > 1 ? widget.excludeSelected : true,
             selectedItem: widget.selectedItemNotifier.value,
             items: items,
             padding: listPadding,
