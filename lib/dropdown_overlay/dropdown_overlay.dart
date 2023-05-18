@@ -26,6 +26,7 @@ class _DropdownOverlay extends StatefulWidget {
   final Future<List<String>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
   final EmptyResultBuilder? emptyResult;
+  final Function(String)? onSearchTextChanged;
 
   final _ListItemBuilder? listItemBuilder;
 
@@ -47,6 +48,7 @@ class _DropdownOverlay extends StatefulWidget {
     this.futureRequestDelay,
     this.listItemBuilder,
     this.emptyResult,
+    this.onSearchTextChanged,
   }) : super(key: key);
 
   @override
@@ -257,6 +259,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                       onSearchedItems: (val) {
                                         setState(() => items = val);
                                       },
+                                      onSearchTextChanged:
+                                          widget.onSearchTextChanged,
                                     )
                                   else
                                     Padding(
@@ -272,6 +276,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                               onSearchedItems: (val) {
                                                 setState(() => items = val);
                                               },
+                                              onSearchTextChanged:
+                                                  widget.onSearchTextChanged,
                                             ),
                                           ),
                                           overlayIcon,
@@ -290,6 +296,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                           isSearchRequestLoading = val;
                                         });
                                       },
+                                      onSearchTextChanged:
+                                          widget.onSearchTextChanged,
                                       futureRequest: widget.futureRequest,
                                       futureRequestDelay:
                                           widget.futureRequestDelay,
@@ -315,6 +323,8 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                                   isSearchRequestLoading = val;
                                                 });
                                               },
+                                              onSearchTextChanged:
+                                                  widget.onSearchTextChanged,
                                               futureRequest:
                                                   widget.futureRequest,
                                               futureRequestDelay:

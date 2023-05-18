@@ -32,6 +32,7 @@ class CustomDropdown extends StatefulWidget {
   final BorderRadius? borderRadius;
   final Widget? fieldSuffixIcon;
   final Function(String)? onChanged;
+  final Function(String)? onSearchTextChanged;
   final bool? excludeSelected;
   final Color? fillColor;
   final bool? canCloseOutsideBounds;
@@ -67,6 +68,7 @@ class CustomDropdown extends StatefulWidget {
     this.excludeSelected = true,
     this.fillColor = Colors.white,
     this.emptyResult,
+    this.onSearchTextChanged,
   })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
         assert(
           controller.text.isEmpty || items!.contains(controller.text),
@@ -106,6 +108,7 @@ class CustomDropdown extends StatefulWidget {
     this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
     this.emptyResult,
+    this.onSearchTextChanged,
   })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
         assert(
           controller.text.isEmpty || items!.contains(controller.text),
@@ -145,6 +148,7 @@ class CustomDropdown extends StatefulWidget {
     this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
     this.emptyResult,
+    this.onSearchTextChanged,
   })  : assert(
           (listItemBuilder == null && listItemStyle == null) ||
               (listItemBuilder == null && listItemStyle != null) ||
@@ -199,6 +203,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           futureRequestDelay: widget.futureRequestDelay,
           hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenOpen,
           emptyResult: widget.emptyResult,
+          onSearchTextChanged: widget.onSearchTextChanged,
         );
       },
       child: (showCallback) {
