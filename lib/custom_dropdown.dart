@@ -7,20 +7,16 @@ import 'package:flutter/material.dart';
 export 'custom_dropdown.dart';
 
 part 'animated_section.dart';
-
 part 'dropdown_field.dart';
-
 part 'dropdown_overlay/dropdown_overlay.dart';
-
 part 'dropdown_overlay/widgets/items_list.dart';
-
 part 'dropdown_overlay/widgets/search_field.dart';
-
 part 'overlay_builder.dart';
 
 enum _SearchType { onListData, onRequestData }
 
 typedef _ListItemBuilder = Widget Function(BuildContext context, String result);
+typedef EmptyResultBuilder = Widget Function(BuildContext);
 
 class CustomDropdown extends StatefulWidget {
   final List<String>? items;
@@ -41,6 +37,7 @@ class CustomDropdown extends StatefulWidget {
   final bool? canCloseOutsideBounds;
   final bool? hideSelectedFieldWhenOpen;
   final Future<List<String>> Function(String)? futureRequest;
+  final EmptyResultBuilder? emptyResult;
 
   //duration after which the 'futureRequest' is to be executed
   final Duration? futureRequestDelay;
@@ -69,6 +66,7 @@ class CustomDropdown extends StatefulWidget {
     this.onChanged,
     this.excludeSelected = true,
     this.fillColor = Colors.white,
+    this.emptyResult,
   })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
         assert(
           controller.text.isEmpty || items!.contains(controller.text),
@@ -107,6 +105,7 @@ class CustomDropdown extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
+    this.emptyResult,
   })  : assert(items!.isNotEmpty, 'Items list must contain at least one item.'),
         assert(
           controller.text.isEmpty || items!.contains(controller.text),
@@ -145,6 +144,7 @@ class CustomDropdown extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenOpen = false,
     this.fillColor = Colors.white,
+    this.emptyResult,
   })  : assert(
           (listItemBuilder == null && listItemStyle == null) ||
               (listItemBuilder == null && listItemStyle != null) ||
@@ -198,6 +198,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           futureRequest: widget.futureRequest,
           futureRequestDelay: widget.futureRequestDelay,
           hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenOpen,
+          emptyResult: widget.emptyResult,
         );
       },
       child: (showCallback) {

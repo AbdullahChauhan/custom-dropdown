@@ -25,6 +25,7 @@ class _DropdownOverlay extends StatefulWidget {
   final _SearchType? searchType;
   final Future<List<String>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
+  final EmptyResultBuilder? emptyResult;
 
   final _ListItemBuilder? listItemBuilder;
 
@@ -45,6 +46,7 @@ class _DropdownOverlay extends StatefulWidget {
     this.futureRequest,
     this.futureRequestDelay,
     this.listItemBuilder,
+    this.emptyResult,
   }) : super(key: key);
 
   @override
@@ -151,15 +153,17 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
         : (mayFoundSearchRequestResult != null &&
                     !mayFoundSearchRequestResult!) ||
                 widget.searchType == _SearchType.onListData
-            ? const Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12.0),
-                  child: Text(
-                    'No result found.',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              )
+            ? widget.emptyResult != null
+                ? widget.emptyResult!(context)
+                : const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12.0),
+                      child: Text(
+                        'No result found.',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  )
             : const SizedBox(height: 12);
 
     final child = Stack(
