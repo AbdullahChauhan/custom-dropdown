@@ -46,7 +46,7 @@ const _defaultErrorStyle = TextStyle(
 
 const _defaultHintValue = 'Select value';
 
-class CustomDropdown<T> extends StatefulWidget {
+class CustomDropdown<T> extends StatelessWidget {
   ValueNotifier<T?> selectedItemNotifier;
   final List<T>? items;
   final String? hintText;
@@ -131,7 +131,9 @@ class CustomDropdown<T> extends StatefulWidget {
         canCloseOutsideBounds = true,
         hideSelectedFieldWhenOpen = false,
         selectedItemNotifier = ValueNotifier(selectedItem),
-        super(key: key);
+        super(key: key) {
+    setupListeners();
+  }
 
   CustomDropdown.search({
     Key? key,
@@ -169,7 +171,9 @@ class CustomDropdown<T> extends StatefulWidget {
         futureRequest = null,
         futureRequestDelay = null,
         selectedItemNotifier = ValueNotifier(selectedItem),
-        super(key: key);
+        super(key: key) {
+    setupListeners();
+  }
 
   CustomDropdown.searchRequest({
     Key? key,
@@ -206,22 +210,16 @@ class CustomDropdown<T> extends StatefulWidget {
     this.expandedFillColor = Colors.white,
   })  : searchType = _SearchType.onRequestData,
         selectedItemNotifier = ValueNotifier(selectedItem),
-        super(key: key);
+        super(key: key) {
+    setupListeners();
+  }
 
-  @override
-  State<CustomDropdown<T>> createState() => _CustomDropdownState<T>();
-}
-
-class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   final layerLink = LayerLink();
 
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.onChanged != null) {
-      widget.selectedItemNotifier.addListener(() {
-        widget.onChanged!(widget.selectedItemNotifier.value!);
+  void setupListeners() {
+    if (onChanged != null) {
+      selectedItemNotifier.addListener(() {
+        onChanged!(selectedItemNotifier.value!);
       });
     }
   }
@@ -229,20 +227,20 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   @override
   Widget build(BuildContext context) {
     /// hint text
-    final hintText = widget.hintText ?? _defaultHintValue;
+    final safeHintText = hintText ?? _defaultHintValue;
 
     return FormField<T>(
-        initialValue: widget.selectedItemNotifier.value,
+        initialValue: selectedItemNotifier.value,
         validator: (val) {
-          if (widget.validator != null) {
-            return widget.validator!(val);
+          if (validator != null) {
+            return validator!(val);
           }
           return null;
         },
         builder: (FormFieldState<T> formFieldState) {
           return InputDecorator(
             decoration: InputDecoration(
-              errorStyle: widget.errorStyle ?? _defaultErrorStyle,
+              errorStyle: errorStyle ?? _defaultErrorStyle,
               errorText: formFieldState.errorText,
               border: InputBorder.none,
             ),
@@ -250,31 +248,43 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
               overlay: (size, hideCallback) {
                 return _DropdownOverlay<T>(
                   onItemSelect: (T value) {
-                    widget.selectedItemNotifier.value = value;
+                    //update item notifier
+                    selectedItemNotifier.value = value;
+
+                    //direct call to onChange
+                    //widget.onChanged!(value);
+
+                    //update validator
                     formFieldState.didChange(value);
-                    if (widget.validateOnChange) {
+
+                    //check if revalidate
+                    if (validateOnChange) {
                       formFieldState.validate();
                     }
                   },
-                  items: widget.items ?? [],
-                  selectedItemNotifier: widget.selectedItemNotifier,
+                  items: items ?? [],
+                  selectedItemNotifier: selectedItemNotifier,
                   size: size,
-                  listItemBuilder: widget.listItemBuilder,
+                  listItemBuilder: listItemBuilder,
                   layerLink: layerLink,
                   hideOverlay: hideCallback,
-                  headerBuilder: widget.headerBuilder,
-                  hintText: hintText,
-                  hintBuilder: widget.hintBuilder,
-                  excludeSelected: widget.excludeSelected,
-                  canCloseOutsideBounds: widget.canCloseOutsideBounds,
-                  searchType: widget.searchType,
-                  border: !formFieldState.hasError ? widget.expandedBorder : widget.expandedErrorBorder ?? _defaultErrorBorder,
-                  borderRadius: !formFieldState.hasError ? widget.expandedBorderRadius : widget.expandedErrorBorderRadius,
-                  futureRequest: widget.futureRequest,
-                  futureRequestDelay: widget.futureRequestDelay,
-                  hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenOpen,
-                  fillColor: widget.expandedFillColor,
-                  suffixIcon: widget.expandedSuffixIcon,
+                  headerBuilder: headerBuilder,
+                  hintText: safeHintText,
+                  hintBuilder: hintBuilder,
+                  excludeSelected: excludeSelected,
+                  canCloseOutsideBounds: canCloseOutsideBounds,
+                  searchType: searchType,
+                  border: !formFieldState.hasError
+                      ? expandedBorder
+                      : expandedErrorBorder ?? _defaultErrorBorder,
+                  borderRadius: !formFieldState.hasError
+                      ? expandedBorderRadius
+                      : expandedErrorBorderRadius,
+                  futureRequest: futureRequest,
+                  futureRequestDelay: futureRequestDelay,
+                  hideSelectedFieldWhenOpen: hideSelectedFieldWhenOpen,
+                  fillColor: expandedFillColor,
+                  suffixIcon: expandedSuffixIcon,
                 );
               },
               child: (showCallback) {
@@ -282,14 +292,18 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   link: layerLink,
                   child: _DropDownField<T>(
                     onTap: showCallback,
-                    selectedItemNotifier: widget.selectedItemNotifier,
-                    border: !formFieldState.hasError ? widget.closedBorder : widget.closedErrorBorder ?? _defaultErrorBorder,
-                    borderRadius: !formFieldState.hasError ? widget.closedBorderRadius : widget.closedErrorBorderRadius,
-                    hintText: hintText,
-                    hintBuilder: widget.hintBuilder,
-                    headerBuilder: widget.headerBuilder,
-                    suffixIcon: widget.closedSuffixIcon,
-                    fillColor: widget.closedFillColor,
+                    selectedItemNotifier: selectedItemNotifier,
+                    border: !formFieldState.hasError
+                        ? closedBorder
+                        : closedErrorBorder ?? _defaultErrorBorder,
+                    borderRadius: !formFieldState.hasError
+                        ? closedBorderRadius
+                        : closedErrorBorderRadius,
+                    hintText: safeHintText,
+                    hintBuilder: hintBuilder,
+                    headerBuilder: headerBuilder,
+                    suffixIcon: closedSuffixIcon,
+                    fillColor: closedFillColor,
                   ),
                 );
               },
