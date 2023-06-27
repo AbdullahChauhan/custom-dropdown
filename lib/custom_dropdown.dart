@@ -80,6 +80,8 @@ class CustomDropdown<T> extends StatelessWidget {
   final bool? hideSelectedFieldWhenOpen;
   final Future<List<T>> Function(String)? futureRequest;
 
+  final String? noResultFoundText;
+
   //duration after which the 'futureRequest' is to be executed
   final Duration? futureRequestDelay;
 
@@ -100,6 +102,7 @@ class CustomDropdown<T> extends StatelessWidget {
     required this.items,
     T? selectedItem,
     this.hintText,
+    this.noResultFoundText,
     //error
     this.errorStyle,
     this.closedErrorBorder,
@@ -139,6 +142,7 @@ class CustomDropdown<T> extends StatelessWidget {
     required this.items,
     T? selectedItem,
     this.hintText,
+    this.noResultFoundText,
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
@@ -180,6 +184,7 @@ class CustomDropdown<T> extends StatelessWidget {
     T? selectedItem,
     this.items,
     this.hintText,
+    this.noResultFoundText,
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
@@ -260,6 +265,7 @@ class CustomDropdown<T> extends StatelessWidget {
                       formFieldState.validate();
                     }
                   },
+                  noResultFound: noResultFoundText ?? 'No result found.',
                   items: items ?? [],
                   selectedItemNotifier: selectedItemNotifier,
                   size: size,
