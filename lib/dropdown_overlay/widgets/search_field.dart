@@ -9,10 +9,13 @@ class _SearchField<T> extends StatefulWidget {
   final ValueChanged<bool>? onFutureRequestLoading;
   final ValueChanged<bool>? mayFoundResult;
 
+  final VoidCallback onTextFieldTap;
+
   const _SearchField.forListData({
     Key? key,
     required this.items,
     required this.onSearchedItems,
+    required this.onTextFieldTap,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
@@ -28,6 +31,7 @@ class _SearchField<T> extends StatefulWidget {
     required this.futureRequestDelay,
     required this.onFutureRequestLoading,
     required this.mayFoundResult,
+    required this.onTextFieldTap,
   })  : searchType = _SearchType.onRequestData,
         super(key: key);
 
@@ -44,7 +48,8 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
   @override
   void initState() {
     super.initState();
-    if (widget.searchType == _SearchType.onRequestData && widget.items.isEmpty) {
+    if (widget.searchType == _SearchType.onRequestData &&
+        widget.items.isEmpty) {
       focusNode.requestFocus();
     }
   }
@@ -97,6 +102,9 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextField(
+        onTap: () {
+          widget.onTextFieldTap();
+        },
         focusNode: focusNode,
         onChanged: (val) async {
           if (val.isEmpty) {
@@ -105,12 +113,15 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
             isFieldEmpty = false;
           }
 
-          if (widget.searchType != null && widget.searchType == _SearchType.onRequestData && val.isNotEmpty) {
+          if (widget.searchType != null &&
+              widget.searchType == _SearchType.onRequestData &&
+              val.isNotEmpty) {
             widget.onFutureRequestLoading!(true);
 
             if (widget.futureRequestDelay != null) {
               _delayTimer?.cancel();
-              _delayTimer = Timer(widget.futureRequestDelay ?? Duration.zero, () {
+              _delayTimer =
+                  Timer(widget.futureRequestDelay ?? Duration.zero, () {
                 searchRequest(val);
               });
             } else {

@@ -80,6 +80,8 @@ class CustomDropdown<T> extends StatefulWidget {
   final bool? hideSelectedFieldWhenOpen;
   final Future<List<T>> Function(String)? futureRequest;
 
+  final VoidCallback? onTextFieldTap;
+
   final String? noResultFoundText;
 
   //duration after which the 'futureRequest' is to be executed
@@ -103,6 +105,7 @@ class CustomDropdown<T> extends StatefulWidget {
     T? selectedItem,
     this.hintText,
     this.noResultFoundText,
+    this.onTextFieldTap,
     //error
     this.errorStyle,
     this.closedErrorBorder,
@@ -141,6 +144,7 @@ class CustomDropdown<T> extends StatefulWidget {
     T? selectedItem,
     this.hintText,
     this.noResultFoundText,
+    this.onTextFieldTap,
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
@@ -181,6 +185,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.items,
     this.hintText,
     this.noResultFoundText,
+    this.onTextFieldTap,
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
@@ -241,6 +246,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
             child: _OverlayBuilder(
               overlay: (size, hideCallback) {
                 return _DropdownOverlay<T>(
+                  onTextFieldTap: widget.onTextFieldTap ?? () {},
                   onItemSelect: (T value) {
                     //update item notifier
                     //widget.selectedItemNotifier.value = value;
