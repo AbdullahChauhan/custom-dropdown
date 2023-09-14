@@ -1,6 +1,7 @@
+// This new app avoids using constant color values.
+
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
   runApp(const App());
@@ -11,10 +12,20 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    const themeSeedColor = Colors.blue;
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Custom Dropdown App',
-      home: Home(),
+      home: const Home(),
+      theme: ThemeData(
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSeed(brightness: Brightness.light, seedColor: themeSeedColor),
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(brightness: Brightness.dark, seedColor: themeSeedColor),
+      ),
+      themeMode: ThemeMode.dark,
     );
   }
 }
@@ -58,16 +69,10 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
-          statusBarColor: Colors.white,
-        ),
-        backgroundColor: Colors.white,
         elevation: .25,
         title: const Text(
-          'Custom Dropdown Example',
-          style: TextStyle(color: Colors.black, fontSize: 18),
+          'Custom Dropdown Example'
         ),
       ),
       body: ListView(
