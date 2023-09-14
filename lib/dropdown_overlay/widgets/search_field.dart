@@ -44,8 +44,7 @@ class _SearchFieldState extends State<_SearchField> {
   @override
   void initState() {
     super.initState();
-    if (widget.searchType == _SearchType.onRequestData &&
-        widget.items.isEmpty) {
+    if (widget.searchType == _SearchType.onRequestData && widget.items.isEmpty) {
       focusNode.requestFocus();
     }
   }
@@ -58,9 +57,7 @@ class _SearchFieldState extends State<_SearchField> {
   }
 
   void onSearch(String str) {
-    final result = widget.items
-        .where((item) => item.toLowerCase().contains(str.toLowerCase()))
-        .toList();
+    final result = widget.items.where((item) => item.toLowerCase().contains(str.toLowerCase())).toList();
     widget.onSearchedItems(result);
   }
 
@@ -89,6 +86,7 @@ class _SearchFieldState extends State<_SearchField> {
 
   @override
   Widget build(BuildContext context) {
+    final hintColor = Theme.of(context).hintColor;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextField(
@@ -100,15 +98,12 @@ class _SearchFieldState extends State<_SearchField> {
             isFieldEmpty = false;
           }
 
-          if (widget.searchType != null &&
-              widget.searchType == _SearchType.onRequestData &&
-              val.isNotEmpty) {
+          if (widget.searchType != null && widget.searchType == _SearchType.onRequestData && val.isNotEmpty) {
             widget.onFutureRequestLoading!(true);
 
             if (widget.futureRequestDelay != null) {
               _delayTimer?.cancel();
-              _delayTimer =
-                  Timer(widget.futureRequestDelay ?? Duration.zero, () {
+              _delayTimer = Timer(widget.futureRequestDelay ?? Duration.zero, () {
                 searchRequest(val);
               });
             } else {
@@ -123,34 +118,32 @@ class _SearchFieldState extends State<_SearchField> {
         controller: searchCtrl,
         decoration: InputDecoration(
           filled: true,
-          fillColor: Colors.grey[50],
           constraints: const BoxConstraints.tightFor(height: 40),
           contentPadding: const EdgeInsets.all(8),
           hintText: 'Search',
-          hintStyle: const TextStyle(color: Colors.grey),
-          prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 22),
+          prefixIcon: Icon(Icons.search, color: hintColor, size: 22),
           suffixIcon: GestureDetector(
             onTap: onClear,
-            child: const Icon(Icons.close, color: Colors.grey, size: 20),
+            child: Icon(Icons.close, color: hintColor, size: 20),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(
-              color: Colors.grey.withOpacity(.25),
+              color: hintColor.withOpacity(.25),
               width: 1,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(
-              color: Colors.grey.withOpacity(.25),
+              color: hintColor.withOpacity(.25),
               width: 1,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(
-              color: Colors.grey.withOpacity(.25),
+              color: hintColor.withOpacity(.25),
               width: 1,
             ),
           ),

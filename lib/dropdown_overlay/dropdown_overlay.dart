@@ -119,7 +119,6 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
       displayOverlayBottom
           ? Icons.keyboard_arrow_up_rounded
           : Icons.keyboard_arrow_down_rounded,
-      color: Colors.black,
       size: 20,
     );
 
@@ -177,12 +176,12 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
               padding: _overlayOuterPadding,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).dialogBackgroundColor,
                   borderRadius: borderRadius,
                   boxShadow: [
                     BoxShadow(
                       blurRadius: 24.0,
-                      color: Colors.black.withOpacity(.08),
+                      color: Theme.of(context).shadowColor.withOpacity(.08),
                       offset: _overlayShadowOffset,
                     ),
                   ],
@@ -216,9 +215,6 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                 ),
                                 thickness: MaterialStateProperty.all(5),
                                 radius: const Radius.circular(4),
-                                thumbColor: MaterialStateProperty.all(
-                                  Colors.grey[300],
-                                ),
                               ),
                             ),
                             child: Column(
@@ -337,7 +333,6 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                       width: 25,
                                       height: 25,
                                       child: CircularProgressIndicator(
-                                        color: Colors.black,
                                         strokeWidth: 3,
                                       ),
                                     )),
