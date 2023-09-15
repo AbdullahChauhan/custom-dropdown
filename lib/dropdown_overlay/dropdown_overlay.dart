@@ -228,21 +228,22 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                                 if (!widget.hideSelectedFieldWhenOpen!)
                                   Padding(
                                     padding: _headerPadding,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            headerText.isNotEmpty
-                                                ? headerText
-                                                : widget.hintText,
-                                            style: widget.headerStyle,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
+                                    child: GestureDetector(
+                                      onTap: () => setState(() => displayOverly = false),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              headerText.isNotEmpty ? headerText : widget.hintText,
+                                              style: widget.headerStyle,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        overlayIcon,
-                                      ],
+                                          const SizedBox(width: 12),
+                                          overlayIcon,
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 if (onSearch &&
