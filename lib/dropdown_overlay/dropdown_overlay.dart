@@ -361,16 +361,19 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
       ],
     );
 
-    return GestureDetector(
-      onTap: () => setState(() => displayOverly = false),
-      child: widget.canCloseOutsideBounds!
-          ? Container(
+    return Stack(
+      children: [
+        if (widget.canCloseOutsideBounds!)
+          GestureDetector(
+            onTap: () => setState(() => displayOverly = false),
+            child: Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               color: Colors.transparent,
-              child: child,
-            )
-          : child,
+            ),
+          ),
+        child,
+      ],
     );
   }
 }
