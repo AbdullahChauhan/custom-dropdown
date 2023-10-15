@@ -21,6 +21,7 @@ class _DropDownField extends StatefulWidget {
   final Color? fillColor;
   final EdgeInsets? contentPadding;
   final bool isItemsNullOrEmpty;
+  final void Function()? onRemoveClicked;
 
   const _DropDownField({
     Key? key,
@@ -38,6 +39,7 @@ class _DropDownField extends StatefulWidget {
     this.errorBorderSide,
     this.borderRadius,
     this.fillColor,
+    this.onRemoveClicked,
     this.contentPadding,
   }) : super(key: key);
 
@@ -97,39 +99,51 @@ class _DropDownFieldState extends State<_DropDownField> {
 
     return InkWell(
       onTap: widget.onTap,
-      child: IgnorePointer(
-        ignoring: true,
-        child: TextFormField(
-          controller: widget.controller,
-          validator: (val) {
-            if (val?.isEmpty ?? false) return widget.errorText ?? '';
-            return null;
-          },
-          readOnly: true,
-          onTap: widget.onTap,
-          // onChanged: widget.onChanged,
-          style: widget.style,
-          decoration: InputDecoration(
-            isDense: true,
-            contentPadding: widget.contentPadding ?? _contentPadding,
-            suffixIcon: widget.suffixIcon ??
-                Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: widget.isItemsNullOrEmpty ? Colors.grey : Colors.black,
-                  size: 20,
-                ),
-            hintText: widget.hintText,
-            hintStyle: widget.hintStyle,
-            fillColor: widget.fillColor,
-            filled: true,
-            errorStyle:
-                widget.errorText != null ? widget.errorStyle : _noTextStyle,
-            border: border,
-            enabledBorder: border,
-            focusedBorder: border,
-            errorBorder: errorBorder,
-            focusedErrorBorder: errorBorder,
-          ),
+      child: TextFormField(
+        mouseCursor: SystemMouseCursors.click,
+        controller: widget.controller,
+        validator: (val) {
+          if (val?.isEmpty ?? false) return widget.errorText ?? '';
+          return null;
+        },
+        readOnly: true,
+        onTap: widget.onTap,
+        // onChanged: widget.onChanged,
+        style: widget.style,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: widget.contentPadding ?? _contentPadding,
+          suffixIcon: widget.controller.text != ''
+              ? InkWell(
+                  onTap: () {
+                    setState(() {});
+                    widget.controller.clear();
+                    widget.onRemoveClicked?.call();
+                  },
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.red,
+                    size: 20,
+                  ),
+                )
+              : widget.suffixIcon ??
+                  Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color:
+                        widget.isItemsNullOrEmpty ? Colors.grey : Colors.black,
+                    size: 20,
+                  ),
+          hintText: widget.hintText,
+          hintStyle: widget.hintStyle,
+          fillColor: widget.fillColor,
+          filled: true,
+          errorStyle:
+              widget.errorText != null ? widget.errorStyle : _noTextStyle,
+          border: border,
+          enabledBorder: border,
+          focusedBorder: border,
+          errorBorder: errorBorder,
+          focusedErrorBorder: errorBorder,
         ),
       ),
     );

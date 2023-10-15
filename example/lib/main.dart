@@ -81,14 +81,22 @@ class _HomeState extends State<Home> {
           const Text('Job Roles Dropdown', style: _labelStyle),
           const SizedBox(height: 8),
           CustomDropdown(
-            contentPadding: EdgeInsets.all(20),
+            onRemoveClicked: () {
+              print('on remove clicked');
+            },
+            // key: UniqueKey(),
+            // fillColor: Colors.red,
+            // contentPadding: EdgeInsets.all(20),
             hintText: 'Select job role',
-            hintStyle: TextStyle(fontSize: 20),
+            // hintStyle: TextStyle(fontSize: 20),
             excludeSelected: false,
             items: list,
             nameKey: "name",
             nameMapKey: 'en',
-            onChanged: (value) {
+            onChanged: (value) async {
+              // await Future.delayed(Duration(seconds: 1));
+
+              setState(() {});
               print('XXXXXXX${value}');
             },
             // excludeSelected: false,

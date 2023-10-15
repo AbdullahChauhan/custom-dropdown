@@ -34,6 +34,8 @@ class CustomDropdown extends StatefulWidget {
 
   final _SearchType? searchType;
 
+  final void Function()? onRemoveClicked;
+
   const CustomDropdown({
     Key? key,
     this.nameKey,
@@ -52,6 +54,7 @@ class CustomDropdown extends StatefulWidget {
     this.fieldSuffixIcon,
     this.onChanged,
     this.contentPadding,
+    this.onRemoveClicked,
     this.excludeSelected = true,
     this.fillColor = Colors.white,
   })  : searchType = null,
@@ -75,6 +78,7 @@ class CustomDropdown extends StatefulWidget {
     this.borderSide,
     this.fieldSuffixIcon,
     this.onChanged,
+    this.onRemoveClicked,
     this.contentPadding,
     this.excludeSelected = false,
     this.canCloseOutsideBounds = true,
@@ -171,6 +175,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
           return CompositedTransformTarget(
             link: layerLink,
             child: _DropDownField(
+              onRemoveClicked: widget.onRemoveClicked,
               isItemsNullOrEmpty: dataItems.isEmpty,
               controller: textEditingController,
               onTap: showCallback,
