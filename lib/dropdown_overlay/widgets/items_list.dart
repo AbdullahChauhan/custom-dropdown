@@ -2,22 +2,22 @@ part of '../../custom_dropdown.dart';
 
 class _ItemsList<T> extends StatelessWidget {
   final ScrollController scrollController;
-  final List<T> items;
-  final bool excludeSelected;
-  final Function(T) onItemSelect;
   final T? selectedItem;
+  final List<T> items;
+  final Function(T) onItemSelect;
+  final bool excludeSelected;
   final EdgeInsets padding;
   final Widget Function(BuildContext context, T result) listItemBuilder;
 
   const _ItemsList({
     Key? key,
     required this.scrollController,
-    required this.items,
-    required this.excludeSelected,
     required this.selectedItem,
+    required this.items,
     required this.onItemSelect,
-    required this.listItemBuilder,
+    required this.excludeSelected,
     required this.padding,
+    required this.listItemBuilder,
   }) : super(key: key);
 
   @override
