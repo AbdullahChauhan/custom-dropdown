@@ -278,7 +278,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     widget.searchType == _SearchType.onListData)
                                   if (!widget.hideSelectedFieldWhenOpen!)
                                     _SearchField<T>.forListData(
-                                      items: items,
+                                      items: widget.items,
                                       onTextFieldTap: widget.onTextFieldTap,
                                       onSearchedItems: (val) {
                                         setState(() => items = val);
@@ -294,7 +294,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         children: [
                                           Expanded(
                                             child: _SearchField<T>.forListData(
-                                              items: items,
+                                              items: widget.items,
                                               onSearchedItems: (val) {
                                                 setState(() => items = val);
                                               },
@@ -314,7 +314,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                   if (!widget.hideSelectedFieldWhenOpen!)
                                     _SearchField<T>.forRequestData(
                                       onTextFieldTap: widget.onTextFieldTap,
-                                      items: items,
+                                      items: widget.items,
                                       onFutureRequestLoading: (val) {
                                         setState(() {
                                           isSearchRequestLoading = val;
