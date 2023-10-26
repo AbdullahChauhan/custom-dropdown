@@ -64,11 +64,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
   void onSearch(String query) {
     final result = widget.items.where(
       (item) {
-        if (item is CustomDropdownListFilter) {
-          return item.test(query);
-        } else {
-          return item.toString().toLowerCase().contains(query.toLowerCase());
-        }
+        return item.toString().toLowerCase().contains(query.toLowerCase());
       },
     ).toList();
     widget.onSearchedItems(result);

@@ -17,11 +17,6 @@ enum _SearchType { onListData, onRequestData }
 const _defaultFillColor = Colors.white;
 const _defaultErrorColor = Colors.red;
 
-mixin CustomDropdownListFilter {
-  // used to test elements against query on CustomDropdown<T>.search
-  bool test(String query);
-}
-
 const _defaultBorderRadius = BorderRadius.all(
   Radius.circular(12),
 );
@@ -34,6 +29,7 @@ final Border _defaultErrorBorder = Border.all(
 const _defaultErrorStyle = TextStyle(
   color: _defaultErrorColor,
   fontSize: 14,
+  height: 0.5,
 );
 
 const _defaultHintValue = 'Select value';
