@@ -44,92 +44,137 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 ```dart
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer';
 
-class SimpleDropDown extends StatelessWidget {
-  final List<String> list = [
+const List<String> _list = [
     'Developer',
     'Designer',
     'Consultant',
     'Student',
   ];
 
-  SimpleDropDown({Key? key}) : super(key: key);
+class SimpleDropdown extends StatelessWidget {
+  const SimpleDropdown({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CustomDropdown<String>(
       hintText: 'Select job role',
-      items: list,
-      selectedItem: list[0],
+      items: _list,
+      initialItem: _list[0],
       onChanged: (value) {
-        print('changing value to: $value');
+        log('changing value to: $value');
       },
     );
   }
 }
 ```
 
-### **2. Custom dropdown with search:** *A custom dropdown with the possibility to filter the items.*
+### **2. Custom dropdown with custom type model**
 Let's start with the type of object we are going to work with:
 ```dart
-class Job with CustomDropdownListFilter {
-  String name;
-  IconData icon;
-
-  Job(this.name, this.icon);
+class Job {
+  final String name;
+  final IconData icon;
+  const Job(this.name, this.icon);
 
   @override
   String toString() {
-    return '$name';
-  }
-
-  @override
-  bool test(String query) {
-    return name.contains(query);
+    return name;
   }
 }
 ```
-By default the list is filtered by applying a `item.toString().toLowerCase().contains(query.toLowerCase())` on every item, so we would need to implement toString() to improve the precision of the filter. </br>
-But if the filter on the object is more complex, you can add the `CustomDropdownListFilter` mixin to it, which gives you access to the `test(query)` method, and by this the items of the list will be filtered.
+Whenever you are going to work with custom type model `T`, your model must override the default `toString()` method and return the property inside that you want to display as list item otherwise the dropdown list item would show `Instance of [model name]`.
 
 Now the widget:
 
 ```dart
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer';
 
-class SearchDropDown extends StatelessWidget {
-  final List<Job> list = [
+const List<Job> _list = [
     Job('Developer', Icons.developer_mode),
     Job('Designer', Icons.design_services),
     Job('Consultant', Icons.account_balance),
     Job('Student', Icons.school),
   ];
 
-  SearchDropDown({Key? key}) : super(key: key);
+class SimpleDropdown extends StatelessWidget {
+  const SimpleDropdown({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return CustomDropdown<Job>.search(
+    return CustomDropdown<Job>(
       hintText: 'Select job role',
-      items: list,
+      items: _list,
       onChanged: (value) {
-        print('changing value to: $value');
+        log('changing value to: $value');
       },
-      excludeSelected: true,
     );
   }
 }
 ```
 
-### **3. Custom dropdown with search request:** *A custom dropdown with a search request to load the items.*
+### **3. Custom dropdown with search:** *A custom dropdown with the possibility to filter the items.*
+First, let's enchance our Job model with more functionality:
+```dart
+class Job with CustomDropdownListFilter {
+  final String name;
+  final IconData icon;
+  const Job(this.name, this.icon);
+
+  @override
+  String toString() {
+    return name;
+  }
+
+  @override
+  bool filter(String query) {
+    return name.toLowerCase().contains(query.toLowerCase());
+  }
+}
+```
+If the filter on the object is more complex, you can add the `CustomDropdownListFilter` mixin to it, which gives you access to the `filter(query)` method, and by this the items of the list will be filtered.
+
+Now the widget:
+
+```dart
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:flutter/material.dart';
+import 'dart:developer';
+
+const List<Job> _list = [
+    Job('Developer', Icons.developer_mode),
+    Job('Designer', Icons.design_services),
+    Job('Consultant', Icons.account_balance),
+    Job('Student', Icons.school),
+  ];
+
+class SearchDropdown extends StatelessWidget {
+  const SearchDropdown({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomDropdown<Job>.search(
+      hintText: 'Select job role',
+      items: _list,
+      excludeSelected: false,
+      onChanged: (value) {
+        log('changing value to: $value');
+      },
+    );
+  }
+}
+```
+
+### **4. Custom dropdown with search request:** *A custom dropdown with a search request to load the items.*
 Let's use a personalized object for the items:
 ```dart
 class Pair {
-  String text;
-  IconData icon;
-
-  Pair(this.text, this.icon);
+  final String text;
+  final IconData icon;
+  const Pair(this.text, this.icon);
 
   @override
   String toString() {
@@ -143,89 +188,84 @@ Now the widget:
 ```dart
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer';
 
-class SearchRequestDropDown extends StatelessWidget {
-  final List<Pair> list = [
+const List<Pair> _list = [
     Pair('Developer', Icons.developer_board),
     Pair('Designer', Icons.deblur_sharp),
     Pair('Consultant', Icons.money_off),
     Pair('Student', Icons.edit),
   ];
 
-  ///this should be a call to the api or service or similar
-  Future<List<Pair>> getFakeRequestData(String query) async {
+class SearchRequestDropdown extends StatelessWidget {
+  const SearchRequestDropdown({Key? key}) : super(key: key);
+
+  // This should be a call to the api or service or similar
+  Future<List<Pair>> _getFakeRequestData(String query) async {
     return await Future.delayed(const Duration(seconds: 1), () {
-      return list.where((e) {
+      return _list.where((e) {
         return e.text.toLowerCase().contains(query.toLowerCase());
       }).toList();
     });
   }
 
-  SearchRequestDropDown({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return CustomDropdown<Pair>.searchRequest(
-      futureRequest: getFakeRequestData,
+      futureRequest: _getFakeRequestData,
       hintText: 'Search job role',
-      excludeSelected: true,
-      items: list,
+      items: _list,
       onChanged: (value) {
-        print('changing value to: $value');
+        log('changing value to: $value');
       },
     );
   }
 }
 ```
 
-### **4. Custom dropdown with validation:** *A custom dropdown with validation.*
+### **5. Custom dropdown with validation:** *A custom dropdown with validation.*
 
 ```dart
-class ValidationDropDown extends StatelessWidget {
-  final formKey = GlobalKey<FormState>();
-  String? selected = null;
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:flutter/material.dart';
+import 'dart:developer';
 
-  final List<String> list = [
+const List<String> _list = [
     'Developer',
     'Designer',
     'Consultant',
     'Student',
   ];
 
-  ValidationDropDown({Key? key}) : super(key: key);
+class ValidationDropdown extends StatelessWidget {
+  ValidationDropdown({Key? key}) : super(key: key);
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomDropdown<String>(
-            selectedItem: selected,
             hintText: 'Select job role',
-            items: list,
-            excludeSelected: false,
-            validateOnChange: true,//run validation on item selected
+            items: _list,
             onChanged: (value) {
-              print('changing value to: $value');
-              selected = value;//store the value
+              log('changing value to: $value');
             },
-            validator: (value) {//function to validate is the current selected item is valid or not
-              if (value == null) {
-                return "Must not be null";
-              }
-              return null;
-            },
+            // Run validation on item selected
+            validateOnChange: true,
+            // Function to validate if the current selected item is valid or not
+            validator: (value) => value == null ? "Must not be null" : null,
           ),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                if (!formKey.currentState!.validate()) {
-                  return;
-                }
+                if (!_formKey.currentState!.validate()) return;
               },
               child: const Text(
                 'Submit',
