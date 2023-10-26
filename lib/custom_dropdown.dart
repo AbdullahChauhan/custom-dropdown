@@ -60,7 +60,7 @@ class CustomDropdown<T> extends StatefulWidget {
   final Color? closedFillColor;
   final Color? expandedFillColor;
   final bool canCloseOutsideBounds;
-  final bool? hideSelectedFieldWhenOpen;
+  final bool hideSelectedFieldWhenExpanded;
   final Future<List<T>> Function(String)? futureRequest;
   final VoidCallback? onTextFieldTap;
   final String? noResultFoundText;
@@ -98,6 +98,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintBuilder,
     this.onChanged,
     this.canCloseOutsideBounds = true,
+    this.hideSelectedFieldWhenExpanded = false,
     this.excludeSelected = true,
     this.closedFillColor = Colors.white,
     this.expandedFillColor = Colors.white,
@@ -112,7 +113,6 @@ class CustomDropdown<T> extends StatefulWidget {
         searchType = null,
         futureRequest = null,
         futureRequestDelay = null,
-        hideSelectedFieldWhenOpen = false,
         super(key: key);
 
   CustomDropdown.search({
@@ -141,7 +141,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.onChanged,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
-    this.hideSelectedFieldWhenOpen = false,
+    this.hideSelectedFieldWhenExpanded = false,
     this.closedFillColor = Colors.white,
     this.expandedFillColor = Colors.white,
   })  : assert(
@@ -185,7 +185,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.onChanged,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
-    this.hideSelectedFieldWhenOpen = false,
+    this.hideSelectedFieldWhenExpanded = false,
     this.closedFillColor = Colors.white,
     this.expandedFillColor = Colors.white,
   })  : searchType = _SearchType.onRequestData,
@@ -262,7 +262,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     : widget.expandedBorderRadius,
                 futureRequest: widget.futureRequest,
                 futureRequestDelay: widget.futureRequestDelay,
-                hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenOpen,
+                hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenExpanded,
                 fillColor: widget.expandedFillColor,
                 suffixIcon: widget.expandedSuffixIcon,
               );
