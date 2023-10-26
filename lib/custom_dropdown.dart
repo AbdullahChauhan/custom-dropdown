@@ -73,7 +73,7 @@ class CustomDropdown<T> extends StatefulWidget {
   final Widget Function(BuildContext context, T result)? headerBuilder;
   final Widget Function(BuildContext context, String hint)? hintBuilder;
 
-  const CustomDropdown({
+  CustomDropdown({
     Key? key,
     required this.items,
     this.initialItem,
@@ -101,13 +101,21 @@ class CustomDropdown<T> extends StatefulWidget {
     this.excludeSelected = true,
     this.closedFillColor = Colors.white,
     this.expandedFillColor = Colors.white,
-  })  : searchType = null,
+  })  : assert(
+          items!.isNotEmpty,
+          'Items list must contain at least one item.',
+        ),
+        assert(
+          initialItem == null || items!.contains(initialItem),
+          'Initial item must match with one of the item in items list.',
+        ),
+        searchType = null,
         futureRequest = null,
         futureRequestDelay = null,
         hideSelectedFieldWhenOpen = false,
         super(key: key);
 
-  const CustomDropdown.search({
+  CustomDropdown.search({
     Key? key,
     required this.items,
     this.initialItem,
@@ -136,7 +144,15 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hideSelectedFieldWhenOpen = false,
     this.closedFillColor = Colors.white,
     this.expandedFillColor = Colors.white,
-  })  : searchType = _SearchType.onListData,
+  })  : assert(
+          items!.isNotEmpty,
+          'Items list must contain at least one item.',
+        ),
+        assert(
+          initialItem == null || items!.contains(initialItem),
+          'Initial item must match with one of the item in items list.',
+        ),
+        searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
         super(key: key);
