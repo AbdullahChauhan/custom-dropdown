@@ -120,7 +120,7 @@ class SimpleDropDown extends StatelessWidget {
   }
 }
 
-class Job {
+class Job with CustomDropdownListFilter {
   final String name;
   final IconData icon;
 
@@ -129,6 +129,11 @@ class Job {
   @override
   String toString() {
     return name;
+  }
+
+  @override
+  bool filter(String query) {
+    return name.toLowerCase().contains(query.toLowerCase());
   }
 }
 

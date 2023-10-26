@@ -17,6 +17,11 @@ enum _SearchType { onListData, onRequestData }
 const _defaultFillColor = Colors.white;
 const _defaultErrorColor = Colors.red;
 
+mixin CustomDropdownListFilter {
+  // used to filter elements against query on CustomDropdown<T>.search
+  bool filter(String query);
+}
+
 const _defaultBorderRadius = BorderRadius.all(
   Radius.circular(12),
 );
