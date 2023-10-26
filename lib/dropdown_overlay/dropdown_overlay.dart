@@ -72,6 +72,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   bool? mayFoundSearchRequestResult;
 
   late List<T> items;
+  late T? selectedItem;
   final key1 = GlobalKey(), key2 = GlobalKey();
   final scrollController = ScrollController();
 
@@ -121,10 +122,12 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
       }
     });
 
+    selectedItem = widget.selectedItemNotifier.value;
+
     if (widget.excludeSelected &&
         widget.items.length > 1 &&
-        widget.selectedItemNotifier.value != null) {
-      T value = widget.selectedItemNotifier.value as T;
+        selectedItem != null) {
+      T value = selectedItem as T;
       items = widget.items.where((item) => item != value).toList();
     } else {
       items = widget.items;
@@ -155,7 +158,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             scrollController: scrollController,
             listItemBuilder: widget.listItemBuilder ?? defaultListItemBuilder,
             excludeSelected: items.length > 1 ? widget.excludeSelected : false,
-            selectedItem: widget.selectedItemNotifier.value,
+            selectedItem: selectedItem,
             items: items,
             padding: listPadding,
             onItemSelect: (T value) {
@@ -248,25 +251,19 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          child: widget.selectedItemNotifier
-                                                      .value ==
-                                                  null
-                                              ? widget.hintBuilder != null
+                                          child: selectedItem != null
+                                              ? widget.headerBuilder != null
+                                                  ? widget.headerBuilder!(
+                                                      context,
+                                                      selectedItem as T)
+                                                  : defaultHeaderBuilder(
+                                                      context,
+                                                      selectedItem as T)
+                                              : widget.hintBuilder != null
                                                   ? widget.hintBuilder!(
                                                       context, widget.hintText)
                                                   : defaultHintBuilder(
-                                                      context, widget.hintText)
-                                              : widget.headerBuilder != null
-                                                  ? widget.headerBuilder!(
-                                                      context,
-                                                      widget
-                                                          .selectedItemNotifier
-                                                          .value!)
-                                                  : defaultHeaderBuilder(
-                                                      context,
-                                                      widget
-                                                          .selectedItemNotifier
-                                                          .value!),
+                                                      context, widget.hintText),
                                         ),
                                         const SizedBox(width: 12),
                                         widget.suffixIcon ??

@@ -113,7 +113,7 @@ class SimpleDropDown extends StatelessWidget {
     return CustomDropdown<String>(
       hintText: 'Select job role',
       items: _list,
-      selectedItem: _list[0],
+      initialItem: _list[0],
       excludeSelected: false,
       onChanged: debugPrint,
     );

@@ -40,7 +40,7 @@ const _defaultHintValue = 'Select value';
 
 class CustomDropdown<T> extends StatefulWidget {
   final List<T>? items;
-  final ValueNotifier<T?> selectedItemNotifier;
+  final T? initialItem;
   final String? hintText;
   final BoxBorder? closedBorder;
   final BorderRadius? closedBorderRadius;
@@ -73,10 +73,10 @@ class CustomDropdown<T> extends StatefulWidget {
   final Widget Function(BuildContext context, T result)? headerBuilder;
   final Widget Function(BuildContext context, String hint)? hintBuilder;
 
-  CustomDropdown({
+  const CustomDropdown({
     Key? key,
     required this.items,
-    T? selectedItem,
+    this.initialItem,
     this.hintText,
     this.noResultFoundText,
     this.onTextFieldTap,
@@ -105,13 +105,12 @@ class CustomDropdown<T> extends StatefulWidget {
         futureRequest = null,
         futureRequestDelay = null,
         hideSelectedFieldWhenOpen = false,
-        selectedItemNotifier = ValueNotifier(selectedItem),
         super(key: key);
 
-  CustomDropdown.search({
+  const CustomDropdown.search({
     Key? key,
     required this.items,
-    T? selectedItem,
+    this.initialItem,
     this.hintText,
     this.noResultFoundText,
     this.onTextFieldTap,
@@ -140,14 +139,13 @@ class CustomDropdown<T> extends StatefulWidget {
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
-        selectedItemNotifier = ValueNotifier(selectedItem),
         super(key: key);
 
-  CustomDropdown.searchRequest({
+  const CustomDropdown.searchRequest({
     Key? key,
     required this.futureRequest,
     this.futureRequestDelay,
-    T? selectedItem,
+    this.initialItem,
     this.items,
     this.hintText,
     this.noResultFoundText,
@@ -175,7 +173,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.closedFillColor = Colors.white,
     this.expandedFillColor = Colors.white,
   })  : searchType = _SearchType.onRequestData,
-        selectedItemNotifier = ValueNotifier(selectedItem),
         super(key: key);
 
   @override
@@ -184,13 +181,20 @@ class CustomDropdown<T> extends StatefulWidget {
 
 class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   final layerLink = LayerLink();
+  late ValueNotifier<T?> selectedItemNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedItemNotifier = ValueNotifier(widget.initialItem);
+  }
 
   @override
   Widget build(BuildContext context) {
     final safeHintText = widget.hintText ?? _defaultHintValue;
 
     return FormField<T>(
-      initialValue: widget.selectedItemNotifier.value,
+      initialValue: selectedItemNotifier.value,
       validator: (val) {
         if (widget.validator != null) {
           return widget.validator!(val);
@@ -209,7 +213,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
               return _DropdownOverlay<T>(
                 onTextFieldTap: widget.onTextFieldTap ?? () {},
                 onItemSelect: (T value) {
-                  widget.selectedItemNotifier.value = value;
+                  selectedItemNotifier.value = value;
 
                   if (widget.onChanged != null) {
                     widget.onChanged!(value);
@@ -223,7 +227,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 },
                 noResultFound: widget.noResultFoundText ?? 'No result found.',
                 items: widget.items ?? [],
-                selectedItemNotifier: widget.selectedItemNotifier,
+                selectedItemNotifier: selectedItemNotifier,
                 size: size,
                 listItemBuilder: widget.listItemBuilder,
                 layerLink: layerLink,
@@ -252,7 +256,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 link: layerLink,
                 child: _DropDownField<T>(
                   onTap: showCallback,
-                  selectedItemNotifier: widget.selectedItemNotifier,
+                  selectedItemNotifier: selectedItemNotifier,
                   border: formFieldState.hasError
                       ? widget.closedErrorBorder ?? _defaultErrorBorder
                       : widget.closedBorder,

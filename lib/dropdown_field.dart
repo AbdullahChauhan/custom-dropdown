@@ -42,6 +42,14 @@ class _DropDownField<T> extends StatefulWidget {
 }
 
 class _DropDownFieldState<T> extends State<_DropDownField<T>> {
+  T? selectedItem;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedItem = widget.selectedItemNotifier.value;
+  }
+
   Widget _defaultHeaderBuilder(T result) {
     return Text(
       result.toString(),
@@ -67,6 +75,12 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   }
 
   @override
+  void didUpdateWidget(covariant _DropDownField<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    selectedItem = widget.selectedItemNotifier.value;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.onTap,
@@ -80,12 +94,10 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
         child: Row(
           children: [
             Expanded(
-              child: widget.selectedItemNotifier.value != null
+              child: selectedItem != null
                   ? widget.headerBuilder != null
-                      ? widget.headerBuilder!(
-                          context, widget.selectedItemNotifier.value as T)
-                      : _defaultHeaderBuilder(
-                          widget.selectedItemNotifier.value as T)
+                      ? widget.headerBuilder!(context, selectedItem as T)
+                      : _defaultHeaderBuilder(selectedItem as T)
                   : widget.hintBuilder != null
                       ? widget.hintBuilder!(context, widget.hintText)
                       : _defaultHintBuilder(widget.hintText),
