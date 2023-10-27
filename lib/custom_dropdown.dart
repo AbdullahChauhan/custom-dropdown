@@ -40,33 +40,81 @@ const _defaultErrorStyle = TextStyle(
 const _defaultHintValue = 'Select value';
 
 class CustomDropdown<T> extends StatefulWidget {
+  /// The list of items the user can select.
   final List<T>? items;
+
+  /// Initial selected item from the list of [items].
   final T? initialItem;
+
+  /// Text that suggests what sort of data the dropdown represents.
   final String? hintText;
+
+  /// Border for closed state of [CustomDropdown].
   final BoxBorder? closedBorder;
+
+  /// Border radius for closed state of [CustomDropdown].
   final BorderRadius? closedBorderRadius;
+
+  /// Border for opened/expanded state of [CustomDropdown].
   final BoxBorder? expandedBorder;
+
+  /// Border radius for opened/expanded state of [CustomDropdown].
   final BorderRadius? expandedBorderRadius;
+
+  /// An optional method that validates the selected item.
+  /// Returns an error string to display as per the validation, or null otherwise.
   final String? Function(T?)? validator;
+
+  /// Error border for closed state of [CustomDropdown].
   final BoxBorder? closedErrorBorder;
+
+  /// Error border for opened/expanded state of [CustomDropdown].
   final BoxBorder? expandedErrorBorder;
+
+  /// Error border radius for closed state of [CustomDropdown].
   final BorderRadius? closedErrorBorderRadius;
+
+  /// Error border radius for opened/expanded state of [CustomDropdown].
   final BorderRadius? expandedErrorBorderRadius;
+
+  /// The style to use for the string returning from [validator].
   final TextStyle? errorStyle;
+
+  /// Enable the validation listener on item change.
+  /// This implies to [validator] everytime when the item change.
   final bool validateOnChange;
+
+  /// Suffix icon for closed state of [CustomDropdown].
   final Widget? closedSuffixIcon;
+
+  /// Suffix icon for opened/expanded state of [CustomDropdown].
   final Widget? expandedSuffixIcon;
+
+  /// Called when the item of the [CustomDropdown] should change.
   final Function(T)? onChanged;
+
+  /// Hide the selected item from the [items] list.
   final bool excludeSelected;
+
+  /// [CustomDropdown] field color (closed state).
   final Color? closedFillColor;
+
+  /// [CustomDropdown] overlay color (opened/expanded state).
   final Color? expandedFillColor;
+
+  /// Can close [CustomDropdown] overlay by tapping outside.
+  /// Here "outside" covers the entire screen.
   final bool canCloseOutsideBounds;
+
+  /// Hide the selected item field when [CustomDropdown] overlay opened/expanded.
   final bool hideSelectedFieldWhenExpanded;
+
+  /// The asynchronous computation from which the items list returns.
   final Future<List<T>> Function(String)? futureRequest;
   final VoidCallback? onTextFieldTap;
   final String? noResultFoundText;
 
-  /// Duration after which the [futureRequest] is to be executed
+  /// Duration after which the [futureRequest] is to be executed.
   final Duration? futureRequestDelay;
   // ignore: library_private_types_in_public_api
   final _SearchType? searchType;
