@@ -39,6 +39,22 @@ const _defaultErrorStyle = TextStyle(
 
 const _defaultHintValue = 'Select value';
 
+typedef _ListItemBuilder<T> = Widget Function(
+  BuildContext context,
+  T item,
+);
+typedef _HeaderBuilder<T> = Widget Function(
+  BuildContext context,
+  T selectedItem,
+);
+typedef _HintBuilder = Widget Function(
+  BuildContext context,
+  String hint,
+);
+typedef _NoResultFoundBuilder = Widget Function(
+  BuildContext context,
+);
+
 class CustomDropdown<T> extends StatefulWidget {
   /// The list of items the user can select.
   final List<T>? items;
@@ -116,11 +132,17 @@ class CustomDropdown<T> extends StatefulWidget {
 
   /// Duration after which the [futureRequest] is to be executed.
   final Duration? futureRequestDelay;
+
   // ignore: library_private_types_in_public_api
   final _SearchType? searchType;
-  final Widget Function(BuildContext context, T result)? listItemBuilder;
-  final Widget Function(BuildContext context, T result)? headerBuilder;
-  final Widget Function(BuildContext context, String hint)? hintBuilder;
+  // ignore: library_private_types_in_public_api
+  final _ListItemBuilder<T>? listItemBuilder;
+  // ignore: library_private_types_in_public_api
+  final _HeaderBuilder<T>? headerBuilder;
+  // ignore: library_private_types_in_public_api
+  final _HintBuilder? hintBuilder;
+  // ignore: library_private_types_in_public_api
+  final _NoResultFoundBuilder? noResultFoundBuilder;
 
   CustomDropdown({
     Key? key,
@@ -162,6 +184,7 @@ class CustomDropdown<T> extends StatefulWidget {
         searchType = null,
         futureRequest = null,
         futureRequestDelay = null,
+        noResultFoundBuilder = null,
         super(key: key);
 
   CustomDropdown.search({
@@ -174,6 +197,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
+    this.noResultFoundBuilder,
     this.errorStyle,
     this.closedErrorBorder,
     this.closedErrorBorderRadius,
@@ -218,6 +242,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
+    this.noResultFoundBuilder,
     this.errorStyle,
     this.closedErrorBorder,
     this.closedErrorBorderRadius,

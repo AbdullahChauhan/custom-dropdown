@@ -17,9 +17,12 @@ class _DropDownField<T> extends StatefulWidget {
   final String? errorText;
   final TextStyle? errorStyle;
   final BorderSide? errorBorderSide;
-  final Widget Function(BuildContext context, T result)? headerBuilder;
-  final Widget Function(BuildContext context, String hint)? hintBuilder;
   final Widget? suffixIcon;
+
+  // ignore: library_private_types_in_public_api
+  final _HeaderBuilder<T>? headerBuilder;
+  // ignore: library_private_types_in_public_api
+  final _HintBuilder? hintBuilder;
 
   const _DropDownField({
     Key? key,

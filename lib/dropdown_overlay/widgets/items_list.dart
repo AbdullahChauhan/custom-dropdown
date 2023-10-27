@@ -7,7 +7,8 @@ class _ItemsList<T> extends StatelessWidget {
   final Function(T) onItemSelect;
   final bool excludeSelected;
   final EdgeInsets padding;
-  final Widget Function(BuildContext context, T result) listItemBuilder;
+  // ignore: library_private_types_in_public_api
+  final _ListItemBuilder<T> listItemBuilder;
 
   const _ItemsList({
     Key? key,

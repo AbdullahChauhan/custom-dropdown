@@ -31,9 +31,15 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final String noResultFound;
   final VoidCallback onTextFieldTap;
   final Widget? suffixIcon;
-  final Widget Function(BuildContext context, T result)? listItemBuilder;
-  final Widget Function(BuildContext context, T result)? headerBuilder;
-  final Widget Function(BuildContext context, String hint)? hintBuilder;
+
+  // ignore: library_private_types_in_public_api
+  final _ListItemBuilder<T>? listItemBuilder;
+  // ignore: library_private_types_in_public_api
+  final _HeaderBuilder<T>? headerBuilder;
+  // ignore: library_private_types_in_public_api
+  final _HintBuilder? hintBuilder;
+  // ignore: library_private_types_in_public_api
+  final _NoResultFoundBuilder? noResultFoundBuilder;
 
   const _DropdownOverlay({
     Key? key,
@@ -56,6 +62,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     this.futureRequest,
     this.futureRequestDelay,
     this.listItemBuilder,
+    this.noResultFoundBuilder,
     this.border,
     this.borderRadius,
     this.fillColor,
