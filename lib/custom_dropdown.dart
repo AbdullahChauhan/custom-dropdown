@@ -291,6 +291,12 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   }
 
   @override
+  void dispose() {
+    selectedItemNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final safeHintText = widget.hintText ?? _defaultHintValue;
 
