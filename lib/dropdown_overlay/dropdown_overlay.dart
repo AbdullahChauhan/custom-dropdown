@@ -31,7 +31,6 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final String noResultFoundText;
   final VoidCallback onTextFieldTap;
   final Widget? suffixIcon;
-
   // ignore: library_private_types_in_public_api
   final _ListItemBuilder<T>? listItemBuilder;
   // ignore: library_private_types_in_public_api

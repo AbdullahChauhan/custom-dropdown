@@ -18,7 +18,8 @@ const _defaultFillColor = Colors.white;
 const _defaultErrorColor = Colors.red;
 
 mixin CustomDropdownListFilter {
-  // used to filter elements against query on CustomDropdown<T>.search
+  /// Used to filter elements against query on
+  /// [CustomDropdown<T>.search] or [CustomDropdown<T>.searchRequest]
   bool filter(String query);
 }
 
@@ -78,7 +79,7 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Border radius for opened/expanded state of [CustomDropdown].
   final BorderRadius? expandedBorderRadius;
 
-  /// An optional method that validates the selected item.
+  /// A method that validates the selected item.
   /// Returns an error string to display as per the validation, or null otherwise.
   final String? Function(T?)? validator;
 
@@ -129,21 +130,30 @@ class CustomDropdown<T> extends StatefulWidget {
   /// The asynchronous computation from which the items list returns.
   final Future<List<T>> Function(String)? futureRequest;
   final VoidCallback? onTextFieldTap;
+
+  /// Text that notify there's no search results match.
   final String? noResultFoundText;
 
   /// Duration after which the [futureRequest] is to be executed.
   final Duration? futureRequestDelay;
 
-  // ignore: library_private_types_in_public_api
-  final _SearchType? searchType;
+  /// The [listItemBuilder] that will be used to build item on demand.
   // ignore: library_private_types_in_public_api
   final _ListItemBuilder<T>? listItemBuilder;
+
+  /// The [headerBuilder] that will be used to build [CustomDropdown] header field.
   // ignore: library_private_types_in_public_api
   final _HeaderBuilder<T>? headerBuilder;
+
+  /// The [hintBuilder] that will be used to build [CustomDropdown] hint of header field.
   // ignore: library_private_types_in_public_api
   final _HintBuilder? hintBuilder;
+
+  /// The [noResultFoundBuilder] that will be used to build area when there's no search results match.
   // ignore: library_private_types_in_public_api
   final _NoResultFoundBuilder? noResultFoundBuilder;
+
+  final _SearchType? _searchType;
 
   CustomDropdown({
     Key? key,
@@ -182,7 +192,7 @@ class CustomDropdown<T> extends StatefulWidget {
           initialItem == null || items!.contains(initialItem),
           'Initial item must match with one of the item in items list.',
         ),
-        searchType = null,
+        _searchType = null,
         futureRequest = null,
         futureRequestDelay = null,
         noResultFoundBuilder = null,
@@ -226,7 +236,7 @@ class CustomDropdown<T> extends StatefulWidget {
           initialItem == null || items!.contains(initialItem),
           'Initial item must match with one of the item in items list.',
         ),
-        searchType = _SearchType.onListData,
+        _searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
         super(key: key);
@@ -263,7 +273,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hideSelectedFieldWhenExpanded = false,
     this.closedFillColor = Colors.white,
     this.expandedFillColor = Colors.white,
-  })  : searchType = _SearchType.onRequestData,
+  })  : _searchType = _SearchType.onRequestData,
         super(key: key);
 
   @override
@@ -330,7 +340,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 hintBuilder: widget.hintBuilder,
                 excludeSelected: widget.excludeSelected,
                 canCloseOutsideBounds: widget.canCloseOutsideBounds,
-                searchType: widget.searchType,
+                searchType: widget._searchType,
                 border: formFieldState.hasError
                     ? widget.expandedErrorBorder ?? _defaultErrorBorder
                     : widget.expandedBorder,
