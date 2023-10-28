@@ -28,7 +28,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final Color? fillColor;
   final BoxBorder? border;
   final BorderRadius? borderRadius;
-  final String noResultFound;
+  final String noResultFoundText;
   final VoidCallback onTextFieldTap;
   final Widget? suffixIcon;
 
@@ -51,7 +51,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.selectedItemNotifier,
     required this.excludeSelected,
     required this.onItemSelect,
-    required this.noResultFound,
+    required this.noResultFoundText,
     required this.onTextFieldTap,
     required this.canCloseOutsideBounds,
     this.suffixIcon,
@@ -111,6 +111,22 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
         fontSize: 16,
         color: Color(0xFFA7A7A7),
         fontWeight: FontWeight.w400,
+      ),
+    );
+  }
+
+  Widget noResultFoundBuilder(BuildContext context, String text) {
+    if (widget.noResultFoundBuilder != null) {
+      return widget.noResultFoundBuilder!(context, text);
+    }
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 16),
+        ),
       ),
     );
   }
@@ -176,15 +192,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
         : (mayFoundSearchRequestResult != null &&
                     !mayFoundSearchRequestResult!) ||
                 widget.searchType == _SearchType.onListData
-            ? Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: Text(
-                    widget.noResultFound,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ),
-              )
+            ? noResultFoundBuilder(context, widget.noResultFoundText)
             : const SizedBox(height: 12);
 
     final child = Stack(

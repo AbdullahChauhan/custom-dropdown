@@ -53,6 +53,7 @@ typedef _HintBuilder = Widget Function(
 );
 typedef _NoResultFoundBuilder = Widget Function(
   BuildContext context,
+  String text,
 );
 
 class CustomDropdown<T> extends StatefulWidget {
@@ -315,7 +316,9 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     formFieldState.validate();
                   }
                 },
-                noResultFound: widget.noResultFoundText ?? 'No result found.',
+                noResultFoundText:
+                    widget.noResultFoundText ?? 'No result found.',
+                noResultFoundBuilder: widget.noResultFoundBuilder,
                 items: widget.items ?? [],
                 selectedItemNotifier: selectedItemNotifier,
                 size: size,
