@@ -129,7 +129,6 @@ class CustomDropdown<T> extends StatefulWidget {
 
   /// The asynchronous computation from which the items list returns.
   final Future<List<T>> Function(String)? futureRequest;
-  final VoidCallback? onTextFieldTap;
 
   /// Text that notify there's no search results match.
   final String? noResultFoundText;
@@ -161,7 +160,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.initialItem,
     this.hintText,
     this.noResultFoundText,
-    this.onTextFieldTap,
     this.errorStyle,
     this.closedErrorBorder,
     this.closedErrorBorderRadius,
@@ -204,7 +202,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.initialItem,
     this.hintText,
     this.noResultFoundText,
-    this.onTextFieldTap,
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
@@ -249,7 +246,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.items,
     this.hintText,
     this.noResultFoundText,
-    this.onTextFieldTap,
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
@@ -318,7 +314,6 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
           child: _OverlayBuilder(
             overlay: (size, hideCallback) {
               return _DropdownOverlay<T>(
-                onTextFieldTap: widget.onTextFieldTap ?? () {},
                 onItemSelect: (T value) {
                   selectedItemNotifier.value = value;
 

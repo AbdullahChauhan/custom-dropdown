@@ -29,7 +29,6 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final BoxBorder? border;
   final BorderRadius? borderRadius;
   final String noResultFoundText;
-  final VoidCallback onTextFieldTap;
   final Widget? suffixIcon;
   // ignore: library_private_types_in_public_api
   final _ListItemBuilder<T>? listItemBuilder;
@@ -51,7 +50,6 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.excludeSelected,
     required this.onItemSelect,
     required this.noResultFoundText,
-    required this.onTextFieldTap,
     required this.canCloseOutsideBounds,
     this.suffixIcon,
     this.headerBuilder,
@@ -290,7 +288,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                   if (!widget.hideSelectedFieldWhenOpen!)
                                     _SearchField<T>.forListData(
                                       items: widget.items,
-                                      onTextFieldTap: widget.onTextFieldTap,
                                       onSearchedItems: (val) {
                                         setState(() => items = val);
                                       },
@@ -309,8 +306,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                               onSearchedItems: (val) {
                                                 setState(() => items = val);
                                               },
-                                              onTextFieldTap:
-                                                  widget.onTextFieldTap,
                                             ),
                                           ),
                                           widget.suffixIcon ??
@@ -324,7 +319,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         _SearchType.onRequestData)
                                   if (!widget.hideSelectedFieldWhenOpen!)
                                     _SearchField<T>.forRequestData(
-                                      onTextFieldTap: widget.onTextFieldTap,
                                       items: widget.items,
                                       onFutureRequestLoading: (val) {
                                         setState(() {
@@ -351,8 +345,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                           Expanded(
                                             child:
                                                 _SearchField<T>.forRequestData(
-                                              onTextFieldTap:
-                                                  widget.onTextFieldTap,
                                               items: items,
                                               onFutureRequestLoading: (val) {
                                                 setState(() {

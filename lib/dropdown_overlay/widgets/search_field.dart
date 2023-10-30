@@ -9,13 +9,10 @@ class _SearchField<T> extends StatefulWidget {
   final ValueChanged<bool>? onFutureRequestLoading;
   final ValueChanged<bool>? mayFoundResult;
 
-  final VoidCallback onTextFieldTap;
-
   const _SearchField.forListData({
     Key? key,
     required this.items,
     required this.onSearchedItems,
-    required this.onTextFieldTap,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
@@ -31,7 +28,6 @@ class _SearchField<T> extends StatefulWidget {
     required this.futureRequestDelay,
     required this.onFutureRequestLoading,
     required this.mayFoundResult,
-    required this.onTextFieldTap,
   })  : searchType = _SearchType.onRequestData,
         super(key: key);
 
@@ -102,9 +98,6 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextField(
-        onTap: () {
-          widget.onTextFieldTap();
-        },
         focusNode: focusNode,
         onChanged: (val) async {
           if (val.isEmpty) {
