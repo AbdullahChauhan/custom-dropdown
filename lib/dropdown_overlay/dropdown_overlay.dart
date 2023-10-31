@@ -171,7 +171,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     final onSearch = widget.searchType != null;
 
     // overlay offset
-    final overlayOffset = Offset(-12, displayOverlayBottom ? 0 : 60);
+    final overlayOffset = Offset(-12, displayOverlayBottom ? 0 : 64);
 
     // list padding
     final listPadding =
