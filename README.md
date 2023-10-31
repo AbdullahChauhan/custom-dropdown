@@ -117,7 +117,7 @@ class SimpleDropdown extends StatelessWidget {
 ```
 
 ### **3. Custom dropdown with search:** *A custom dropdown with the possibility to filter the items.*
-First, let's enchance our Job model with more functionality:
+First, let's enhance our Job model with more functionality:
 ```dart
 class Job with CustomDropdownListFilter {
   final String name;
