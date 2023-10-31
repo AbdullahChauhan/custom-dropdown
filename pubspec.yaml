@@ -22,7 +22,9 @@ funding:
   - https://buymeacoffee.com/abdullahchauhan
 
 screenshots:
-  - description: "Custom dropdown"
+  - description: "Custom dropdown Preview"
+    path: screenshots/preview.png
+  - description: "Dropdown example"
     path: screenshots/example_1.jpg
-  - description: "Custom search dropdown"
+  - description: "Search dropdown example"
     path: screenshots/example_2.jpg
