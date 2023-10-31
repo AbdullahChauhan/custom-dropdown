@@ -285,7 +285,7 @@ For a complete customization of the package, go to the [example](https://github.
 
 ## Preview
 
-![Example App](https://github.com/AbdullahChauhan/custom-dropdown/blob/master/readme_assets/preview.gif)
+<img src="https://raw.githubusercontent.com/AbdullahChauhan/custom-dropdown/master/readme_assets/preview.gif" width="300"/>
 
 <hr>
 
