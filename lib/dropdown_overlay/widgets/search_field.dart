@@ -1,10 +1,10 @@
 part of '../../custom_dropdown.dart';
 
-class _SearchField extends StatefulWidget {
-  final List<String> items;
-  final ValueChanged<List<String>> onSearchedItems;
+class _SearchField<T> extends StatefulWidget {
+  final List<T> items;
+  final ValueChanged<List<T>> onSearchedItems;
   final _SearchType? searchType;
-  final Future<List<String>> Function(String)? futureRequest;
+  final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
   final ValueChanged<bool>? onFutureRequestLoading;
   final ValueChanged<bool>? mayFoundResult;
@@ -32,10 +32,10 @@ class _SearchField extends StatefulWidget {
         super(key: key);
 
   @override
-  State<_SearchField> createState() => _SearchFieldState();
+  State<_SearchField<T>> createState() => _SearchFieldState<T>();
 }
 
-class _SearchFieldState extends State<_SearchField> {
+class _SearchFieldState<T> extends State<_SearchField<T>> {
   final searchCtrl = TextEditingController();
   bool isFieldEmpty = false;
   FocusNode focusNode = FocusNode();
@@ -57,10 +57,16 @@ class _SearchFieldState extends State<_SearchField> {
     super.dispose();
   }
 
-  void onSearch(String str) {
-    final result = widget.items
-        .where((item) => item.toLowerCase().contains(str.toLowerCase()))
-        .toList();
+  void onSearch(String query) {
+    final result = widget.items.where(
+      (item) {
+        if (item is CustomDropdownListFilter) {
+          return item.filter(query);
+        } else {
+          return item.toString().toLowerCase().contains(query.toLowerCase());
+        }
+      },
+    ).toList();
     widget.onSearchedItems(result);
   }
 
@@ -72,7 +78,7 @@ class _SearchFieldState extends State<_SearchField> {
   }
 
   void searchRequest(String val) async {
-    List<String> result = [];
+    List<T> result = [];
     try {
       result = await widget.futureRequest!(val);
       widget.onFutureRequestLoading!(false);

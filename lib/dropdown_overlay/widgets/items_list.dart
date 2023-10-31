@@ -1,25 +1,24 @@
 part of '../../custom_dropdown.dart';
 
-class _ItemsList extends StatelessWidget {
+class _ItemsList<T> extends StatelessWidget {
   final ScrollController scrollController;
-  final List<String> items;
+  final T? selectedItem;
+  final List<T> items;
+  final Function(T) onItemSelect;
   final bool excludeSelected;
-  final String headerText;
-  final ValueSetter<String> onItemSelect;
   final EdgeInsets padding;
-  final TextStyle? itemTextStyle;
-  final _ListItemBuilder listItemBuilder;
+  // ignore: library_private_types_in_public_api
+  final _ListItemBuilder<T> listItemBuilder;
 
   const _ItemsList({
     Key? key,
     required this.scrollController,
+    required this.selectedItem,
     required this.items,
-    required this.excludeSelected,
-    required this.headerText,
     required this.onItemSelect,
-    required this.listItemBuilder,
+    required this.excludeSelected,
     required this.padding,
-    this.itemTextStyle,
+    required this.listItemBuilder,
   }) : super(key: key);
 
   @override
@@ -32,7 +31,7 @@ class _ItemsList extends StatelessWidget {
         padding: padding,
         itemCount: items.length,
         itemBuilder: (_, index) {
-          final selected = !excludeSelected && headerText == items[index];
+          final selected = !excludeSelected && selectedItem == items[index];
           return Material(
             color: Colors.transparent,
             child: InkWell(
