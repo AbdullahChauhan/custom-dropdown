@@ -20,3 +20,9 @@ flutter:
 
 funding:
   - https://buymeacoffee.com/abdullahchauhan
+
+screenshots:
+  - description: "Custom dropdown"
+    path: screenshots/example_1.jpg
+  - description: "Custom search dropdown"
+    path: screenshots/example_2.jpg
