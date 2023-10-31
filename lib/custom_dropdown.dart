@@ -89,14 +89,8 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Error border for closed state of [CustomDropdown].
   final BoxBorder? closedErrorBorder;
 
-  /// Error border for opened/expanded state of [CustomDropdown].
-  final BoxBorder? expandedErrorBorder;
-
   /// Error border radius for closed state of [CustomDropdown].
   final BorderRadius? closedErrorBorderRadius;
-
-  /// Error border radius for opened/expanded state of [CustomDropdown].
-  final BorderRadius? expandedErrorBorderRadius;
 
   /// The style to use for the string returning from [validator].
   final TextStyle? errorStyle;
@@ -167,8 +161,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.errorStyle,
     this.closedErrorBorder,
     this.closedErrorBorderRadius,
-    this.expandedErrorBorder,
-    this.expandedErrorBorderRadius,
     this.validator,
     this.validateOnChange = true,
     this.closedBorder,
@@ -214,8 +206,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.errorStyle,
     this.closedErrorBorder,
     this.closedErrorBorderRadius,
-    this.expandedErrorBorder,
-    this.expandedErrorBorderRadius,
     this.validator,
     this.validateOnChange = true,
     this.closedBorder,
@@ -259,8 +249,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.errorStyle,
     this.closedErrorBorder,
     this.closedErrorBorderRadius,
-    this.expandedErrorBorder,
-    this.expandedErrorBorderRadius,
     this.validator,
     this.validateOnChange = true,
     this.closedBorder,
@@ -350,9 +338,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 canCloseOutsideBounds: widget.canCloseOutsideBounds,
                 searchType: widget._searchType,
                 border: widget.expandedBorder,
-                borderRadius: formFieldState.hasError
-                    ? widget.expandedErrorBorderRadius
-                    : widget.expandedBorderRadius,
+                borderRadius: widget.expandedBorderRadius,
                 futureRequest: widget.futureRequest,
                 futureRequestDelay: widget.futureRequestDelay,
                 hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenExpanded,
