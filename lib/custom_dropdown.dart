@@ -349,9 +349,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 excludeSelected: widget.excludeSelected,
                 canCloseOutsideBounds: widget.canCloseOutsideBounds,
                 searchType: widget._searchType,
-                border: formFieldState.hasError
-                    ? widget.expandedErrorBorder ?? _defaultErrorBorder
-                    : widget.expandedBorder,
+                border: widget.expandedBorder,
                 borderRadius: formFieldState.hasError
                     ? widget.expandedErrorBorderRadius
                     : widget.expandedBorderRadius,
