@@ -19,6 +19,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final LayerLink layerLink;
   final VoidCallback hideOverlay;
   final String hintText;
+  final String searchHintText;
   final bool excludeSelected;
   final bool? hideSelectedFieldWhenOpen;
   final bool canCloseOutsideBounds;
@@ -46,6 +47,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.layerLink,
     required this.hideOverlay,
     required this.hintText,
+    required this.searchHintText,
     required this.selectedItemNotifier,
     required this.excludeSelected,
     required this.onItemSelect,
@@ -291,6 +293,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                   if (!widget.hideSelectedFieldWhenOpen!)
                                     _SearchField<T>.forListData(
                                       items: widget.items,
+                                      searchHintText: widget.searchHintText,
                                       onSearchedItems: (val) {
                                         setState(() => items = val);
                                       },
@@ -306,6 +309,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                           Expanded(
                                             child: _SearchField<T>.forListData(
                                               items: widget.items,
+                                              searchHintText:
+                                                  widget.searchHintText,
                                               onSearchedItems: (val) {
                                                 setState(() => items = val);
                                               },
@@ -323,6 +328,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                   if (!widget.hideSelectedFieldWhenOpen!)
                                     _SearchField<T>.forRequestData(
                                       items: widget.items,
+                                      searchHintText: widget.searchHintText,
                                       onFutureRequestLoading: (val) {
                                         setState(() {
                                           isSearchRequestLoading = val;
@@ -349,6 +355,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                             child:
                                                 _SearchField<T>.forRequestData(
                                               items: items,
+                                              searchHintText:
+                                                  widget.searchHintText,
                                               onFutureRequestLoading: (val) {
                                                 setState(() {
                                                   isSearchRequestLoading = val;

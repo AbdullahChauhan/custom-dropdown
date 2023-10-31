@@ -67,6 +67,9 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Text that suggests what sort of data the dropdown represents.
   final String? hintText;
 
+  /// Text that suggests what to search in the search field.
+  final String? searchHintText;
+
   /// Border for closed state of [CustomDropdown].
   final BoxBorder? closedBorder;
 
@@ -159,6 +162,7 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.items,
     this.initialItem,
     this.hintText,
+    this.searchHintText,
     this.noResultFoundText,
     this.errorStyle,
     this.closedErrorBorder,
@@ -201,6 +205,7 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.items,
     this.initialItem,
     this.hintText,
+    this.searchHintText,
     this.noResultFoundText,
     this.listItemBuilder,
     this.headerBuilder,
@@ -245,6 +250,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.initialItem,
     this.items,
     this.hintText,
+    this.searchHintText,
     this.noResultFoundText,
     this.listItemBuilder,
     this.headerBuilder,
@@ -338,6 +344,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 hideOverlay: hideCallback,
                 headerBuilder: widget.headerBuilder,
                 hintText: safeHintText,
+                searchHintText: widget.searchHintText ?? 'Search',
                 hintBuilder: widget.hintBuilder,
                 excludeSelected: widget.excludeSelected,
                 canCloseOutsideBounds: widget.canCloseOutsideBounds,

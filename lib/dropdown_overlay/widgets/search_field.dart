@@ -3,6 +3,7 @@ part of '../../custom_dropdown.dart';
 class _SearchField<T> extends StatefulWidget {
   final List<T> items;
   final ValueChanged<List<T>> onSearchedItems;
+  final String searchHintText;
   final _SearchType? searchType;
   final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
@@ -13,6 +14,7 @@ class _SearchField<T> extends StatefulWidget {
     Key? key,
     required this.items,
     required this.onSearchedItems,
+    required this.searchHintText,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
@@ -24,6 +26,7 @@ class _SearchField<T> extends StatefulWidget {
     Key? key,
     required this.items,
     required this.onSearchedItems,
+    required this.searchHintText,
     required this.futureRequest,
     required this.futureRequestDelay,
     required this.onFutureRequestLoading,
@@ -132,7 +135,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
           fillColor: Colors.grey[50],
           constraints: const BoxConstraints.tightFor(height: 40),
           contentPadding: const EdgeInsets.all(8),
-          hintText: 'Search',
+          hintText: widget.searchHintText,
           hintStyle: const TextStyle(color: Colors.grey),
           prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 22),
           suffixIcon: GestureDetector(
