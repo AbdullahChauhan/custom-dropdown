@@ -28,3 +28,10 @@ screenshots:
     path: screenshots/example_1.jpg
   - description: "Search dropdown example"
     path: screenshots/example_2.jpg
+
+topics:
+  - ui
+  - dropdown
+  - spinner
+  - widget
+  - widgets
