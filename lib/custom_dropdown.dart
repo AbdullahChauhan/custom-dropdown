@@ -133,6 +133,10 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Duration after which the [futureRequest] is to be executed.
   final Duration? futureRequestDelay;
 
+  /// Text maxlines for header and list item text.
+  /// Useless if any or both [headerBuilder] and [listItemBuilder] provided.
+  final int maxlines;
+
   /// The [listItemBuilder] that will be used to build item on demand.
   // ignore: library_private_types_in_public_api
   final _ListItemBuilder<T>? listItemBuilder;
@@ -173,6 +177,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.headerBuilder,
     this.hintBuilder,
     this.onChanged,
+    this.maxlines = 1,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.excludeSelected = true,
@@ -215,6 +220,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.expandedBorder,
     this.expandedBorderRadius,
     this.onChanged,
+    this.maxlines = 1,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
@@ -258,6 +264,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.closedSuffixIcon,
     this.expandedSuffixIcon,
     this.onChanged,
+    this.maxlines = 1,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
@@ -344,6 +351,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenExpanded,
                 fillColor: widget.expandedFillColor,
                 suffixIcon: widget.expandedSuffixIcon,
+                maxlines: widget.maxlines,
               );
             },
             child: (showCallback) {
@@ -363,6 +371,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   headerBuilder: widget.headerBuilder,
                   suffixIcon: widget.closedSuffixIcon,
                   fillColor: widget.closedFillColor,
+                  maxlines: widget.maxlines,
                 ),
               );
             },

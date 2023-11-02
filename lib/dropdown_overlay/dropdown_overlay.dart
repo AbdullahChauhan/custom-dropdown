@@ -31,6 +31,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final BorderRadius? borderRadius;
   final String noResultFoundText;
   final Widget? suffixIcon;
+  final int maxlines;
   // ignore: library_private_types_in_public_api
   final _ListItemBuilder<T>? listItemBuilder;
   // ignore: library_private_types_in_public_api
@@ -53,6 +54,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.onItemSelect,
     required this.noResultFoundText,
     required this.canCloseOutsideBounds,
+    required this.maxlines,
     this.suffixIcon,
     this.headerBuilder,
     this.hintBuilder,
@@ -85,7 +87,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   Widget defaultListItemBuilder(BuildContext context, T result) {
     return Text(
       result.toString(),
-      maxLines: 1,
+      maxLines: widget.maxlines,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(fontSize: 16),
     );
@@ -94,7 +96,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   Widget defaultHeaderBuilder(BuildContext context, T result) {
     return Text(
       result.toString(),
-      maxLines: 1,
+      maxLines: widget.maxlines,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
         fontSize: 16,
