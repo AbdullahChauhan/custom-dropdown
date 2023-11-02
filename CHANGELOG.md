@@ -1,6 +1,6 @@
 # 2.0.0
 
-- Add: Migration to support List of generatic type `T`
+- Add: Migration to support List of generatic type `T` (Thanks [@JesusHdez960717 for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/20))
 - Add: Mixin `CustomDropdownListFilter` for complex filter on search field
 - Add: Builders support
   - `listItemBuilder`
