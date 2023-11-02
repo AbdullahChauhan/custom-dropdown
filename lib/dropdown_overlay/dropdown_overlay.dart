@@ -19,6 +19,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final LayerLink layerLink;
   final VoidCallback hideOverlay;
   final String hintText;
+  final String searchHintText;
   final bool excludeSelected;
   final bool? hideSelectedFieldWhenOpen;
   final bool canCloseOutsideBounds;
@@ -30,6 +31,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final BorderRadius? borderRadius;
   final String noResultFoundText;
   final Widget? suffixIcon;
+  final int maxlines;
   // ignore: library_private_types_in_public_api
   final _ListItemBuilder<T>? listItemBuilder;
   // ignore: library_private_types_in_public_api
@@ -46,11 +48,13 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.layerLink,
     required this.hideOverlay,
     required this.hintText,
+    required this.searchHintText,
     required this.selectedItemNotifier,
     required this.excludeSelected,
     required this.onItemSelect,
     required this.noResultFoundText,
     required this.canCloseOutsideBounds,
+    required this.maxlines,
     this.suffixIcon,
     this.headerBuilder,
     this.hintBuilder,
@@ -83,7 +87,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   Widget defaultListItemBuilder(BuildContext context, T result) {
     return Text(
       result.toString(),
-      maxLines: 1,
+      maxLines: widget.maxlines,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(fontSize: 16),
     );
@@ -92,9 +96,12 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   Widget defaultHeaderBuilder(BuildContext context, T result) {
     return Text(
       result.toString(),
-      maxLines: 1,
+      maxLines: widget.maxlines,
       overflow: TextOverflow.ellipsis,
-      style: const TextStyle(fontSize: 16),
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
     );
   }
 
@@ -166,7 +173,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     final onSearch = widget.searchType != null;
 
     // overlay offset
-    final overlayOffset = Offset(-12, displayOverlayBottom ? 0 : 60);
+    final overlayOffset = Offset(-12, displayOverlayBottom ? 0 : 64);
 
     // list padding
     final listPadding =
@@ -288,6 +295,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                   if (!widget.hideSelectedFieldWhenOpen!)
                                     _SearchField<T>.forListData(
                                       items: widget.items,
+                                      searchHintText: widget.searchHintText,
                                       onSearchedItems: (val) {
                                         setState(() => items = val);
                                       },
@@ -303,6 +311,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                           Expanded(
                                             child: _SearchField<T>.forListData(
                                               items: widget.items,
+                                              searchHintText:
+                                                  widget.searchHintText,
                                               onSearchedItems: (val) {
                                                 setState(() => items = val);
                                               },
@@ -320,6 +330,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                   if (!widget.hideSelectedFieldWhenOpen!)
                                     _SearchField<T>.forRequestData(
                                       items: widget.items,
+                                      searchHintText: widget.searchHintText,
                                       onFutureRequestLoading: (val) {
                                         setState(() {
                                           isSearchRequestLoading = val;
@@ -346,6 +357,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                             child:
                                                 _SearchField<T>.forRequestData(
                                               items: items,
+                                              searchHintText:
+                                                  widget.searchHintText,
                                               onFutureRequestLoading: (val) {
                                                 setState(() {
                                                   isSearchRequestLoading = val;

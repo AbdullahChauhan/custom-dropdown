@@ -1,3 +1,35 @@
+# 2.0.0
+
+- Add: Migration to support List of generatic type `T`
+- Add: Mixin `CustomDropdownListFilter` for complex filter on search field
+- Add: Builders support
+  - `listItemBuilder`
+  - `headerBuilder`
+  - `hintBuilder`
+  - `noResultFoundBuilder`
+- Add: `validator` & `validateOnChange` to enhance form validation support
+- Add: Other new properties:
+  - `initialItem`
+  - `searchHintText`
+  - `expandedBorder`
+  - `expandedBorderRadius`
+  - `errorBorderRadius`
+  - `hideSelectedFieldWhenExpanded`
+  - `noResultFoundText`
+  - `expandedFillColor`
+  - `expandedSuffixIcon`
+  - `maxlines`
+- Breaking: Clean `controller` support
+- Breaking: Clean `listItemStyle` support
+- Breaking: Clean `selectedStyle` support
+- Breaking: Clean `errorText` support
+- Breaking: `fillColor` change to `closedFillColor`
+- Breaking: `fieldSuffixIcon` change to `closedSuffixIcon`
+- Breaking: `errorBorderSide` change to `errorBorder`
+- Breaking: `borderSide` change to `closedBorder`
+- Breaking: `borderRadius` change to `closedBorderRadius`
+- Refactor: Overlay rendering approach (change to declarative)
+
 ## 1.5.0
 
 - Add: Request delay support for Search request API (Thanks [@JesusHdez960717 for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/19))

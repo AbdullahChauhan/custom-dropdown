@@ -7,7 +7,7 @@
 [![popularity](https://img.shields.io/pub/popularity/animated_custom_dropdown)](https://pub.dev/packages/animated_custom_dropdown/score)
 [![pub points](https://img.shields.io/pub/points/animated_custom_dropdown)](https://pub.dev/packages/animated_custom_dropdown/score)
 
-[![buy me a coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/abdullahchauhan)
+[![buy me a coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20pizza&emoji=🍕&slug=abdullahchauhan&button_colour=FF8838&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=ffffff')](https://www.buymeacoffee.com/abdullahchauhan)
 
 ### If you like this package, please leave a like there on [pub.dev](https://pub.dev/packages/animated_custom_dropdown) and star on [GitHub](https://github.com/AbdullahChauhan/custom-dropdown).
 
@@ -27,7 +27,7 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 
 ```dart
 dependencies:
-  animated_custom_dropdown: 1.5.0
+  animated_custom_dropdown: 2.0.0
 ```
 
 2. Import the package and use it in your Flutter App.
@@ -117,7 +117,7 @@ class SimpleDropdown extends StatelessWidget {
 ```
 
 ### **3. Custom dropdown with search:** *A custom dropdown with the possibility to filter the items.*
-First, let's enchance our Job model with more functionality:
+First, let's enhance our Job model with more functionality:
 ```dart
 class Job with CustomDropdownListFilter {
   final String name;
@@ -285,7 +285,7 @@ For a complete customization of the package, go to the [example](https://github.
 
 ## Preview
 
-![Example App](https://github.com/AbdullahChauhan/custom-dropdown/blob/master/readme_assets/preview.gif)
+<img src="https://raw.githubusercontent.com/AbdullahChauhan/custom-dropdown/master/readme_assets/preview.gif" width="300"/>
 
 <hr>
 
