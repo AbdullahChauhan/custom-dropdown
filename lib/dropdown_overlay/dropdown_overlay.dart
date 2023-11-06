@@ -32,6 +32,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final String noResultFoundText;
   final Widget? suffixIcon;
   final int maxlines;
+  final double? customHeight;
   // ignore: library_private_types_in_public_api
   final _ListItemBuilder<T>? listItemBuilder;
   // ignore: library_private_types_in_public_api
@@ -41,33 +42,34 @@ class _DropdownOverlay<T> extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   final _NoResultFoundBuilder? noResultFoundBuilder;
 
-  const _DropdownOverlay({
-    Key? key,
-    required this.items,
-    required this.size,
-    required this.layerLink,
-    required this.hideOverlay,
-    required this.hintText,
-    required this.searchHintText,
-    required this.selectedItemNotifier,
-    required this.excludeSelected,
-    required this.onItemSelect,
-    required this.noResultFoundText,
-    required this.canCloseOutsideBounds,
-    required this.maxlines,
-    this.suffixIcon,
-    this.headerBuilder,
-    this.hintBuilder,
-    this.hideSelectedFieldWhenOpen = false,
-    this.searchType,
-    this.futureRequest,
-    this.futureRequestDelay,
-    this.listItemBuilder,
-    this.noResultFoundBuilder,
-    this.border,
-    this.borderRadius,
-    this.fillColor,
-  }) : super(key: key);
+  const _DropdownOverlay(
+      {Key? key,
+      required this.items,
+      required this.size,
+      required this.layerLink,
+      required this.hideOverlay,
+      required this.hintText,
+      required this.searchHintText,
+      required this.selectedItemNotifier,
+      required this.excludeSelected,
+      required this.onItemSelect,
+      required this.noResultFoundText,
+      required this.canCloseOutsideBounds,
+      required this.maxlines,
+      this.suffixIcon,
+      this.headerBuilder,
+      this.hintBuilder,
+      this.hideSelectedFieldWhenOpen = false,
+      this.searchType,
+      this.futureRequest,
+      this.futureRequestDelay,
+      this.listItemBuilder,
+      this.noResultFoundBuilder,
+      this.border,
+      this.borderRadius,
+      this.fillColor,
+      this.customHeight})
+      : super(key: key);
 
   @override
   _DropdownOverlayState<T> createState() => _DropdownOverlayState<T>();
@@ -233,11 +235,12 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                     axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
                     child: SizedBox(
                       key: key2,
-                      height: items.length > 4
-                          ? onSearch
-                              ? 270
-                              : 225
-                          : null,
+                      height: widget.customHeight ??
+                          (items.length > 4
+                              ? onSearch
+                                  ? 270
+                                  : 225
+                              : null),
                       child: ClipRRect(
                         borderRadius:
                             widget.borderRadius ?? _defaultBorderRadius,
