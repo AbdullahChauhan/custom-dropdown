@@ -11,10 +11,12 @@ const _overlayOuterPadding = EdgeInsets.only(bottom: 12, left: 12, right: 12);
 const _overlayShadowOffset = Offset(0, 6);
 const _listItemPadding = EdgeInsets.symmetric(vertical: 12, horizontal: 16);
 
-// TODO(ivn): add muliselect
 class _DropdownOverlay<T> extends StatefulWidget {
   final List<T> items;
   final ValueNotifier<T?> selectedItemNotifier;
+
+  final _ValueNotifierList<T> selectedItemsNotifier;
+
   final Function(T) onItemSelect;
   final Size size;
   final LayerLink layerLink;
@@ -35,10 +37,16 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final _ListItemBuilder<T>? listItemBuilder;
   // ignore: library_private_types_in_public_api
   final _HeaderBuilder<T>? headerBuilder;
+
+  // ignore: library_private_types_in_public_api
+  final _HeaderListBuilder<T>? headerListBuilder;
+
   // ignore: library_private_types_in_public_api
   final _HintBuilder? hintBuilder;
   // ignore: library_private_types_in_public_api
   final _NoResultFoundBuilder? noResultFoundBuilder;
+
+  final _DropdownType widgetType;
 
   const _DropdownOverlay({
     Key? key,
@@ -48,10 +56,12 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.hideOverlay,
     required this.hintText,
     required this.selectedItemNotifier,
+    required this.selectedItemsNotifier,
     required this.excludeSelected,
     required this.onItemSelect,
     required this.noResultFoundText,
     required this.canCloseOutsideBounds,
+    required this.widgetType,
     this.suffixIcon,
     this.headerBuilder,
     this.hintBuilder,
@@ -60,6 +70,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     this.futureRequest,
     this.futureRequestDelay,
     this.listItemBuilder,
+    this.headerListBuilder,
     this.noResultFoundBuilder,
     this.border,
     this.borderRadius,
@@ -78,6 +89,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
   late List<T> items;
   late T? selectedItem;
+
+  late List<T> selectedItems;
+
   final key1 = GlobalKey(), key2 = GlobalKey();
   final scrollController = ScrollController();
 
@@ -90,9 +104,10 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     );
   }
 
-  Widget defaultHeaderBuilder(BuildContext context, T result) {
+  Widget defaultHeaderBuilder(BuildContext context,
+      {T? oneItem, List<T>? itemList}) {
     return Text(
-      result.toString(),
+      itemList != null ? itemList.join(',') : oneItem.toString(),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(fontSize: 16),
@@ -144,6 +159,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     });
 
     selectedItem = widget.selectedItemNotifier.value;
+    selectedItems = widget.selectedItemsNotifier.value;
 
     if (widget.excludeSelected &&
         widget.items.length > 1 &&
@@ -173,6 +189,10 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     final listPadding =
         onSearch ? const EdgeInsets.only(top: 8) : EdgeInsets.zero;
 
+    Widget hintBuilder() => widget.hintBuilder != null
+        ? widget.hintBuilder!(context, widget.hintText)
+        : defaultHintBuilder(context, widget.hintText);
+
     // items list
     final list = items.isNotEmpty
         ? _ItemsList<T>(
@@ -184,7 +204,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             padding: listPadding,
             onItemSelect: (T value) {
               widget.onItemSelect(value);
-              setState(() => displayOverly = false);
+              if (widget.widgetType != _DropdownType.multiSelect) {
+                setState(() => displayOverly = false);
+              }
             },
           )
         : (mayFoundSearchRequestResult != null &&
@@ -264,19 +286,30 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          child: selectedItem != null
-                                              ? widget.headerBuilder != null
-                                                  ? widget.headerBuilder!(
-                                                      context,
-                                                      selectedItem as T)
-                                                  : defaultHeaderBuilder(
-                                                      context,
-                                                      selectedItem as T)
-                                              : widget.hintBuilder != null
-                                                  ? widget.hintBuilder!(
-                                                      context, widget.hintText)
-                                                  : defaultHintBuilder(
-                                                      context, widget.hintText),
+                                          child: switch (widget.widgetType) {
+                                            _DropdownType.singleValue =>
+                                              selectedItem != null
+                                                  ? widget.headerBuilder != null
+                                                      ? widget.headerBuilder!(
+                                                          context,
+                                                          selectedItem as T)
+                                                      : defaultHeaderBuilder(
+                                                          context,
+                                                          oneItem: selectedItem)
+                                                  : hintBuilder(),
+                                            _DropdownType.multiSelect =>
+                                              selectedItems.isNotEmpty
+                                                  ? widget.headerListBuilder !=
+                                                          null
+                                                      ? widget.headerListBuilder!(
+                                                          context,
+                                                          selectedItems)
+                                                      : defaultHeaderBuilder(
+                                                          context,
+                                                          itemList:
+                                                              selectedItems)
+                                                  : hintBuilder(),
+                                          },
                                         ),
                                         const SizedBox(width: 12),
                                         widget.suffixIcon ??

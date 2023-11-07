@@ -85,6 +85,9 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Initial selected item from the list of [items].
   final T? initialItem;
 
+  /// Initial selected items from the list of [items].
+  final List<T> initialItems;
+
   /// Text that suggests what sort of data the dropdown represents.
   final String? hintText;
 
@@ -103,6 +106,10 @@ class CustomDropdown<T> extends StatefulWidget {
   /// A method that validates the selected item.
   /// Returns an error string to display as per the validation, or null otherwise.
   final String? Function(T?)? validator;
+
+  /// A method that validates the selected items.
+  /// Returns an error string to display as per the validation, or null otherwise.
+  final String? Function(List<T>)? listValidator;
 
   /// Error border for closed state of [CustomDropdown].
   final BoxBorder? closedErrorBorder;
@@ -180,14 +187,9 @@ class CustomDropdown<T> extends StatefulWidget {
 
   final _DropdownType _widgetType;
 
-  /// Initial selected items from the list of [items].
-  final List<T> initialItems;
+  // ignore: library_private_types_in_public_api
+  final _HeaderListBuilder<T>? headerListBuilder;
 
-  /// A method that validates the selected items.
-  /// Returns an error string to display as per the validation, or null otherwise.
-  final String? Function(List<T>)? listValidator;
-
-  // TODO(ivn): Add muliselect constructor
   CustomDropdown({
     Key? key,
     required this.items,
@@ -232,6 +234,7 @@ class CustomDropdown<T> extends StatefulWidget {
         initialItems = [],
         onListChanged = null,
         listValidator = null,
+        headerListBuilder = null,
         super(key: key);
 
   CustomDropdown.search({
@@ -278,6 +281,7 @@ class CustomDropdown<T> extends StatefulWidget {
         initialItems = [],
         onListChanged = null,
         listValidator = null,
+        headerListBuilder = null,
         super(key: key);
 
   const CustomDropdown.searchRequest({
@@ -316,6 +320,55 @@ class CustomDropdown<T> extends StatefulWidget {
         initialItems = const [],
         onListChanged = null,
         listValidator = null,
+        headerListBuilder = null,
+        super(key: key);
+
+  /// You can select several values here
+  CustomDropdown.multiSelect({
+    Key? key,
+    required this.items,
+    required this.initialItems,
+    required this.onListChanged,
+    this.listValidator,
+    this.headerListBuilder,
+    this.hintText,
+    this.errorStyle,
+    this.closedErrorBorder,
+    this.closedErrorBorderRadius,
+    this.expandedErrorBorder,
+    this.expandedErrorBorderRadius,
+    this.validateOnChange = true,
+    this.closedBorder,
+    this.closedBorderRadius,
+    this.expandedBorder,
+    this.expandedBorderRadius,
+    this.closedSuffixIcon,
+    this.expandedSuffixIcon,
+    this.listItemBuilder,
+    this.hintBuilder,
+    this.closedFillColor = Colors.white,
+    this.expandedFillColor = Colors.white,
+  })  : assert(
+          items!.isNotEmpty,
+          'Items list must contain at least one item.',
+        ),
+        assert(
+          initialItems.isEmpty || initialItems.any((e) => items!.contains(e)),
+          'Initial items must match with the items in the items list.',
+        ),
+        initialItem = null,
+        noResultFoundText = null,
+        validator = null,
+        headerBuilder = null,
+        onChanged = null,
+        canCloseOutsideBounds = true,
+        hideSelectedFieldWhenExpanded = false,
+        excludeSelected = false,
+        _searchType = null,
+        futureRequest = null,
+        futureRequestDelay = null,
+        noResultFoundBuilder = null,
+        _widgetType = _DropdownType.multiSelect,
         super(key: key);
 
   @override
@@ -390,11 +443,13 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 noResultFoundBuilder: widget.noResultFoundBuilder,
                 items: widget.items ?? [],
                 selectedItemNotifier: selectedItemNotifier,
+                selectedItemsNotifier: selectedItemsNotifier,
                 size: size,
                 listItemBuilder: widget.listItemBuilder,
                 layerLink: layerLink,
                 hideOverlay: hideCallback,
                 headerBuilder: widget.headerBuilder,
+                headerListBuilder: widget.headerListBuilder,
                 hintText: safeHintText,
                 hintBuilder: widget.hintBuilder,
                 excludeSelected: widget.excludeSelected,
@@ -411,6 +466,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenExpanded,
                 fillColor: widget.expandedFillColor,
                 suffixIcon: widget.expandedSuffixIcon,
+                widgetType: widget._widgetType,
               );
             },
             child: (showCallback) {
@@ -428,6 +484,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   hintText: safeHintText,
                   hintBuilder: widget.hintBuilder,
                   headerBuilder: widget.headerBuilder,
+                  headerListBuilder: widget.headerListBuilder,
                   suffixIcon: widget.closedSuffixIcon,
                   fillColor: widget.closedFillColor,
                   widgetType: widget._widgetType,

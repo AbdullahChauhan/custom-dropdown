@@ -55,17 +55,14 @@ class _DropDownField<T> extends StatefulWidget {
 class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   T? selectedItem;
 
-  List<T> selectedItems = [];
+  late List<T> selectedItems;
 
   @override
   void initState() {
     super.initState();
-    switch (widget.widgetType) {
-      case _DropdownType.singleValue:
-        selectedItem = widget.selectedItemNotifier.value;
-      case _DropdownType.multiSelect:
-        selectedItems = widget.selectedItemsNotifier.value;
-    }
+
+    selectedItem = widget.selectedItemNotifier.value;
+    selectedItems = widget.selectedItemsNotifier.value;
   }
 
   Widget _defaultHeaderBuilder({T? oneItem, List<T>? itemList}) {
