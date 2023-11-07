@@ -14,6 +14,23 @@ part 'overlay_builder.dart';
 
 enum _SearchType { onListData, onRequestData }
 
+enum _DropdownType {
+  singleValue,
+  multiSelect,
+}
+
+class _ValueNotifierList<T> extends ValueNotifier<List<T>> {
+  _ValueNotifierList(super.value);
+
+  void add(T valueToAdd) {
+    value = [...value, valueToAdd];
+  }
+
+  void remove(T valueToRemove) {
+    value = value.where((value) => value != valueToRemove).toList();
+  }
+}
+
 const _defaultFillColor = Colors.white;
 const _defaultErrorColor = Colors.red;
 
@@ -47,6 +64,10 @@ typedef _ListItemBuilder<T> = Widget Function(
 typedef _HeaderBuilder<T> = Widget Function(
   BuildContext context,
   T selectedItem,
+);
+typedef _HeaderListBuilder<T> = Widget Function(
+  BuildContext context,
+  List<T> selectedItems,
 );
 typedef _HintBuilder = Widget Function(
   BuildContext context,
@@ -111,6 +132,9 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Called when the item of the [CustomDropdown] should change.
   final Function(T)? onChanged;
 
+  /// Called when the list of items of the [CustomDropdown] should change.
+  final Function(List<T>)? onListChanged;
+
   /// Hide the selected item from the [items] list.
   final bool excludeSelected;
 
@@ -154,6 +178,16 @@ class CustomDropdown<T> extends StatefulWidget {
 
   final _SearchType? _searchType;
 
+  final _DropdownType _widgetType;
+
+  /// Initial selected items from the list of [items].
+  final List<T> initialItems;
+
+  /// A method that validates the selected items.
+  /// Returns an error string to display as per the validation, or null otherwise.
+  final String? Function(List<T>)? listValidator;
+
+  // TODO(ivn): Add muliselect constructor
   CustomDropdown({
     Key? key,
     required this.items,
@@ -194,6 +228,10 @@ class CustomDropdown<T> extends StatefulWidget {
         futureRequest = null,
         futureRequestDelay = null,
         noResultFoundBuilder = null,
+        _widgetType = _DropdownType.singleValue,
+        initialItems = [],
+        onListChanged = null,
+        listValidator = null,
         super(key: key);
 
   CustomDropdown.search({
@@ -236,6 +274,10 @@ class CustomDropdown<T> extends StatefulWidget {
         _searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
+        _widgetType = _DropdownType.singleValue,
+        initialItems = [],
+        onListChanged = null,
+        listValidator = null,
         super(key: key);
 
   const CustomDropdown.searchRequest({
@@ -270,6 +312,10 @@ class CustomDropdown<T> extends StatefulWidget {
     this.closedFillColor = Colors.white,
     this.expandedFillColor = Colors.white,
   })  : _searchType = _SearchType.onRequestData,
+        _widgetType = _DropdownType.singleValue,
+        initialItems = const [],
+        onListChanged = null,
+        listValidator = null,
         super(key: key);
 
   @override
@@ -279,16 +325,19 @@ class CustomDropdown<T> extends StatefulWidget {
 class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   final layerLink = LayerLink();
   late ValueNotifier<T?> selectedItemNotifier;
+  late _ValueNotifierList<T> selectedItemsNotifier;
 
   @override
   void initState() {
     super.initState();
     selectedItemNotifier = ValueNotifier(widget.initialItem);
+    selectedItemsNotifier = _ValueNotifierList(widget.initialItems);
   }
 
   @override
   void dispose() {
     selectedItemNotifier.dispose();
+    selectedItemsNotifier.dispose();
     super.dispose();
   }
 
@@ -296,15 +345,18 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   Widget build(BuildContext context) {
     final safeHintText = widget.hintText ?? _defaultHintValue;
 
-    return FormField<T>(
-      initialValue: selectedItemNotifier.value,
+    return FormField<(T?, List<T>)>(
+      initialValue: (selectedItemNotifier.value, selectedItemsNotifier.value),
       validator: (val) {
         if (widget.validator != null) {
-          return widget.validator!(val);
+          return widget.validator!(val?.$1);
+        }
+        if (widget.listValidator != null && val != null) {
+          return widget.listValidator!(val.$2);
         }
         return null;
       },
-      builder: (FormFieldState<T> formFieldState) {
+      builder: (formFieldState) {
         return InputDecorator(
           decoration: InputDecoration(
             errorStyle: widget.errorStyle ?? _defaultErrorStyle,
@@ -315,14 +367,20 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
             overlay: (size, hideCallback) {
               return _DropdownOverlay<T>(
                 onItemSelect: (T value) {
-                  selectedItemNotifier.value = value;
-
-                  if (widget.onChanged != null) {
-                    widget.onChanged!(value);
+                  switch (widget._widgetType) {
+                    case _DropdownType.singleValue:
+                      selectedItemNotifier.value = value;
+                      widget.onChanged?.call(value);
+                      formFieldState.didChange((value, []));
+                    case _DropdownType.multiSelect:
+                      final currentVal = selectedItemsNotifier.value.toList();
+                      currentVal.contains(value)
+                          ? currentVal.remove(value)
+                          : currentVal.add(value);
+                      selectedItemsNotifier.value = currentVal;
+                      widget.onListChanged?.call(currentVal);
+                      formFieldState.didChange((null, currentVal));
                   }
-
-                  formFieldState.didChange(value);
-
                   if (widget.validateOnChange) {
                     formFieldState.validate();
                   }
@@ -372,6 +430,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   headerBuilder: widget.headerBuilder,
                   suffixIcon: widget.closedSuffixIcon,
                   fillColor: widget.closedFillColor,
+                  widgetType: widget._widgetType,
+                  selectedItemsNotifier: selectedItemsNotifier,
                 ),
               );
             },

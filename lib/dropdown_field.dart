@@ -22,12 +22,19 @@ class _DropDownField<T> extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   final _HeaderBuilder<T>? headerBuilder;
   // ignore: library_private_types_in_public_api
+  final _HeaderListBuilder<T>? headerListBuilder;
+  // ignore: library_private_types_in_public_api
   final _HintBuilder? hintBuilder;
+
+  final _DropdownType widgetType;
+  final _ValueNotifierList<T> selectedItemsNotifier;
 
   const _DropDownField({
     Key? key,
     required this.onTap,
     required this.selectedItemNotifier,
+    required this.widgetType,
+    required this.selectedItemsNotifier,
     this.hintText = 'Select value',
     this.fillColor,
     this.border,
@@ -36,6 +43,7 @@ class _DropDownField<T> extends StatefulWidget {
     this.errorStyle,
     this.errorBorderSide,
     this.headerBuilder,
+    this.headerListBuilder,
     this.hintBuilder,
     this.suffixIcon,
   }) : super(key: key);
@@ -47,15 +55,22 @@ class _DropDownField<T> extends StatefulWidget {
 class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   T? selectedItem;
 
+  List<T> selectedItems = [];
+
   @override
   void initState() {
     super.initState();
-    selectedItem = widget.selectedItemNotifier.value;
+    switch (widget.widgetType) {
+      case _DropdownType.singleValue:
+        selectedItem = widget.selectedItemNotifier.value;
+      case _DropdownType.multiSelect:
+        selectedItems = widget.selectedItemsNotifier.value;
+    }
   }
 
-  Widget _defaultHeaderBuilder(T result) {
+  Widget _defaultHeaderBuilder({T? oneItem, List<T>? itemList}) {
     return Text(
-      result.toString(),
+      itemList != null ? itemList.join(',') : oneItem.toString(),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
@@ -80,11 +95,20 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   @override
   void didUpdateWidget(covariant _DropDownField<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    selectedItem = widget.selectedItemNotifier.value;
+    switch (widget.widgetType) {
+      case _DropdownType.singleValue:
+        selectedItem = widget.selectedItemNotifier.value;
+      case _DropdownType.multiSelect:
+        selectedItems = widget.selectedItemsNotifier.value;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget hintBuilder() => widget.hintBuilder != null
+        ? widget.hintBuilder!(context, widget.hintText)
+        : _defaultHintBuilder(widget.hintText);
+
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
@@ -97,13 +121,18 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
         child: Row(
           children: [
             Expanded(
-              child: selectedItem != null
-                  ? widget.headerBuilder != null
-                      ? widget.headerBuilder!(context, selectedItem as T)
-                      : _defaultHeaderBuilder(selectedItem as T)
-                  : widget.hintBuilder != null
-                      ? widget.hintBuilder!(context, widget.hintText)
-                      : _defaultHintBuilder(widget.hintText),
+              child: switch (widget.widgetType) {
+                _DropdownType.singleValue => selectedItem != null
+                    ? widget.headerBuilder != null
+                        ? widget.headerBuilder!(context, selectedItem as T)
+                        : _defaultHeaderBuilder(oneItem: selectedItem)
+                    : hintBuilder(),
+                _DropdownType.multiSelect => selectedItems.isNotEmpty
+                    ? widget.headerListBuilder != null
+                        ? widget.headerListBuilder!(context, selectedItems)
+                        : _defaultHeaderBuilder(itemList: selectedItems)
+                    : hintBuilder(),
+              },
             ),
             const SizedBox(width: 12),
             widget.suffixIcon ?? _defaultOverlayIconDown,

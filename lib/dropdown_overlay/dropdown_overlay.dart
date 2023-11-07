@@ -11,6 +11,7 @@ const _overlayOuterPadding = EdgeInsets.only(bottom: 12, left: 12, right: 12);
 const _overlayShadowOffset = Offset(0, 6);
 const _listItemPadding = EdgeInsets.symmetric(vertical: 12, horizontal: 16);
 
+// TODO(ivn): add muliselect
 class _DropdownOverlay<T> extends StatefulWidget {
   final List<T> items;
   final ValueNotifier<T?> selectedItemNotifier;
