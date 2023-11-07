@@ -200,6 +200,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             listItemBuilder: widget.listItemBuilder ?? defaultListItemBuilder,
             excludeSelected: items.length > 1 ? widget.excludeSelected : false,
             selectedItem: selectedItem,
+            selectedItems: selectedItems,
             items: items,
             padding: listPadding,
             onItemSelect: (T value) {
@@ -208,6 +209,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                 setState(() => displayOverly = false);
               }
             },
+            widgetType: widget.widgetType,
           )
         : (mayFoundSearchRequestResult != null &&
                     !mayFoundSearchRequestResult!) ||

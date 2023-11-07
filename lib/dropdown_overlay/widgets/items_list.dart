@@ -4,11 +4,15 @@ class _ItemsList<T> extends StatelessWidget {
   final ScrollController scrollController;
   final T? selectedItem;
   final List<T> items;
+
+  final List<T> selectedItems;
   final Function(T) onItemSelect;
   final bool excludeSelected;
   final EdgeInsets padding;
   // ignore: library_private_types_in_public_api
   final _ListItemBuilder<T> listItemBuilder;
+
+  final _DropdownType widgetType;
 
   const _ItemsList({
     Key? key,
@@ -19,6 +23,8 @@ class _ItemsList<T> extends StatelessWidget {
     required this.excludeSelected,
     required this.padding,
     required this.listItemBuilder,
+    required this.selectedItems,
+    required this.widgetType,
   }) : super(key: key);
 
   @override
@@ -31,7 +37,11 @@ class _ItemsList<T> extends StatelessWidget {
         padding: padding,
         itemCount: items.length,
         itemBuilder: (_, index) {
-          final selected = !excludeSelected && selectedItem == items[index];
+          final selected = switch (widgetType) {
+            _DropdownType.singleValue =>
+              !excludeSelected && selectedItem == items[index],
+            _DropdownType.multiSelect => selectedItems.contains(items[index])
+          };
           return Material(
             color: Colors.transparent,
             child: InkWell(
