@@ -184,6 +184,15 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     super.dispose();
   }
 
+  void onOptionTap(T option) {
+    if (selectedItems.contains(option)) {
+      selectedItems.remove(option);
+    } else {
+      selectedItems.add(option);
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     // search availability check
@@ -212,9 +221,11 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             padding: listPadding,
             onItemSelect: (T value) {
               widget.onItemSelect(value);
-              if (widget.widgetType != _DropdownType.multiSelect) {
-                setState(() => displayOverly = false);
+              if (widget.widgetType == _DropdownType.multiSelect) {
+                onOptionTap(value);
+                return;
               }
+              setState(() => displayOverly = false);
             },
             widgetType: widget.widgetType,
           )
