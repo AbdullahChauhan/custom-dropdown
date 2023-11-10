@@ -91,6 +91,9 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Text that suggests what sort of data the dropdown represents.
   final String? hintText;
 
+  /// Text that suggests what to search in the search field.
+  final String? searchHintText;
+
   /// Border for closed state of [CustomDropdown].
   final BoxBorder? closedBorder;
 
@@ -114,14 +117,8 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Error border for closed state of [CustomDropdown].
   final BoxBorder? closedErrorBorder;
 
-  /// Error border for opened/expanded state of [CustomDropdown].
-  final BoxBorder? expandedErrorBorder;
-
   /// Error border radius for closed state of [CustomDropdown].
   final BorderRadius? closedErrorBorderRadius;
-
-  /// Error border radius for opened/expanded state of [CustomDropdown].
-  final BorderRadius? expandedErrorBorderRadius;
 
   /// The style to use for the string returning from [validator].
   final TextStyle? errorStyle;
@@ -167,6 +164,10 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Duration after which the [futureRequest] is to be executed.
   final Duration? futureRequestDelay;
 
+  /// Text maxlines for header and list item text.
+  /// Useless if any or both [headerBuilder] and [listItemBuilder] provided.
+  final int maxlines;
+
   /// The [listItemBuilder] that will be used to build item on demand.
   // ignore: library_private_types_in_public_api
   final _ListItemBuilder<T>? listItemBuilder;
@@ -195,12 +196,11 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.items,
     this.initialItem,
     this.hintText,
+    this.searchHintText,
     this.noResultFoundText,
     this.errorStyle,
     this.closedErrorBorder,
     this.closedErrorBorderRadius,
-    this.expandedErrorBorder,
-    this.expandedErrorBorderRadius,
     this.validator,
     this.validateOnChange = true,
     this.closedBorder,
@@ -213,6 +213,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.headerBuilder,
     this.hintBuilder,
     this.onChanged,
+    this.maxlines = 1,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.excludeSelected = true,
@@ -242,6 +243,7 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.items,
     this.initialItem,
     this.hintText,
+    this.searchHintText,
     this.noResultFoundText,
     this.listItemBuilder,
     this.headerBuilder,
@@ -250,8 +252,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.errorStyle,
     this.closedErrorBorder,
     this.closedErrorBorderRadius,
-    this.expandedErrorBorder,
-    this.expandedErrorBorderRadius,
     this.validator,
     this.validateOnChange = true,
     this.closedBorder,
@@ -261,6 +261,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.expandedBorder,
     this.expandedBorderRadius,
     this.onChanged,
+    this.maxlines = 1,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
@@ -291,6 +292,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.initialItem,
     this.items,
     this.hintText,
+    this.searchHintText,
     this.noResultFoundText,
     this.listItemBuilder,
     this.headerBuilder,
@@ -299,8 +301,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.errorStyle,
     this.closedErrorBorder,
     this.closedErrorBorderRadius,
-    this.expandedErrorBorder,
-    this.expandedErrorBorderRadius,
     this.validator,
     this.validateOnChange = true,
     this.closedBorder,
@@ -310,6 +310,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.closedSuffixIcon,
     this.expandedSuffixIcon,
     this.onChanged,
+    this.maxlines = 1,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
@@ -451,21 +452,19 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 headerBuilder: widget.headerBuilder,
                 headerListBuilder: widget.headerListBuilder,
                 hintText: safeHintText,
+                searchHintText: widget.searchHintText ?? 'Search',
                 hintBuilder: widget.hintBuilder,
                 excludeSelected: widget.excludeSelected,
                 canCloseOutsideBounds: widget.canCloseOutsideBounds,
                 searchType: widget._searchType,
-                border: formFieldState.hasError
-                    ? widget.expandedErrorBorder ?? _defaultErrorBorder
-                    : widget.expandedBorder,
-                borderRadius: formFieldState.hasError
-                    ? widget.expandedErrorBorderRadius
-                    : widget.expandedBorderRadius,
+                border: widget.expandedBorder,
+                borderRadius: widget.expandedBorderRadius,
                 futureRequest: widget.futureRequest,
                 futureRequestDelay: widget.futureRequestDelay,
                 hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenExpanded,
                 fillColor: widget.expandedFillColor,
                 suffixIcon: widget.expandedSuffixIcon,
+                maxlines: widget.maxlines,
                 widgetType: widget._widgetType,
               );
             },
@@ -487,6 +486,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   headerListBuilder: widget.headerListBuilder,
                   suffixIcon: widget.closedSuffixIcon,
                   fillColor: widget.closedFillColor,
+                  maxlines: widget.maxlines,
                   widgetType: widget._widgetType,
                   selectedItemsNotifier: selectedItemsNotifier,
                 ),

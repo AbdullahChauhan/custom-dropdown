@@ -316,8 +316,6 @@ class FullyCustomizedDropDown extends StatelessWidget {
             hintBuilder: _hintBuilder,
             closedErrorBorder: Border.all(color: Colors.blue, width: 10),
             closedErrorBorderRadius: BorderRadius.circular(15),
-            expandedErrorBorder: Border.all(color: Colors.cyan, width: 10),
-            expandedErrorBorderRadius: BorderRadius.circular(15),
             errorStyle: const TextStyle(color: Colors.deepPurple, fontSize: 18),
             validateOnChange: true,
             validator: (value) {
