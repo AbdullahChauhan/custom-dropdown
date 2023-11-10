@@ -18,7 +18,7 @@ class _DropDownField<T> extends StatefulWidget {
   final TextStyle? errorStyle;
   final BorderSide? errorBorderSide;
   final Widget? suffixIcon;
-  final int maxlines;
+  final int maxLines;
 
   // ignore: library_private_types_in_public_api
   final _HeaderBuilder<T>? headerBuilder;
@@ -34,7 +34,7 @@ class _DropDownField<T> extends StatefulWidget {
     Key? key,
     required this.onTap,
     required this.selectedItemNotifier,
-    required this.maxlines,
+    required this.maxLines,
     required this.widgetType,
     required this.selectedItemsNotifier,
     this.hintText = 'Select value',
@@ -69,8 +69,8 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
 
   Widget _defaultHeaderBuilder({T? oneItem, List<T>? itemList}) {
     return Text(
-      itemList != null ? itemList.join(',') : oneItem.toString(),
-      maxLines: widget.maxlines,
+      itemList != null ? itemList.join(', ') : oneItem.toString(),
+      maxLines: widget.maxLines,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
         fontSize: 16,

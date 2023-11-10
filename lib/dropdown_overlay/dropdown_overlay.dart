@@ -133,7 +133,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   Widget defaultHeaderBuilder(BuildContext context,
       {T? oneItem, List<T>? itemList}) {
     return Text(
-      itemList != null ? itemList.join(',') : oneItem.toString(),
+      itemList != null ? itemList.join(', ') : oneItem.toString(),
       maxLines: widget.maxLines,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
