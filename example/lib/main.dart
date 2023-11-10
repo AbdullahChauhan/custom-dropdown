@@ -33,7 +33,6 @@ const List<Job> _jobItems = [
   Job('Student', Icons.school),
 ];
 
-// TODO(ivn): Add multiselect example
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -92,13 +91,19 @@ class _HomeState extends State<Home> {
           const SizedBox(height: 24),
           const Divider(height: 0),
           const SizedBox(height: 24),
-
+          const Text('Multiselect Dropdown', style: _labelStyle),
+          const SizedBox(height: 8),
+          const MultiselectDropDown(),
+          const SizedBox(height: 24),
+          const Divider(height: 0),
+          const SizedBox(height: 24),
           const Text(
             'Awful, but fully customized search request with validation',
             style: _labelStyle,
           ),
           const SizedBox(height: 8),
           FullyCustomizedDropDown(),
+
           const SizedBox(height: 340),
         ],
       ),
@@ -118,6 +123,21 @@ class SimpleDropDown extends StatelessWidget {
       excludeSelected: false,
       onChanged: debugPrint,
     );
+  }
+}
+
+class MultiselectDropDown extends StatelessWidget {
+  const MultiselectDropDown({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomDropdown<Job>.multiSelect(
+        items: _jobItems,
+        initialItems: _jobItems.take(1).toList(),
+        onListChanged: (v) {
+          debugPrint(
+              '💡selected Jobs :: ${v.map((e) => e.name).toList().join(',')}');
+        });
   }
 }
 
