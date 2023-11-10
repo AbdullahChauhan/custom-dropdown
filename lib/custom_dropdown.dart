@@ -465,7 +465,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenExpanded,
                 fillColor: widget.expandedFillColor,
                 suffixIcon: widget.expandedSuffixIcon,
-                maxlines: widget.maxlines,
+                maxLines: widget.maxlines,
                 widgetType: widget._widgetType,
               );
             },
