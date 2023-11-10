@@ -103,26 +103,29 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
       BuildContext context, T result, bool isSelected) {
     return Row(
       children: [
-        Text(
-          result.toString(),
-          maxLines: widget.maxLines,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 16),
-        ),
-        Checkbox(
-          value: isSelected,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          onChanged: (_) {
-            onItemSelect(result);
-          },
-          activeColor: Colors.green,
-          side: BorderSide(
-            color: Colors.black.withOpacity(0.1),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+        Expanded(
+          child: Text(
+            result.toString(),
+            maxLines: widget.maxLines,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 16),
           ),
         ),
+        if (widget.widgetType == _DropdownType.multiSelect)
+          Checkbox(
+            value: isSelected,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            onChanged: (_) {
+              onItemSelect(result);
+            },
+            activeColor: Colors.green,
+            side: BorderSide(
+              color: Colors.black.withOpacity(0.1),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+          ),
       ],
     );
   }

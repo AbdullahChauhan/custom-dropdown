@@ -48,7 +48,7 @@ class _ItemsList<T> extends StatelessWidget {
               splashColor: Colors.transparent,
               highlightColor: Colors.grey[200],
               onTap: () => onItemSelect(items[index]),
-              child: Container(
+              child: Ink(
                 color: selected ? Colors.grey[100] : Colors.transparent,
                 padding: _listItemPadding,
                 child: listItemBuilder(context, items[index], selected),
