@@ -60,6 +60,7 @@ const _defaultHintValue = 'Select value';
 typedef _ListItemBuilder<T> = Widget Function(
   BuildContext context,
   T item,
+  bool isSelected,
 );
 typedef _HeaderBuilder<T> = Widget Function(
   BuildContext context,

@@ -99,12 +99,31 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   final key1 = GlobalKey(), key2 = GlobalKey();
   final scrollController = ScrollController();
 
-  Widget defaultListItemBuilder(BuildContext context, T result) {
-    return Text(
-      result.toString(),
-      maxLines: widget.maxlines,
-      overflow: TextOverflow.ellipsis,
-      style: const TextStyle(fontSize: 16),
+  Widget defaultListItemBuilder(
+      BuildContext context, T result, bool isSelected) {
+    return Row(
+      children: [
+        Text(
+          result.toString(),
+          maxLines: widget.maxlines,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 16),
+        ),
+        Checkbox(
+          value: isSelected,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          onChanged: (_) {
+            onItemSelect(result);
+          },
+          activeColor: Colors.green,
+          side: BorderSide(
+            color: Colors.black.withOpacity(0.1),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+        ),
+      ],
     );
   }
 
@@ -193,6 +212,15 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     setState(() {});
   }
 
+  void onItemSelect(T value) {
+    widget.onItemSelect(value);
+    if (widget.widgetType == _DropdownType.multiSelect) {
+      onOptionTap(value);
+      return;
+    }
+    setState(() => displayOverly = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     // search availability check
@@ -219,14 +247,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             selectedItems: selectedItems,
             items: items,
             padding: listPadding,
-            onItemSelect: (T value) {
-              widget.onItemSelect(value);
-              if (widget.widgetType == _DropdownType.multiSelect) {
-                onOptionTap(value);
-                return;
-              }
-              setState(() => displayOverly = false);
-            },
+            onItemSelect: onItemSelect,
             widgetType: widget.widgetType,
           )
         : (mayFoundSearchRequestResult != null &&

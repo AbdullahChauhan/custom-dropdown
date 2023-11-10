@@ -259,7 +259,7 @@ class FullyCustomizedDropDown extends StatelessWidget {
   }
 
   //function to be called with every item how it's gona be sho in the dropdown list
-  Widget _listItemBuilder(BuildContext context, Job job) {
+  Widget _listItemBuilder(BuildContext context, Job job, bool isSelected) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [Text(job.name), Icon(job.icon)],

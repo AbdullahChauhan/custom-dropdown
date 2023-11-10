@@ -51,7 +51,7 @@ class _ItemsList<T> extends StatelessWidget {
               child: Container(
                 color: selected ? Colors.grey[100] : Colors.transparent,
                 padding: _listItemPadding,
-                child: listItemBuilder(context, items[index]),
+                child: listItemBuilder(context, items[index], selected),
               ),
             ),
           );
