@@ -15,9 +15,10 @@
 
 Lots of properties to use and customize dropdown widget as per your need. Also usable under Form widget for required validation.
 
-- Custom dropdown using constructor **CustomDropdown()**.
-- Custom dropdown with search field using named constructor **CustomDropdown.search()**.
-- Custom dropdown with search request field using named constructor **CustomDropdown.searchRequest()**.
+- Custom dropdown using constructor **CustomDropdown<T>()**.
+- Custom dropdown with search field using named constructor **CustomDropdown<T>.search()**.
+- Custom dropdown with search request field using named constructor **CustomDropdown<T>.searchRequest()**.
+- Custom dropdown with multiselect named constructor **CustomDropdown<T>.multiSelect()**.
 
 <hr>
 
@@ -223,7 +224,53 @@ class SearchRequestDropdown extends StatelessWidget {
 }
 ```
 
-### **5. Custom dropdown with validation:** *A custom dropdown with validation.*
+### **5. Custom dropdown with multiselect**
+Let's start with the type of object we are going to work with:
+```dart
+class Job {
+  final String name;
+  final IconData icon;
+  const Job(this.name, this.icon);
+
+  @override
+  String toString() {
+    return name;
+  }
+}
+```
+Whenever you are going to work with custom type model `T`, your model must override the default `toString()` method and return the property inside that you want to display as list item otherwise the dropdown list item would show `Instance of [model name]`.
+
+Now the widget:
+
+```dart
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:flutter/material.dart';
+import 'dart:developer';
+
+const List<Job> _list = [
+    Job('Developer', Icons.developer_mode),
+    Job('Designer', Icons.design_services),
+    Job('Consultant', Icons.account_balance),
+    Job('Student', Icons.school),
+  ];
+
+class MultiselectDropDown extends StatelessWidget {
+  const MultiselectDropDown({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomDropdown<Job>.multiSelect(
+        items: _jobItems,
+        initialItems: _jobItems.take(1).toList(),
+        onListChanged: (v) {
+          debugPrint(
+              '💡selected Jobs :: ${v.map((e) => e.name).toList().join(',')}');
+        });
+  }
+}
+```
+
+### **6. Custom dropdown with validation:** *A custom dropdown with validation.*
 
 ```dart
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
