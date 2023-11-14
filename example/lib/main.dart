@@ -47,6 +47,22 @@ class _HomeState extends State<Home> {
       "id": 4,
       'name': {'ar': 'driverAr', 'en': 'driverEn'}
     },
+    {
+      "id": 5,
+      'name': {'ar': 'driverAr', 'en': 'driverEn'}
+    },
+    {
+      "id": 6,
+      'name': {'ar': 'driverAr', 'en': 'driverEn'}
+    },
+    {
+      "id": 7,
+      'name': {'ar': 'driverAr', 'en': 'driverEn'}
+    },
+    {
+      "id": 8,
+      'name': {'ar': 'driverAr', 'en': 'driverEn'}
+    },
   ];
   final jobRoleDropdownCtrl = TextEditingController(),
       jobRoleFormDropdownCtrl = TextEditingController(),
@@ -80,26 +96,37 @@ class _HomeState extends State<Home> {
         children: [
           const Text('Job Roles Dropdown', style: _labelStyle),
           const SizedBox(height: 8),
-          CustomDropdown(
-            onRemoveClicked: () {
-              print('on remove clicked');
-            },
-            // key: UniqueKey(),
-            // fillColor: Colors.red,
-            // contentPadding: EdgeInsets.all(20),
-            hintText: 'Select job role',
-            // hintStyle: TextStyle(fontSize: 20),
-            excludeSelected: false,
-            items: list,
-            nameKey: "name",
-            nameMapKey: 'en',
-            onChanged: (value) async {
-              // await Future.delayed(Duration(seconds: 1));
+          Row(
+            children: [
+              Expanded(
+                child: CustomDropdown(
+                  customOverRelayWidth: 600,
+                  basicWidget: Icon(Icons.add),
+                  onRemoveClicked: () {
+                    print('on remove clicked');
+                  },
+                  // key: UniqueKey(),
+                  // fillColor: Colors.red,
+                  // contentPadding: EdgeInsets.all(20),
+                  hintText: 'Select job role',
+                  // hintStyle: TextStyle(fontSize: 20),
+                  excludeSelected: false,
+                  items: list,
+                  nameKey: "name",
+                  nameMapKey: 'en',
+                  onChanged: (value) async {
+                    // await Future.delayed(Duration(seconds: 1));
 
-              setState(() {});
-              print('XXXXXXX${value}');
-            },
-            // excludeSelected: false,
+                    setState(() {});
+                    print('XXXXXXX${value}');
+                  },
+                  // excludeSelected: false,
+                ),
+              ),
+              Spacer(
+                flex: 9,
+              ),
+            ],
           ),
 
           const SizedBox(height: 24),

@@ -31,8 +31,12 @@ class CustomDropdown extends StatefulWidget {
   final Color? fillColor;
   final EdgeInsets? contentPadding;
   final bool? canCloseOutsideBounds;
+  final double? customOverRelayWidth;
 
   final _SearchType? searchType;
+
+  /// the widget you click at to open drop down
+  final Widget? basicWidget;
 
   final void Function()? onRemoveClicked;
 
@@ -55,6 +59,8 @@ class CustomDropdown extends StatefulWidget {
     this.onChanged,
     this.contentPadding,
     this.onRemoveClicked,
+    this.basicWidget,
+    this.customOverRelayWidth,
     this.excludeSelected = true,
     this.fillColor = Colors.white,
   })  : searchType = null,
@@ -76,10 +82,12 @@ class CustomDropdown extends StatefulWidget {
     this.errorBorderSide,
     this.borderRadius,
     this.borderSide,
+    this.basicWidget,
     this.fieldSuffixIcon,
     this.onChanged,
     this.onRemoveClicked,
     this.contentPadding,
+    this.customOverRelayWidth,
     this.excludeSelected = false,
     this.canCloseOutsideBounds = true,
     this.fillColor = Colors.white,
@@ -99,7 +107,6 @@ class _CustomDropdownState extends State<CustomDropdown> {
   @override
   void initState() {
     init();
-
     super.initState();
   }
 
@@ -155,6 +162,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
       child: _OverlayBuilder(
         overlay: (size, hideCallback) {
           return _DropdownOverlay(
+            customOverRelayWidth: widget.customOverRelayWidth,
             items: dataItems,
             controller: textEditingController,
             size: size,
@@ -174,24 +182,29 @@ class _CustomDropdownState extends State<CustomDropdown> {
         child: (showCallback) {
           return CompositedTransformTarget(
             link: layerLink,
-            child: _DropDownField(
-              onRemoveClicked: widget.onRemoveClicked,
-              isItemsNullOrEmpty: dataItems.isEmpty,
-              controller: textEditingController,
-              onTap: showCallback,
-              style: selectedStyle,
-              borderRadius: widget.borderRadius,
-              borderSide: widget.borderSide,
-              errorBorderSide: widget.errorBorderSide,
-              errorStyle: widget.errorStyle,
-              errorText: widget.errorText,
-              hintStyle: hintStyle,
-              hintText: hintText,
-              suffixIcon: widget.fieldSuffixIcon,
-              // onChanged: widget.onChanged,
-              fillColor: widget.fillColor,
-              contentPadding: widget.contentPadding,
-            ),
+            child: widget.basicWidget != null
+                ? InkWell(
+                    onTap: showCallback,
+                    child: widget.basicWidget,
+                  )
+                : _DropDownField(
+                    onRemoveClicked: widget.onRemoveClicked,
+                    isItemsNullOrEmpty: dataItems.isEmpty,
+                    controller: textEditingController,
+                    onTap: showCallback,
+                    style: selectedStyle,
+                    borderRadius: widget.borderRadius,
+                    borderSide: widget.borderSide,
+                    errorBorderSide: widget.errorBorderSide,
+                    errorStyle: widget.errorStyle,
+                    errorText: widget.errorText,
+                    hintStyle: hintStyle,
+                    hintText: hintText,
+                    suffixIcon: widget.fieldSuffixIcon,
+                    // onChanged: widget.onChanged,
+                    fillColor: widget.fillColor,
+                    contentPadding: widget.contentPadding,
+                  ),
           );
         },
       ),

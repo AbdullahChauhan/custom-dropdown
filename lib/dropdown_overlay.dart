@@ -23,6 +23,7 @@ class _DropdownOverlay extends StatefulWidget {
   final bool? canCloseOutsideBounds;
   final _SearchType? searchType;
   final Function(String)? onChanged;
+  final double? customOverRelayWidth;
 
   const _DropdownOverlay({
     Key? key,
@@ -37,6 +38,7 @@ class _DropdownOverlay extends StatefulWidget {
     this.excludeSelected,
     this.canCloseOutsideBounds,
     this.searchType,
+    this.customOverRelayWidth,
     this.onChanged,
   }) : super(key: key);
 
@@ -166,7 +168,7 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
     final child = Stack(
       children: [
         Positioned(
-          width: widget.size.width + 24,
+          width: widget.customOverRelayWidth ?? widget.size.width + 23,
           child: CompositedTransformFollower(
             link: widget.layerLink,
             followerAnchor:
@@ -196,10 +198,13 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                     axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
                     child: SizedBox(
                       key: key2,
+                      // height: items.length > 4
+                      //     ? onListDataSearch
+                      //         ? 270
+                      //         : 225
+                      //     : null,
                       height: items.length > 4
-                          ? onListDataSearch
-                              ? 270
-                              : 225
+                          ? MediaQuery.of(context).size.height / 2
                           : null,
                       child: ClipRRect(
                         borderRadius: borderRadius,
