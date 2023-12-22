@@ -11,7 +11,7 @@ class _ItemsList<T> extends StatelessWidget {
   final _ListItemBuilder<T> listItemBuilder;
 
   const _ItemsList({
-    Key? key,
+    super.key,
     required this.scrollController,
     required this.selectedItem,
     required this.items,
@@ -19,7 +19,7 @@ class _ItemsList<T> extends StatelessWidget {
     required this.excludeSelected,
     required this.padding,
     required this.listItemBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

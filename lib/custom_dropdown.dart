@@ -156,7 +156,7 @@ class CustomDropdown<T> extends StatefulWidget {
   final _SearchType? _searchType;
 
   CustomDropdown({
-    Key? key,
+    super.key,
     required this.items,
     this.initialItem,
     this.hintText,
@@ -194,11 +194,10 @@ class CustomDropdown<T> extends StatefulWidget {
         _searchType = null,
         futureRequest = null,
         futureRequestDelay = null,
-        noResultFoundBuilder = null,
-        super(key: key);
+        noResultFoundBuilder = null;
 
   CustomDropdown.search({
-    Key? key,
+    super.key,
     required this.items,
     this.initialItem,
     this.hintText,
@@ -236,11 +235,10 @@ class CustomDropdown<T> extends StatefulWidget {
         ),
         _searchType = _SearchType.onListData,
         futureRequest = null,
-        futureRequestDelay = null,
-        super(key: key);
+        futureRequestDelay = null;
 
   const CustomDropdown.searchRequest({
-    Key? key,
+    super.key,
     required this.futureRequest,
     this.futureRequestDelay,
     this.initialItem,
@@ -270,8 +268,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hideSelectedFieldWhenExpanded = false,
     this.closedFillColor = Colors.white,
     this.expandedFillColor = Colors.white,
-  })  : _searchType = _SearchType.onRequestData,
-        super(key: key);
+  }) : _searchType = _SearchType.onRequestData;
 
   @override
   State<CustomDropdown<T>> createState() => _CustomDropdownState<T>();
