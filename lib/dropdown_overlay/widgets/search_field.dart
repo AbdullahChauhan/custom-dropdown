@@ -1,41 +1,42 @@
 part of '../../custom_dropdown.dart';
 
-class _SearchField extends StatefulWidget {
-  final List<String> items;
-  final ValueChanged<List<String>> onSearchedItems;
+class _SearchField<T> extends StatefulWidget {
+  final List<T> items;
+  final ValueChanged<List<T>> onSearchedItems;
+  final String searchHintText;
   final _SearchType? searchType;
-  final Future<List<String>> Function(String)? futureRequest;
+  final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
   final ValueChanged<bool>? onFutureRequestLoading;
   final ValueChanged<bool>? mayFoundResult;
 
   const _SearchField.forListData({
-    Key? key,
+    super.key,
     required this.items,
     required this.onSearchedItems,
+    required this.searchHintText,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
         onFutureRequestLoading = null,
-        mayFoundResult = null,
-        super(key: key);
+        mayFoundResult = null;
 
   const _SearchField.forRequestData({
-    Key? key,
+    super.key,
     required this.items,
     required this.onSearchedItems,
+    required this.searchHintText,
     required this.futureRequest,
     required this.futureRequestDelay,
     required this.onFutureRequestLoading,
     required this.mayFoundResult,
-  })  : searchType = _SearchType.onRequestData,
-        super(key: key);
+  }) : searchType = _SearchType.onRequestData;
 
   @override
-  State<_SearchField> createState() => _SearchFieldState();
+  State<_SearchField<T>> createState() => _SearchFieldState<T>();
 }
 
-class _SearchFieldState extends State<_SearchField> {
+class _SearchFieldState<T> extends State<_SearchField<T>> {
   final searchCtrl = TextEditingController();
   bool isFieldEmpty = false;
   FocusNode focusNode = FocusNode();
@@ -57,10 +58,16 @@ class _SearchFieldState extends State<_SearchField> {
     super.dispose();
   }
 
-  void onSearch(String str) {
-    final result = widget.items
-        .where((item) => item.toLowerCase().contains(str.toLowerCase()))
-        .toList();
+  void onSearch(String query) {
+    final result = widget.items.where(
+      (item) {
+        if (item is CustomDropdownListFilter) {
+          return item.filter(query);
+        } else {
+          return item.toString().toLowerCase().contains(query.toLowerCase());
+        }
+      },
+    ).toList();
     widget.onSearchedItems(result);
   }
 
@@ -72,7 +79,7 @@ class _SearchFieldState extends State<_SearchField> {
   }
 
   void searchRequest(String val) async {
-    List<String> result = [];
+    List<T> result = [];
     try {
       result = await widget.futureRequest!(val);
       widget.onFutureRequestLoading!(false);
@@ -126,7 +133,7 @@ class _SearchFieldState extends State<_SearchField> {
           fillColor: Colors.grey[50],
           constraints: const BoxConstraints.tightFor(height: 40),
           contentPadding: const EdgeInsets.all(8),
-          hintText: 'Search',
+          hintText: widget.searchHintText,
           hintStyle: const TextStyle(color: Colors.grey),
           prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 22),
           suffixIcon: GestureDetector(

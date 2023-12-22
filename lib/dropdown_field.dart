@@ -1,125 +1,116 @@
 part of 'custom_dropdown.dart';
 
-const _textFieldIcon = Icon(
+// overlay icon
+const _defaultOverlayIconDown = Icon(
   Icons.keyboard_arrow_down_rounded,
   color: Colors.black,
   size: 20,
 );
-const _contentPadding = EdgeInsets.only(left: 16);
-const _noTextStyle = TextStyle(height: 0);
-const _borderSide = BorderSide(color: Colors.transparent);
-const _errorBorderSide = BorderSide(color: Colors.redAccent, width: 2);
 
-class _DropDownField extends StatefulWidget {
-  final TextEditingController controller;
+class _DropDownField<T> extends StatefulWidget {
   final VoidCallback onTap;
-  final Function(String)? onChanged;
-  final String? hintText;
-  final TextStyle? hintStyle;
-  final TextStyle? style;
+  final ValueNotifier<T?> selectedItemNotifier;
+  final String hintText;
+  final Color? fillColor;
+  final BoxBorder? border;
+  final BorderRadius? borderRadius;
   final String? errorText;
   final TextStyle? errorStyle;
-  final BorderSide? borderSide;
   final BorderSide? errorBorderSide;
-  final BorderRadius? borderRadius;
   final Widget? suffixIcon;
-  final Color? fillColor;
+  final int maxlines;
+
+  // ignore: library_private_types_in_public_api
+  final _HeaderBuilder<T>? headerBuilder;
+  // ignore: library_private_types_in_public_api
+  final _HintBuilder? hintBuilder;
 
   const _DropDownField({
-    Key? key,
-    required this.controller,
+    super.key,
     required this.onTap,
-    this.onChanged,
-    this.suffixIcon,
-    this.hintText,
-    this.hintStyle,
-    this.style,
+    required this.selectedItemNotifier,
+    required this.maxlines,
+    this.hintText = 'Select value',
+    this.fillColor,
+    this.border,
+    this.borderRadius,
     this.errorText,
     this.errorStyle,
-    this.borderSide,
     this.errorBorderSide,
-    this.borderRadius,
-    this.fillColor,
-  }) : super(key: key);
+    this.headerBuilder,
+    this.hintBuilder,
+    this.suffixIcon,
+  });
 
   @override
-  State<_DropDownField> createState() => _DropDownFieldState();
+  State<_DropDownField<T>> createState() => _DropDownFieldState<T>();
 }
 
-class _DropDownFieldState extends State<_DropDownField> {
-  String? prevText;
-  bool listenChanges = true;
+class _DropDownFieldState<T> extends State<_DropDownField<T>> {
+  T? selectedItem;
 
   @override
   void initState() {
     super.initState();
-    if (widget.onChanged != null) {
-      widget.controller.addListener(listenItemChanges);
-    }
+    selectedItem = widget.selectedItemNotifier.value;
+  }
+
+  Widget _defaultHeaderBuilder(T result) {
+    return Text(
+      result.toString(),
+      maxLines: widget.maxlines,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+
+  Widget _defaultHintBuilder(String hint) {
+    return Text(
+      hint,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
+        fontSize: 16,
+        color: Color(0xFFA7A7A7),
+      ),
+    );
   }
 
   @override
-  void dispose() {
-    widget.controller.removeListener(listenItemChanges);
-    super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant _DropDownField oldWidget) {
+  void didUpdateWidget(covariant _DropDownField<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.onChanged != null) {
-      widget.controller.addListener(listenItemChanges);
-    } else {
-      listenChanges = false;
-    }
-  }
-
-  void listenItemChanges() {
-    if (listenChanges) {
-      final text = widget.controller.text;
-      if (prevText != null && prevText != text && text.isNotEmpty) {
-        widget.onChanged!(text);
-      }
-      prevText = text;
-    }
+    selectedItem = widget.selectedItemNotifier.value;
   }
 
   @override
   Widget build(BuildContext context) {
-    final border = OutlineInputBorder(
-      borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
-      borderSide: widget.borderSide ?? _borderSide,
-    );
-
-    final errorBorder = OutlineInputBorder(
-      borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
-      borderSide: widget.errorBorderSide ?? _errorBorderSide,
-    );
-
-    return TextFormField(
-      controller: widget.controller,
-      validator: (val) {
-        if (val?.isEmpty ?? false) return widget.errorText ?? '';
-        return null;
-      },
-      readOnly: true,
+    return GestureDetector(
       onTap: widget.onTap,
-      onChanged: widget.onChanged,
-      style: widget.style,
-      decoration: InputDecoration(
-        isDense: true,
-        contentPadding: _contentPadding,
-        suffixIcon: widget.suffixIcon ?? _textFieldIcon,
-        hintText: widget.hintText,
-        hintStyle: widget.hintStyle,
-        fillColor: widget.fillColor,
-        filled: true,
-        errorStyle: widget.errorText != null ? widget.errorStyle : _noTextStyle,
-        border: border,
-        enabledBorder: border,
-        focusedBorder: border,
-        errorBorder: errorBorder,
-        focusedErrorBorder: errorBorder,
+      child: Container(
+        padding: _headerPadding,
+        decoration: BoxDecoration(
+          color: widget.fillColor ?? _defaultFillColor,
+          border: widget.border,
+          borderRadius: widget.borderRadius ?? _defaultBorderRadius,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: selectedItem != null
+                  ? widget.headerBuilder != null
+                      ? widget.headerBuilder!(context, selectedItem as T)
+                      : _defaultHeaderBuilder(selectedItem as T)
+                  : widget.hintBuilder != null
+                      ? widget.hintBuilder!(context, widget.hintText)
+                      : _defaultHintBuilder(widget.hintText),
+            ),
+            const SizedBox(width: 12),
+            widget.suffixIcon ?? _defaultOverlayIconDown,
+          ],
+        ),
       ),
     );
   }

@@ -5,13 +5,14 @@ class AnimatedSection extends StatefulWidget {
   final VoidCallback animationDismissed;
   final Widget child;
   final double axisAlignment;
+
   const AnimatedSection({
-    Key? key,
+    super.key,
     this.expand = false,
     required this.animationDismissed,
     required this.child,
     required this.axisAlignment,
-  }) : super(key: key);
+  });
 
   @override
   State<AnimatedSection> createState() => _AnimatedSectionState();
