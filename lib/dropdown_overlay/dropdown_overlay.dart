@@ -422,9 +422,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
       ],
     );
 
-    return Stack(
-      children: [
-        if (widget.canCloseOutsideBounds!)
+    if (widget.canCloseOutsideBounds) {
+      return Stack(
+        children: [
           GestureDetector(
             onTap: () => setState(() => displayOverly = false),
             child: Container(
@@ -433,8 +433,11 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
               color: Colors.transparent,
             ),
           ),
-        child,
-      ],
-    );
+          child,
+        ],
+      );
+    }
+
+    return child;
   }
 }
