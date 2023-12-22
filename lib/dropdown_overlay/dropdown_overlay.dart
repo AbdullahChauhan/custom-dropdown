@@ -67,7 +67,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     this.border,
     this.borderRadius,
     this.fillColor,
-  }) : super(key: key);
+  });
 
   @override
   _DropdownOverlayState<T> createState() => _DropdownOverlayState<T>();

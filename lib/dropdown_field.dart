@@ -26,7 +26,7 @@ class _DropDownField<T> extends StatefulWidget {
   final _HintBuilder? hintBuilder;
 
   const _DropDownField({
-    Key? key,
+    super.key,
     required this.onTap,
     required this.selectedItemNotifier,
     required this.maxlines,
@@ -40,7 +40,7 @@ class _DropDownField<T> extends StatefulWidget {
     this.headerBuilder,
     this.hintBuilder,
     this.suffixIcon,
-  }) : super(key: key);
+  });
 
   @override
   State<_DropDownField<T>> createState() => _DropDownFieldState<T>();
