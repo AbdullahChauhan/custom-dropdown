@@ -267,27 +267,34 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                 if (!widget.hideSelectedFieldWhenOpen!)
                                   Padding(
                                     padding: _headerPadding,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: selectedItem != null
-                                              ? widget.headerBuilder != null
-                                                  ? widget.headerBuilder!(
-                                                      context,
-                                                      selectedItem as T)
-                                                  : defaultHeaderBuilder(
-                                                      context,
-                                                      selectedItem as T)
-                                              : widget.hintBuilder != null
-                                                  ? widget.hintBuilder!(
-                                                      context, widget.hintText)
-                                                  : defaultHintBuilder(
-                                                      context, widget.hintText),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        widget.suffixIcon ??
-                                            _defaultOverlayIconUp,
-                                      ],
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() => displayOverly = false);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: selectedItem != null
+                                                ? widget.headerBuilder != null
+                                                    ? widget.headerBuilder!(
+                                                        context,
+                                                        selectedItem as T)
+                                                    : defaultHeaderBuilder(
+                                                        context,
+                                                        selectedItem as T)
+                                                : widget.hintBuilder != null
+                                                    ? widget.hintBuilder!(
+                                                        context,
+                                                        widget.hintText)
+                                                    : defaultHintBuilder(
+                                                        context,
+                                                        widget.hintText),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          widget.suffixIcon ??
+                                              _defaultOverlayIconUp,
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 if (onSearch &&
@@ -415,16 +422,22 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
       ],
     );
 
-    return GestureDetector(
-      onTap: () => setState(() => displayOverly = false),
-      child: widget.canCloseOutsideBounds
-          ? Container(
+    if (widget.canCloseOutsideBounds) {
+      return Stack(
+        children: [
+          GestureDetector(
+            onTap: () => setState(() => displayOverly = false),
+            child: Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               color: Colors.transparent,
-              child: child,
-            )
-          : child,
-    );
+            ),
+          ),
+          child,
+        ],
+      );
+    }
+
+    return child;
   }
 }
