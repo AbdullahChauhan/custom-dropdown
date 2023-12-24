@@ -15,7 +15,7 @@ class _ItemsList<T> extends StatelessWidget {
   final _DropdownType widgetType;
 
   const _ItemsList({
-    Key? key,
+    super.key,
     required this.scrollController,
     required this.selectedItem,
     required this.items,
@@ -25,7 +25,7 @@ class _ItemsList<T> extends StatelessWidget {
     required this.listItemBuilder,
     required this.selectedItems,
     required this.widgetType,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

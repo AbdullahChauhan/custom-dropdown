@@ -193,7 +193,7 @@ class CustomDropdown<T> extends StatefulWidget {
   final _HeaderListBuilder<T>? headerListBuilder;
 
   CustomDropdown({
-    Key? key,
+    super.key,
     required this.items,
     this.initialItem,
     this.hintText,
@@ -236,11 +236,10 @@ class CustomDropdown<T> extends StatefulWidget {
         initialItems = [],
         onListChanged = null,
         listValidator = null,
-        headerListBuilder = null,
-        super(key: key);
+        headerListBuilder = null;
 
   CustomDropdown.search({
-    Key? key,
+    super.key,
     required this.items,
     this.initialItem,
     this.hintText,
@@ -283,11 +282,10 @@ class CustomDropdown<T> extends StatefulWidget {
         initialItems = [],
         onListChanged = null,
         listValidator = null,
-        headerListBuilder = null,
-        super(key: key);
+        headerListBuilder = null;
 
   const CustomDropdown.searchRequest({
-    Key? key,
+    super.key,
     required this.futureRequest,
     this.futureRequestDelay,
     this.initialItem,
@@ -322,12 +320,11 @@ class CustomDropdown<T> extends StatefulWidget {
         initialItems = const [],
         onListChanged = null,
         listValidator = null,
-        headerListBuilder = null,
-        super(key: key);
+        headerListBuilder = null;
 
   /// You can select several values here
   CustomDropdown.multiSelect({
-    Key? key,
+    super.key,
     required this.items,
     required this.initialItems,
     required this.onListChanged,
@@ -370,8 +367,7 @@ class CustomDropdown<T> extends StatefulWidget {
         futureRequest = null,
         futureRequestDelay = null,
         noResultFoundBuilder = null,
-        _widgetType = _DropdownType.multiSelect,
-        super(key: key);
+        _widgetType = _DropdownType.multiSelect;
 
   @override
   State<CustomDropdown<T>> createState() => _CustomDropdownState<T>();

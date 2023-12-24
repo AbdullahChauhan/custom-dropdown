@@ -11,7 +11,7 @@ class _SearchField<T> extends StatefulWidget {
   final ValueChanged<bool>? mayFoundResult;
 
   const _SearchField.forListData({
-    Key? key,
+    super.key,
     required this.items,
     required this.onSearchedItems,
     required this.searchHintText,
@@ -19,11 +19,10 @@ class _SearchField<T> extends StatefulWidget {
         futureRequest = null,
         futureRequestDelay = null,
         onFutureRequestLoading = null,
-        mayFoundResult = null,
-        super(key: key);
+        mayFoundResult = null;
 
   const _SearchField.forRequestData({
-    Key? key,
+    super.key,
     required this.items,
     required this.onSearchedItems,
     required this.searchHintText,
@@ -31,8 +30,7 @@ class _SearchField<T> extends StatefulWidget {
     required this.futureRequestDelay,
     required this.onFutureRequestLoading,
     required this.mayFoundResult,
-  })  : searchType = _SearchType.onRequestData,
-        super(key: key);
+  }) : searchType = _SearchType.onRequestData;
 
   @override
   State<_SearchField<T>> createState() => _SearchFieldState<T>();
