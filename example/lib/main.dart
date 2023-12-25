@@ -134,7 +134,6 @@ class MultiselectDropDown extends StatelessWidget {
     return CustomDropdown<Job>.multiSelect(
       items: _jobItems,
       initialItems: _jobItems.take(2).toList(),
-      maxlines: 2,
       onListChanged: (value) {
         debugPrint('changing value to: $value');
       },

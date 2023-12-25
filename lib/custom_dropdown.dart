@@ -75,6 +75,10 @@ typedef _NoResultFoundBuilder = Widget Function(
   BuildContext context,
   String text,
 );
+typedef _SelectedIconBuilder = Widget Function(
+  bool isSelected,
+  VoidCallback onItemSelect,
+);
 
 class CustomDropdown<T> extends StatefulWidget {
   /// The list of items the user can select.
@@ -185,6 +189,9 @@ class CustomDropdown<T> extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   final _HeaderListBuilder<T>? headerListBuilder;
 
+  // ignore: library_private_types_in_public_api
+  final _SelectedIconBuilder? selectedIconBuilder;
+
   final _SearchType? _searchType;
 
   final _DropdownType _dropdownType;
@@ -233,7 +240,8 @@ class CustomDropdown<T> extends StatefulWidget {
         initialItems = null,
         onListChanged = null,
         listValidator = null,
-        headerListBuilder = null;
+        headerListBuilder = null,
+        selectedIconBuilder = null;
 
   CustomDropdown.search({
     super.key,
@@ -279,7 +287,8 @@ class CustomDropdown<T> extends StatefulWidget {
         initialItems = null,
         onListChanged = null,
         listValidator = null,
-        headerListBuilder = null;
+        headerListBuilder = null,
+        selectedIconBuilder = null;
 
   const CustomDropdown.searchRequest({
     super.key,
@@ -317,7 +326,8 @@ class CustomDropdown<T> extends StatefulWidget {
         initialItems = null,
         onListChanged = null,
         listValidator = null,
-        headerListBuilder = null;
+        headerListBuilder = null,
+        selectedIconBuilder = null;
 
   /// You can select several values here
   CustomDropdown.multiSelect({
@@ -327,6 +337,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.onListChanged,
     this.listValidator,
     this.headerListBuilder,
+    this.selectedIconBuilder,
     this.hintText,
     this.searchHintText,
     this.errorStyle,
@@ -379,6 +390,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.headerListBuilder,
     this.noResultFoundText,
     this.noResultFoundBuilder,
+    this.selectedIconBuilder,
     this.hintText,
     this.searchHintText,
     this.errorStyle,
@@ -430,6 +442,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listItemBuilder,
     this.hintBuilder,
     this.noResultFoundBuilder,
+    this.selectedIconBuilder,
     this.errorStyle,
     this.closedErrorBorder,
     this.closedErrorBorderRadius,
@@ -537,6 +550,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 hideOverlay: hideCallback,
                 headerBuilder: widget.headerBuilder,
                 headerListBuilder: widget.headerListBuilder,
+                selectedIconBuilder: widget.selectedIconBuilder,
                 hintText: safeHintText,
                 searchHintText: widget.searchHintText ?? 'Search',
                 hintBuilder: widget.hintBuilder,

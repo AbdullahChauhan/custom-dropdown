@@ -43,6 +43,8 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final _HintBuilder? hintBuilder;
   // ignore: library_private_types_in_public_api
   final _NoResultFoundBuilder? noResultFoundBuilder;
+  // ignore: library_private_types_in_public_api
+  final _SelectedIconBuilder? selectedIconBuilder;
   final _DropdownType dropdownType;
 
   const _DropdownOverlay({
@@ -71,6 +73,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     this.listItemBuilder,
     this.headerListBuilder,
     this.noResultFoundBuilder,
+    this.selectedIconBuilder,
     this.border,
     this.borderRadius,
     this.fillColor,
@@ -110,12 +113,23 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
           ),
         ),
         if (widget.dropdownType == _DropdownType.multipleSelect)
-          Checkbox(
-            value: isSelected,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            visualDensity: VisualDensity.compact,
-            onChanged: (_) => onItemSelect(result),
-          ),
+          widget.selectedIconBuilder != null
+              ? widget.selectedIconBuilder!(
+                  isSelected,
+                  () => onItemSelect(result),
+                )
+              : Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Checkbox(
+                    onChanged: (_) => onItemSelect(result),
+                    value: isSelected,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: const VisualDensity(
+                      horizontal: VisualDensity.minimumDensity,
+                      vertical: VisualDensity.minimumDensity,
+                    ),
+                  ),
+                ),
       ],
     );
   }
