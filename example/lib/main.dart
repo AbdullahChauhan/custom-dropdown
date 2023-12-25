@@ -91,13 +91,23 @@ class _HomeState extends State<Home> {
           const SizedBox(height: 24),
           const Divider(height: 0),
           const SizedBox(height: 24),
-
+          const Text('Multi Select Dropdown', style: _labelStyle),
+          const SizedBox(height: 8),
+          const MultiselectDropDown(),
+          const SizedBox(height: 24),
+          const Text('Multi Select Validation Dropdown', style: _labelStyle),
+          const SizedBox(height: 8),
+          MultiSelectValidationDropDown(),
+          const SizedBox(height: 24),
+          const Divider(height: 0),
+          const SizedBox(height: 24),
           const Text(
             'Awful, but fully customized search request with validation',
             style: _labelStyle,
           ),
           const SizedBox(height: 8),
           FullyCustomizedDropDown(),
+
           const SizedBox(height: 340),
         ],
       ),
@@ -116,6 +126,21 @@ class SimpleDropDown extends StatelessWidget {
       initialItem: _list[0],
       excludeSelected: false,
       onChanged: debugPrint,
+    );
+  }
+}
+
+class MultiselectDropDown extends StatelessWidget {
+  const MultiselectDropDown({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomDropdown<Job>.multiSelect(
+      items: _jobItems,
+      initialItems: _jobItems.take(2).toList(),
+      onListChanged: (value) {
+        debugPrint('changing value to: $value');
+      },
     );
   }
 }
@@ -194,10 +219,55 @@ class ValidationDropDown extends StatelessWidget {
             hintText: 'Select job role',
             items: _list,
             excludeSelected: false,
-            validateOnChange: true,
             onChanged: debugPrint,
             validator: (value) {
               if (value == null) {
+                return "Must not be null";
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                if (!_formKey.currentState!.validate()) {
+                  return;
+                }
+              },
+              child: const Text(
+                'Submit',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MultiSelectValidationDropDown extends StatelessWidget {
+  MultiSelectValidationDropDown({Key? key}) : super(key: key);
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomDropdown<String>.multiSelect(
+            hintText: 'Select job role',
+            items: _list,
+            onListChanged: (value) {
+              debugPrint('changing value to: $value');
+            },
+            listValidator: (value) {
+              if (value.isEmpty) {
                 return "Must not be null";
               }
               return null;
@@ -238,7 +308,12 @@ class FullyCustomizedDropDown extends StatelessWidget {
   }
 
   //function to be called with every item how it's gona be sho in the dropdown list
-  Widget _listItemBuilder(BuildContext context, Job job) {
+  Widget _listItemBuilder(
+    BuildContext context,
+    Job job,
+    bool isSelected,
+    VoidCallback onItemSelect,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [Text(job.name), Icon(job.icon)],

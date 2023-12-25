@@ -18,18 +18,23 @@ class _DropDownField<T> extends StatefulWidget {
   final TextStyle? errorStyle;
   final BorderSide? errorBorderSide;
   final Widget? suffixIcon;
-  final int maxlines;
-
+  final int maxLines;
   // ignore: library_private_types_in_public_api
   final _HeaderBuilder<T>? headerBuilder;
   // ignore: library_private_types_in_public_api
+  final _HeaderListBuilder<T>? headerListBuilder;
+  // ignore: library_private_types_in_public_api
   final _HintBuilder? hintBuilder;
+  final _DropdownType dropdownType;
+  final _ValueNotifierList<T> selectedItemsNotifier;
 
   const _DropDownField({
     super.key,
     required this.onTap,
     required this.selectedItemNotifier,
-    required this.maxlines,
+    required this.maxLines,
+    required this.dropdownType,
+    required this.selectedItemsNotifier,
     this.hintText = 'Select value',
     this.fillColor,
     this.border,
@@ -38,6 +43,7 @@ class _DropDownField<T> extends StatefulWidget {
     this.errorStyle,
     this.errorBorderSide,
     this.headerBuilder,
+    this.headerListBuilder,
     this.hintBuilder,
     this.suffixIcon,
   });
@@ -48,17 +54,37 @@ class _DropDownField<T> extends StatefulWidget {
 
 class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   T? selectedItem;
+  late List<T> selectedItems;
 
   @override
   void initState() {
     super.initState();
     selectedItem = widget.selectedItemNotifier.value;
+    selectedItems = widget.selectedItemsNotifier.value;
   }
 
-  Widget _defaultHeaderBuilder(T result) {
+  Widget get hintBuilder {
+    return widget.hintBuilder != null
+        ? widget.hintBuilder!(context, widget.hintText)
+        : defaultHintBuilder(widget.hintText);
+  }
+
+  Widget get headerBuilder {
+    return widget.headerBuilder != null
+        ? widget.headerBuilder!(context, selectedItem as T)
+        : defaultHeaderBuilder(oneItem: selectedItem);
+  }
+
+  Widget get headerListBuilder {
+    return widget.headerListBuilder != null
+        ? widget.headerListBuilder!(context, selectedItems)
+        : defaultHeaderBuilder(itemList: selectedItems);
+  }
+
+  Widget defaultHeaderBuilder({T? oneItem, List<T>? itemList}) {
     return Text(
-      result.toString(),
-      maxLines: widget.maxlines,
+      itemList != null ? itemList.join(', ') : oneItem.toString(),
+      maxLines: widget.maxLines,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
         fontSize: 16,
@@ -67,7 +93,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
     );
   }
 
-  Widget _defaultHintBuilder(String hint) {
+  Widget defaultHintBuilder(String hint) {
     return Text(
       hint,
       maxLines: 1,
@@ -82,7 +108,12 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   @override
   void didUpdateWidget(covariant _DropDownField<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    selectedItem = widget.selectedItemNotifier.value;
+    switch (widget.dropdownType) {
+      case _DropdownType.singleSelect:
+        selectedItem = widget.selectedItemNotifier.value;
+      case _DropdownType.multipleSelect:
+        selectedItems = widget.selectedItemsNotifier.value;
+    }
   }
 
   @override
@@ -99,13 +130,12 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
         child: Row(
           children: [
             Expanded(
-              child: selectedItem != null
-                  ? widget.headerBuilder != null
-                      ? widget.headerBuilder!(context, selectedItem as T)
-                      : _defaultHeaderBuilder(selectedItem as T)
-                  : widget.hintBuilder != null
-                      ? widget.hintBuilder!(context, widget.hintText)
-                      : _defaultHintBuilder(widget.hintText),
+              child: switch (widget.dropdownType) {
+                _DropdownType.singleSelect =>
+                  selectedItem != null ? headerBuilder : hintBuilder,
+                _DropdownType.multipleSelect =>
+                  selectedItems.isNotEmpty ? headerListBuilder : hintBuilder,
+              },
             ),
             const SizedBox(width: 12),
             widget.suffixIcon ?? _defaultOverlayIconDown,
