@@ -33,17 +33,11 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final String noResultFoundText;
   final Widget? suffixIcon;
   final int maxLines;
-  // ignore: library_private_types_in_public_api
   final _ListItemBuilder<T>? listItemBuilder;
-  // ignore: library_private_types_in_public_api
   final _HeaderBuilder<T>? headerBuilder;
-  // ignore: library_private_types_in_public_api
   final _HeaderListBuilder<T>? headerListBuilder;
-  // ignore: library_private_types_in_public_api
   final _HintBuilder? hintBuilder;
-  // ignore: library_private_types_in_public_api
   final _NoResultFoundBuilder? noResultFoundBuilder;
-  // ignore: library_private_types_in_public_api
   final _SelectedIconBuilder? selectedIconBuilder;
   final _DropdownType dropdownType;
 
@@ -146,7 +140,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     );
   }
 
-  // default header builder
   Widget defaultHintBuilder(BuildContext context, String hint) {
     return Text(
       hint,

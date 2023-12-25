@@ -171,25 +171,21 @@ class CustomDropdown<T> extends StatefulWidget {
   final int maxlines;
 
   /// The [listItemBuilder] that will be used to build item on demand.
-  // ignore: library_private_types_in_public_api
   final _ListItemBuilder<T>? listItemBuilder;
 
   /// The [headerBuilder] that will be used to build [CustomDropdown] header field.
-  // ignore: library_private_types_in_public_api
   final _HeaderBuilder<T>? headerBuilder;
 
   /// The [hintBuilder] that will be used to build [CustomDropdown] hint of header field.
-  // ignore: library_private_types_in_public_api
   final _HintBuilder? hintBuilder;
 
   /// The [noResultFoundBuilder] that will be used to build area when there's no search results match.
-  // ignore: library_private_types_in_public_api
   final _NoResultFoundBuilder? noResultFoundBuilder;
 
-  // ignore: library_private_types_in_public_api
+  /// The [headerListBuilder] that will be used to build [CustomDropdown] header field.
   final _HeaderListBuilder<T>? headerListBuilder;
 
-  // ignore: library_private_types_in_public_api
+  /// The [selectedIconBuilder] that will be used to build selected item icon.
   final _SelectedIconBuilder? selectedIconBuilder;
 
   final _SearchType? _searchType;
@@ -329,7 +325,6 @@ class CustomDropdown<T> extends StatefulWidget {
         headerListBuilder = null,
         selectedIconBuilder = null;
 
-  /// You can select several values here
   CustomDropdown.multiSelect({
     super.key,
     required this.items,
