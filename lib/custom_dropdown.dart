@@ -186,6 +186,7 @@ class CustomDropdown<T> extends StatefulWidget {
   final _HeaderListBuilder<T>? headerListBuilder;
 
   final _SearchType? _searchType;
+
   final _DropdownType _dropdownType;
 
   CustomDropdown({
@@ -340,6 +341,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.expandedSuffixIcon,
     this.listItemBuilder,
     this.hintBuilder,
+    this.canCloseOutsideBounds = true,
+    this.hideSelectedFieldWhenExpanded = false,
     this.closedFillColor = Colors.white,
     this.expandedFillColor = Colors.white,
     this.maxlines = 1,
@@ -360,12 +363,96 @@ class CustomDropdown<T> extends StatefulWidget {
         validator = null,
         headerBuilder = null,
         onChanged = null,
-        canCloseOutsideBounds = true,
-        hideSelectedFieldWhenExpanded = false,
         excludeSelected = false,
         futureRequest = null,
         futureRequestDelay = null,
         noResultFoundBuilder = null;
+
+  CustomDropdown.multiSelectSearch({
+    super.key,
+    required this.items,
+    this.initialItems,
+    this.onListChanged,
+    this.listValidator,
+    this.listItemBuilder,
+    this.hintBuilder,
+    this.headerListBuilder,
+    this.noResultFoundText,
+    this.noResultFoundBuilder,
+    this.hintText,
+    this.searchHintText,
+    this.errorStyle,
+    this.closedErrorBorder,
+    this.closedErrorBorderRadius,
+    this.validateOnChange = true,
+    this.closedBorder,
+    this.closedBorderRadius,
+    this.expandedBorder,
+    this.expandedBorderRadius,
+    this.closedSuffixIcon,
+    this.expandedSuffixIcon,
+    this.canCloseOutsideBounds = true,
+    this.hideSelectedFieldWhenExpanded = false,
+    this.closedFillColor = Colors.white,
+    this.expandedFillColor = Colors.white,
+    this.maxlines = 1,
+  })  : assert(
+          items!.isNotEmpty,
+          'Items list must contain at least one item.',
+        ),
+        assert(
+          initialItems == null ||
+              initialItems.isEmpty ||
+              initialItems.any((e) => items!.contains(e)),
+          'Initial items must match with the items in the items list.',
+        ),
+        _searchType = _SearchType.onListData,
+        _dropdownType = _DropdownType.multipleSelect,
+        initialItem = null,
+        onChanged = null,
+        validator = null,
+        excludeSelected = false,
+        headerBuilder = null,
+        futureRequest = null,
+        futureRequestDelay = null;
+
+  const CustomDropdown.multiSelectSearchRequest({
+    super.key,
+    required this.futureRequest,
+    this.futureRequestDelay,
+    this.initialItems,
+    this.items,
+    this.onListChanged,
+    this.hintText,
+    this.searchHintText,
+    this.noResultFoundText,
+    this.headerListBuilder,
+    this.listItemBuilder,
+    this.hintBuilder,
+    this.noResultFoundBuilder,
+    this.errorStyle,
+    this.closedErrorBorder,
+    this.closedErrorBorderRadius,
+    this.listValidator,
+    this.validateOnChange = true,
+    this.closedBorder,
+    this.closedBorderRadius,
+    this.expandedBorder,
+    this.expandedBorderRadius,
+    this.closedSuffixIcon,
+    this.expandedSuffixIcon,
+    this.maxlines = 1,
+    this.canCloseOutsideBounds = true,
+    this.hideSelectedFieldWhenExpanded = false,
+    this.closedFillColor = Colors.white,
+    this.expandedFillColor = Colors.white,
+  })  : _searchType = _SearchType.onRequestData,
+        _dropdownType = _DropdownType.multipleSelect,
+        initialItem = null,
+        onChanged = null,
+        headerBuilder = null,
+        excludeSelected = false,
+        validator = null;
 
   @override
   State<CustomDropdown<T>> createState() => _CustomDropdownState<T>();
