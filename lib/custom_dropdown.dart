@@ -110,7 +110,7 @@ class CustomDropdown<T> extends StatefulWidget {
 
   /// A method that validates the selected items.
   /// Returns an error string to display as per the validation, or null otherwise.
-  final String? Function(List<T>?)? listValidator;
+  final String? Function(List<T>)? listValidator;
 
   /// Error border for closed state of [CustomDropdown].
   final BoxBorder? closedErrorBorder;
@@ -490,7 +490,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
         }
         if (widget._dropdownType == _DropdownType.multipleSelect &&
             widget.listValidator != null) {
-          return widget.listValidator!(val?.$2);
+          return widget.listValidator!(val?.$2 ?? []);
         }
         return null;
       },
