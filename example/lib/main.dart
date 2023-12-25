@@ -91,9 +91,13 @@ class _HomeState extends State<Home> {
           const SizedBox(height: 24),
           const Divider(height: 0),
           const SizedBox(height: 24),
-          const Text('Multiselect Dropdown', style: _labelStyle),
+          const Text('Multi Select Dropdown', style: _labelStyle),
           const SizedBox(height: 8),
           const MultiselectDropDown(),
+          const SizedBox(height: 24),
+          const Text('Multi Select Validation Dropdown', style: _labelStyle),
+          const SizedBox(height: 8),
+          MultiSelectValidationDropDown(),
           const SizedBox(height: 24),
           const Divider(height: 0),
           const SizedBox(height: 24),
@@ -215,10 +219,55 @@ class ValidationDropDown extends StatelessWidget {
             hintText: 'Select job role',
             items: _list,
             excludeSelected: false,
-            validateOnChange: true,
             onChanged: debugPrint,
             validator: (value) {
               if (value == null) {
+                return "Must not be null";
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                if (!_formKey.currentState!.validate()) {
+                  return;
+                }
+              },
+              child: const Text(
+                'Submit',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MultiSelectValidationDropDown extends StatelessWidget {
+  MultiSelectValidationDropDown({Key? key}) : super(key: key);
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomDropdown<String>.multiSelect(
+            hintText: 'Select job role',
+            items: _list,
+            onListChanged: (value) {
+              debugPrint('changing value to: $value');
+            },
+            listValidator: (value) {
+              if (value.isEmpty) {
                 return "Must not be null";
               }
               return null;
