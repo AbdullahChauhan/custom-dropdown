@@ -12,12 +12,9 @@ part 'dropdown_overlay/widgets/items_list.dart';
 part 'dropdown_overlay/widgets/search_field.dart';
 part 'overlay_builder.dart';
 
-enum _SearchType { onListData, onRequestData }
+enum _DropdownType { singleSelect, multipleSelect }
 
-enum _DropdownType {
-  singleValue,
-  multiSelect,
-}
+enum _SearchType { onListData, onRequestData }
 
 class _ValueNotifierList<T> extends ValueNotifier<List<T>> {
   _ValueNotifierList(super.value);
@@ -87,7 +84,7 @@ class CustomDropdown<T> extends StatefulWidget {
   final T? initialItem;
 
   /// Initial selected items from the list of [items].
-  final List<T> initialItems;
+  final List<T>? initialItems;
 
   /// Text that suggests what sort of data the dropdown represents.
   final String? hintText;
@@ -185,12 +182,11 @@ class CustomDropdown<T> extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   final _NoResultFoundBuilder? noResultFoundBuilder;
 
-  final _SearchType? _searchType;
-
-  final _DropdownType _widgetType;
-
   // ignore: library_private_types_in_public_api
   final _HeaderListBuilder<T>? headerListBuilder;
+
+  final _SearchType? _searchType;
+  final _DropdownType _dropdownType;
 
   CustomDropdown({
     super.key,
@@ -229,11 +225,11 @@ class CustomDropdown<T> extends StatefulWidget {
           'Initial item must match with one of the item in items list.',
         ),
         _searchType = null,
+        _dropdownType = _DropdownType.singleSelect,
         futureRequest = null,
         futureRequestDelay = null,
         noResultFoundBuilder = null,
-        _widgetType = _DropdownType.singleValue,
-        initialItems = [],
+        initialItems = null,
         onListChanged = null,
         listValidator = null,
         headerListBuilder = null;
@@ -276,10 +272,10 @@ class CustomDropdown<T> extends StatefulWidget {
           'Initial item must match with one of the item in items list.',
         ),
         _searchType = _SearchType.onListData,
+        _dropdownType = _DropdownType.singleSelect,
         futureRequest = null,
         futureRequestDelay = null,
-        _widgetType = _DropdownType.singleValue,
-        initialItems = [],
+        initialItems = null,
         onListChanged = null,
         listValidator = null,
         headerListBuilder = null;
@@ -316,8 +312,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.closedFillColor = Colors.white,
     this.expandedFillColor = Colors.white,
   })  : _searchType = _SearchType.onRequestData,
-        _widgetType = _DropdownType.singleValue,
-        initialItems = const [],
+        _dropdownType = _DropdownType.singleSelect,
+        initialItems = null,
         onListChanged = null,
         listValidator = null,
         headerListBuilder = null;
@@ -326,8 +322,8 @@ class CustomDropdown<T> extends StatefulWidget {
   CustomDropdown.multiSelect({
     super.key,
     required this.items,
-    required this.initialItems,
-    required this.onListChanged,
+    this.initialItems,
+    this.onListChanged,
     this.listValidator,
     this.headerListBuilder,
     this.hintText,
@@ -352,9 +348,13 @@ class CustomDropdown<T> extends StatefulWidget {
           'Items list must contain at least one item.',
         ),
         assert(
-          initialItems.isEmpty || initialItems.any((e) => items!.contains(e)),
+          initialItems == null ||
+              initialItems.isEmpty ||
+              initialItems.any((e) => items!.contains(e)),
           'Initial items must match with the items in the items list.',
         ),
+        _searchType = null,
+        _dropdownType = _DropdownType.multipleSelect,
         initialItem = null,
         noResultFoundText = null,
         validator = null,
@@ -363,11 +363,9 @@ class CustomDropdown<T> extends StatefulWidget {
         canCloseOutsideBounds = true,
         hideSelectedFieldWhenExpanded = false,
         excludeSelected = false,
-        _searchType = null,
         futureRequest = null,
         futureRequestDelay = null,
-        noResultFoundBuilder = null,
-        _widgetType = _DropdownType.multiSelect;
+        noResultFoundBuilder = null;
 
   @override
   State<CustomDropdown<T>> createState() => _CustomDropdownState<T>();
@@ -382,7 +380,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   void initState() {
     super.initState();
     selectedItemNotifier = ValueNotifier(widget.initialItem);
-    selectedItemsNotifier = _ValueNotifierList(widget.initialItems);
+    selectedItemsNotifier = _ValueNotifierList(widget.initialItems ?? []);
   }
 
   @override
@@ -418,12 +416,12 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
             overlay: (size, hideCallback) {
               return _DropdownOverlay<T>(
                 onItemSelect: (T value) {
-                  switch (widget._widgetType) {
-                    case _DropdownType.singleValue:
+                  switch (widget._dropdownType) {
+                    case _DropdownType.singleSelect:
                       selectedItemNotifier.value = value;
                       widget.onChanged?.call(value);
                       formFieldState.didChange((value, []));
-                    case _DropdownType.multiSelect:
+                    case _DropdownType.multipleSelect:
                       final currentVal = selectedItemsNotifier.value.toList();
                       currentVal.contains(value)
                           ? currentVal.remove(value)
@@ -462,7 +460,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 fillColor: widget.expandedFillColor,
                 suffixIcon: widget.expandedSuffixIcon,
                 maxLines: widget.maxlines,
-                widgetType: widget._widgetType,
+                dropdownType: widget._dropdownType,
               );
             },
             child: (showCallback) {
@@ -484,7 +482,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   suffixIcon: widget.closedSuffixIcon,
                   fillColor: widget.closedFillColor,
                   maxLines: widget.maxlines,
-                  widgetType: widget._widgetType,
+                  dropdownType: widget._dropdownType,
                   selectedItemsNotifier: selectedItemsNotifier,
                 ),
               );

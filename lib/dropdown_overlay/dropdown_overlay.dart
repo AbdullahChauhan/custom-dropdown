@@ -14,9 +14,7 @@ const _listItemPadding = EdgeInsets.symmetric(vertical: 12, horizontal: 16);
 class _DropdownOverlay<T> extends StatefulWidget {
   final List<T> items;
   final ValueNotifier<T?> selectedItemNotifier;
-
   final _ValueNotifierList<T> selectedItemsNotifier;
-
   final Function(T) onItemSelect;
   final Size size;
   final LayerLink layerLink;
@@ -39,16 +37,13 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final _ListItemBuilder<T>? listItemBuilder;
   // ignore: library_private_types_in_public_api
   final _HeaderBuilder<T>? headerBuilder;
-
   // ignore: library_private_types_in_public_api
   final _HeaderListBuilder<T>? headerListBuilder;
-
   // ignore: library_private_types_in_public_api
   final _HintBuilder? hintBuilder;
   // ignore: library_private_types_in_public_api
   final _NoResultFoundBuilder? noResultFoundBuilder;
-
-  final _DropdownType widgetType;
+  final _DropdownType dropdownType;
 
   const _DropdownOverlay({
     Key? key,
@@ -65,7 +60,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.noResultFoundText,
     required this.canCloseOutsideBounds,
     required this.maxLines,
-    required this.widgetType,
+    required this.dropdownType,
     this.suffixIcon,
     this.headerBuilder,
     this.hintBuilder,
@@ -100,7 +95,10 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   final scrollController = ScrollController();
 
   Widget defaultListItemBuilder(
-      BuildContext context, T result, bool isSelected) {
+    BuildContext context,
+    T result,
+    bool isSelected,
+  ) {
     return Row(
       children: [
         Expanded(
@@ -111,29 +109,20 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             style: const TextStyle(fontSize: 16),
           ),
         ),
-        if (widget.widgetType == _DropdownType.multiSelect)
+        if (widget.dropdownType == _DropdownType.multipleSelect)
           Checkbox(
             value: isSelected,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            onChanged: (_) {
-              onItemSelect(result);
-            },
-            activeColor: Colors.green,
-            side: BorderSide(
-              color: Colors.black.withOpacity(0.1),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
-            ),
+            visualDensity: VisualDensity.compact,
+            onChanged: (_) => onItemSelect(result),
           ),
       ],
     );
   }
 
-  Widget defaultHeaderBuilder(BuildContext context,
-      {T? oneItem, List<T>? itemList}) {
+  Widget defaultHeaderBuilder(BuildContext context, {T? item, List<T>? items}) {
     return Text(
-      itemList != null ? itemList.join(', ') : oneItem.toString(),
+      items != null ? items.join(', ') : item.toString(),
       maxLines: widget.maxLines,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
@@ -206,19 +195,15 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     super.dispose();
   }
 
-  void onOptionTap(T option) {
-    if (selectedItems.contains(option)) {
-      selectedItems.remove(option);
-    } else {
-      selectedItems.add(option);
-    }
-    setState(() {});
-  }
-
   void onItemSelect(T value) {
     widget.onItemSelect(value);
-    if (widget.widgetType == _DropdownType.multiSelect) {
-      onOptionTap(value);
+    if (widget.dropdownType == _DropdownType.multipleSelect) {
+      if (selectedItems.contains(value)) {
+        selectedItems.remove(value);
+      } else {
+        selectedItems.add(value);
+      }
+      setState(() {});
       return;
     }
     setState(() => displayOverly = false);
@@ -251,7 +236,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             items: items,
             padding: listPadding,
             onItemSelect: onItemSelect,
-            widgetType: widget.widgetType,
+            dropdownType: widget.dropdownType,
           )
         : (mayFoundSearchRequestResult != null &&
                     !mayFoundSearchRequestResult!) ||
@@ -326,6 +311,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                               children: [
                                 if (!widget.hideSelectedFieldWhenOpen!)
                                   GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
                                     onTap: () {
                                       setState(() => displayOverly = false);
                                     },
@@ -334,8 +320,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                       child: Row(
                                         children: [
                                           Expanded(
-                                            child: switch (widget.widgetType) {
-                                              _DropdownType.singleValue =>
+                                            child: switch (
+                                                widget.dropdownType) {
+                                              _DropdownType.singleSelect =>
                                                 selectedItem != null
                                                     ? widget.headerBuilder !=
                                                             null
@@ -344,10 +331,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                                             selectedItem as T)
                                                         : defaultHeaderBuilder(
                                                             context,
-                                                            oneItem:
-                                                                selectedItem)
+                                                            item: selectedItem)
                                                     : hintBuilder(),
-                                              _DropdownType.multiSelect =>
+                                              _DropdownType.multipleSelect =>
                                                 selectedItems.isNotEmpty
                                                     ? widget.headerListBuilder !=
                                                             null
@@ -356,7 +342,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                                             selectedItems)
                                                         : defaultHeaderBuilder(
                                                             context,
-                                                            itemList:
+                                                            items:
                                                                 selectedItems)
                                                     : hintBuilder(),
                                             },
