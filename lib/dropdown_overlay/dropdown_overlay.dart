@@ -38,7 +38,6 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final _HeaderListBuilder<T>? headerListBuilder;
   final _HintBuilder? hintBuilder;
   final _NoResultFoundBuilder? noResultFoundBuilder;
-  final _SelectedIconBuilder? selectedIconBuilder;
   final _DropdownType dropdownType;
 
   const _DropdownOverlay({
@@ -67,7 +66,6 @@ class _DropdownOverlay<T> extends StatefulWidget {
     this.listItemBuilder,
     this.headerListBuilder,
     this.noResultFoundBuilder,
-    this.selectedIconBuilder,
     this.border,
     this.borderRadius,
     this.fillColor,
@@ -95,6 +93,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     BuildContext context,
     T result,
     bool isSelected,
+    VoidCallback onItemSelect,
   ) {
     return Row(
       children: [
@@ -107,24 +106,18 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
           ),
         ),
         if (widget.dropdownType == _DropdownType.multipleSelect)
-          widget.selectedIconBuilder != null
-              ? widget.selectedIconBuilder!(
-                  context,
-                  isSelected,
-                  () => onItemSelect(result),
-                )
-              : Padding(
-                  padding: const EdgeInsets.only(left: 12.0),
-                  child: Checkbox(
-                    onChanged: (_) => onItemSelect(result),
-                    value: isSelected,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: const VisualDensity(
-                      horizontal: VisualDensity.minimumDensity,
-                      vertical: VisualDensity.minimumDensity,
-                    ),
-                  ),
-                ),
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Checkbox(
+              onChanged: (_) => onItemSelect(),
+              value: isSelected,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              visualDensity: const VisualDensity(
+                horizontal: VisualDensity.minimumDensity,
+                vertical: VisualDensity.minimumDensity,
+              ),
+            ),
+          ),
       ],
     );
   }

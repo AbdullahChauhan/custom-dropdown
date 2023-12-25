@@ -49,7 +49,12 @@ class _ItemsList<T> extends StatelessWidget {
               child: Ink(
                 color: selected ? Colors.grey[100] : Colors.transparent,
                 padding: _listItemPadding,
-                child: listItemBuilder(context, items[index], selected),
+                child: listItemBuilder(
+                  context,
+                  items[index],
+                  selected,
+                  () => onItemSelect(items[index]),
+                ),
               ),
             ),
           );
