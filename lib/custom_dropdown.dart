@@ -110,7 +110,7 @@ class CustomDropdown<T> extends StatefulWidget {
 
   /// A method that validates the selected items.
   /// Returns an error string to display as per the validation, or null otherwise.
-  final String? Function(List<T>)? listValidator;
+  final String? Function(List<T>?)? listValidator;
 
   /// Error border for closed state of [CustomDropdown].
   final BoxBorder? closedErrorBorder;
@@ -484,11 +484,13 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
     return FormField<(T?, List<T>)>(
       initialValue: (selectedItemNotifier.value, selectedItemsNotifier.value),
       validator: (val) {
-        if (widget.validator != null) {
+        if (widget._dropdownType == _DropdownType.singleSelect &&
+            widget.validator != null) {
           return widget.validator!(val?.$1);
         }
-        if (widget.listValidator != null && val != null) {
-          return widget.listValidator!(val.$2);
+        if (widget._dropdownType == _DropdownType.multipleSelect &&
+            widget.listValidator != null) {
+          return widget.listValidator!(val?.$2);
         }
         return null;
       },
@@ -510,9 +512,11 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                       formFieldState.didChange((value, []));
                     case _DropdownType.multipleSelect:
                       final currentVal = selectedItemsNotifier.value.toList();
-                      currentVal.contains(value)
-                          ? currentVal.remove(value)
-                          : currentVal.add(value);
+                      if (currentVal.contains(value)) {
+                        currentVal.remove(value);
+                      } else {
+                        currentVal.add(value);
+                      }
                       selectedItemsNotifier.value = currentVal;
                       widget.onListChanged?.call(currentVal);
                       formFieldState.didChange((null, currentVal));
