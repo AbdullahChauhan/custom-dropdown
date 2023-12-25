@@ -109,6 +109,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
         if (widget.dropdownType == _DropdownType.multipleSelect)
           widget.selectedIconBuilder != null
               ? widget.selectedIconBuilder!(
+                  context,
                   isSelected,
                   () => onItemSelect(result),
                 )

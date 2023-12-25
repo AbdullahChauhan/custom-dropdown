@@ -76,6 +76,7 @@ typedef _NoResultFoundBuilder = Widget Function(
   String text,
 );
 typedef _SelectedIconBuilder = Widget Function(
+  BuildContext context,
   bool isSelected,
   VoidCallback onItemSelect,
 );
