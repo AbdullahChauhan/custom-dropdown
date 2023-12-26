@@ -1,11 +1,13 @@
 part of '../custom_dropdown.dart';
 
 class ListItemDecoration {
-  final Color? listItemHighlightColor;
-  final Color? listItemSelectedColor;
+  final Color? splashColor;
+  final Color? highlightColor;
+  final Color? selectedColor;
 
   const ListItemDecoration({
-    this.listItemHighlightColor,
-    this.listItemSelectedColor,
+    this.splashColor,
+    this.highlightColor,
+    this.selectedColor,
   });
 }
