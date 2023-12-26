@@ -157,6 +157,8 @@ class CustomDropdown<T> extends StatefulWidget {
   /// The [headerListBuilder] that will be used to build [CustomDropdown] header field.
   final _HeaderListBuilder<T>? headerListBuilder;
 
+  /// [CustomDropdown] decoration.
+  /// Contains sub-decorations [SearchFieldDecoration], [ListItemDecoration] and [ScrollbarThemeData].
   final CustomDropdownDecoration? decoration;
 
   final _SearchType? _searchType;
