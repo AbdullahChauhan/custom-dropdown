@@ -7,7 +7,8 @@ class _ItemsList<T> extends StatelessWidget {
   final List<T> selectedItems;
   final Function(T) onItemSelect;
   final bool excludeSelected;
-  final EdgeInsets padding;
+  final EdgeInsets itemsListPadding;
+  final EdgeInsets listItemPadding;
   final _ListItemBuilder<T> listItemBuilder;
   final ListItemDecoration? decoration;
   final _DropdownType dropdownType;
@@ -19,7 +20,8 @@ class _ItemsList<T> extends StatelessWidget {
     required this.items,
     required this.onItemSelect,
     required this.excludeSelected,
-    required this.padding,
+    required this.itemsListPadding,
+    required this.listItemPadding,
     required this.listItemBuilder,
     required this.selectedItems,
     required this.decoration,
@@ -33,7 +35,7 @@ class _ItemsList<T> extends StatelessWidget {
       child: ListView.builder(
         controller: scrollController,
         shrinkWrap: true,
-        padding: padding,
+        padding: itemsListPadding,
         itemCount: items.length,
         itemBuilder: (_, index) {
           final selected = switch (dropdownType) {
@@ -51,7 +53,7 @@ class _ItemsList<T> extends StatelessWidget {
                 color: selected
                     ? (decoration?.selectedColor ?? Colors.grey[100])
                     : Colors.transparent,
-                padding: _listItemPadding,
+                padding: listItemPadding,
                 child: listItemBuilder(
                   context,
                   items[index],

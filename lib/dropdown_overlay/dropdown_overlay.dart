@@ -29,6 +29,9 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final Duration? futureRequestDelay;
   final String noResultFoundText;
   final int maxLines;
+  final EdgeInsets? headerPadding;
+  final EdgeInsets? listItemPadding;
+  final EdgeInsets? itemsListPadding;
   final _ListItemBuilder<T>? listItemBuilder;
   final _HeaderBuilder<T>? headerBuilder;
   final _HeaderListBuilder<T>? headerListBuilder;
@@ -54,6 +57,9 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.maxLines,
     required this.dropdownType,
     required this.decoration,
+    this.headerPadding,
+    this.itemsListPadding,
+    this.listItemPadding,
     this.headerBuilder,
     this.hintBuilder,
     this.hideSelectedFieldWhenOpen = false,
@@ -234,7 +240,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             selectedItem: selectedItem,
             selectedItems: selectedItems,
             items: items,
-            padding: listPadding,
+            itemsListPadding: widget.itemsListPadding ?? listPadding,
+            listItemPadding: widget.listItemPadding ?? _listItemPadding,
             onItemSelect: onItemSelect,
             decoration: decoration?.listItemDecoration,
             dropdownType: widget.dropdownType,
@@ -321,7 +328,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                       setState(() => displayOverly = false);
                                     },
                                     child: Padding(
-                                      padding: _headerPadding,
+                                      padding: widget.headerPadding ??
+                                          _headerPadding,
                                       child: Row(
                                         children: [
                                           Expanded(

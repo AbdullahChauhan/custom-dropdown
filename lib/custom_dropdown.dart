@@ -142,6 +142,15 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Useless if any or both [headerBuilder] and [listItemBuilder] provided.
   final int maxlines;
 
+  /// Padding for [CustomDropdown] header (both closed and expanded state).
+  final EdgeInsets? headerPadding;
+
+  /// Padding for [CustomDropdown] items list.
+  final EdgeInsets? itemsListPadding;
+
+  /// Padding for [CustomDropdown] each list item.
+  final EdgeInsets? listItemPadding;
+
   /// The [listItemBuilder] that will be used to build item on demand.
   final _ListItemBuilder<T>? listItemBuilder;
 
@@ -181,6 +190,9 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintBuilder,
     this.onChanged,
     this.maxlines = 1,
+    this.headerPadding,
+    this.itemsListPadding,
+    this.listItemPadding,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.excludeSelected = true,
@@ -219,6 +231,9 @@ class CustomDropdown<T> extends StatefulWidget {
     this.validateOnChange = true,
     this.onChanged,
     this.maxlines = 1,
+    this.headerPadding,
+    this.itemsListPadding,
+    this.listItemPadding,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
@@ -258,6 +273,9 @@ class CustomDropdown<T> extends StatefulWidget {
     this.validateOnChange = true,
     this.onChanged,
     this.maxlines = 1,
+    this.headerPadding,
+    this.itemsListPadding,
+    this.listItemPadding,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
@@ -285,6 +303,9 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.maxlines = 1,
+    this.headerPadding,
+    this.itemsListPadding,
+    this.listItemPadding,
   })  : assert(
           items!.isNotEmpty,
           'Items list must contain at least one item.',
@@ -326,6 +347,9 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.maxlines = 1,
+    this.headerPadding,
+    this.itemsListPadding,
+    this.listItemPadding,
   })  : assert(
           items!.isNotEmpty,
           'Items list must contain at least one item.',
@@ -365,6 +389,9 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listValidator,
     this.validateOnChange = true,
     this.maxlines = 1,
+    this.headerPadding,
+    this.itemsListPadding,
+    this.listItemPadding,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
   })  : _searchType = _SearchType.onRequestData,
@@ -470,6 +497,9 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 futureRequestDelay: widget.futureRequestDelay,
                 hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenExpanded,
                 maxLines: widget.maxlines,
+                headerPadding: widget.headerPadding,
+                itemsListPadding: widget.itemsListPadding,
+                listItemPadding: widget.listItemPadding,
                 dropdownType: widget._dropdownType,
               );
             },
@@ -493,6 +523,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   suffixIcon: decoration?.closedSuffixIcon,
                   fillColor: decoration?.closedFillColor,
                   maxLines: widget.maxlines,
+                  headerPadding: widget.headerPadding,
                   dropdownType: widget._dropdownType,
                   selectedItemsNotifier: selectedItemsNotifier,
                 ),
