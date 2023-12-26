@@ -1,6 +1,7 @@
 library animated_custom_dropdown;
 
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 export 'custom_dropdown.dart';
@@ -11,10 +12,10 @@ part 'dropdown_overlay/dropdown_overlay.dart';
 part 'dropdown_overlay/widgets/items_list.dart';
 part 'dropdown_overlay/widgets/search_field.dart';
 part 'overlay_builder.dart';
-
 // models
 part 'models/custom_dropdown_decoration.dart';
 part 'models/search_field_decoration.dart';
+part 'models/list_item_decoration.dart';
 
 enum _DropdownType { singleSelect, multipleSelect }
 
@@ -186,6 +187,8 @@ class CustomDropdown<T> extends StatefulWidget {
   /// The [headerListBuilder] that will be used to build [CustomDropdown] header field.
   final _HeaderListBuilder<T>? headerListBuilder;
 
+  final CustomDropdownDecoration? decoration;
+
   final _SearchType? _searchType;
 
   final _DropdownType _dropdownType;
@@ -195,6 +198,7 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.items,
     this.initialItem,
     this.hintText,
+    this.decoration,
     this.searchHintText,
     this.noResultFoundText,
     this.errorStyle,
@@ -241,6 +245,7 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.items,
     this.initialItem,
     this.hintText,
+    this.decoration,
     this.searchHintText,
     this.noResultFoundText,
     this.listItemBuilder,
@@ -289,6 +294,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.initialItem,
     this.items,
     this.hintText,
+    this.decoration,
     this.searchHintText,
     this.noResultFoundText,
     this.listItemBuilder,
@@ -328,6 +334,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listValidator,
     this.headerListBuilder,
     this.hintText,
+    this.decoration,
     this.searchHintText,
     this.errorStyle,
     this.closedErrorBorder,
@@ -376,6 +383,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listValidator,
     this.listItemBuilder,
     this.hintBuilder,
+    this.decoration,
     this.headerListBuilder,
     this.noResultFoundText,
     this.noResultFoundBuilder,
@@ -424,6 +432,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.items,
     this.onListChanged,
     this.hintText,
+    this.decoration,
     this.searchHintText,
     this.noResultFoundText,
     this.headerListBuilder,
@@ -479,6 +488,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final decoration = widget.decoration;
     final safeHintText = widget.hintText ?? _defaultHintValue;
 
     return FormField<(T?, List<T>)>(
@@ -540,16 +550,13 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 hintText: safeHintText,
                 searchHintText: widget.searchHintText ?? 'Search',
                 hintBuilder: widget.hintBuilder,
+                decoration: decoration,
                 excludeSelected: widget.excludeSelected,
                 canCloseOutsideBounds: widget.canCloseOutsideBounds,
                 searchType: widget._searchType,
-                border: widget.expandedBorder,
-                borderRadius: widget.expandedBorderRadius,
                 futureRequest: widget.futureRequest,
                 futureRequestDelay: widget.futureRequestDelay,
                 hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenExpanded,
-                fillColor: widget.expandedFillColor,
-                suffixIcon: widget.expandedSuffixIcon,
                 maxLines: widget.maxlines,
                 dropdownType: widget._dropdownType,
               );
@@ -561,17 +568,18 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   onTap: showCallback,
                   selectedItemNotifier: selectedItemNotifier,
                   border: formFieldState.hasError
-                      ? widget.closedErrorBorder ?? _defaultErrorBorder
-                      : widget.closedBorder,
+                      ? decoration?.closedErrorBorder ?? _defaultErrorBorder
+                      : decoration?.closedBorder,
                   borderRadius: formFieldState.hasError
-                      ? widget.closedErrorBorderRadius
-                      : widget.closedBorderRadius,
+                      ? decoration?.closedErrorBorderRadius
+                      : decoration?.closedBorderRadius,
+                  shadow: decoration?.closedShadow,
                   hintText: safeHintText,
                   hintBuilder: widget.hintBuilder,
                   headerBuilder: widget.headerBuilder,
                   headerListBuilder: widget.headerListBuilder,
-                  suffixIcon: widget.closedSuffixIcon,
-                  fillColor: widget.closedFillColor,
+                  suffixIcon: decoration?.closedSuffixIcon,
+                  fillColor: decoration?.closedFillColor,
                   maxLines: widget.maxlines,
                   dropdownType: widget._dropdownType,
                   selectedItemsNotifier: selectedItemsNotifier,

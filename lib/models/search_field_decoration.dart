@@ -4,6 +4,7 @@ class SearchFieldDecoration {
   final Color? fillColor;
   final BoxConstraints? constraints;
   final EdgeInsetsGeometry? contentPadding;
+  final TextStyle? textStyle;
   final TextStyle? hintStyle;
   final Widget? prefixIcon;
   final Widget Function(VoidCallback onClear)? suffixIcon;
@@ -14,6 +15,7 @@ class SearchFieldDecoration {
     this.fillColor,
     this.constraints,
     this.contentPadding,
+    this.textStyle,
     this.hintStyle,
     this.prefixIcon,
     this.suffixIcon,

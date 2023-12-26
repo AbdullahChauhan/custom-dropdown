@@ -8,8 +8,8 @@ class _ItemsList<T> extends StatelessWidget {
   final Function(T) onItemSelect;
   final bool excludeSelected;
   final EdgeInsets padding;
-  // ignore: library_private_types_in_public_api
   final _ListItemBuilder<T> listItemBuilder;
+  final ListItemDecoration? decoration;
   final _DropdownType dropdownType;
 
   const _ItemsList({
@@ -22,6 +22,7 @@ class _ItemsList<T> extends StatelessWidget {
     required this.padding,
     required this.listItemBuilder,
     required this.selectedItems,
+    required this.decoration,
     required this.dropdownType,
   });
 
@@ -44,10 +45,13 @@ class _ItemsList<T> extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               splashColor: Colors.transparent,
-              highlightColor: Colors.grey[200],
+              highlightColor:
+                  decoration?.listItemHighlightColor ?? Colors.grey[200],
               onTap: () => onItemSelect(items[index]),
               child: Ink(
-                color: selected ? Colors.grey[100] : Colors.transparent,
+                color: selected
+                    ? (decoration?.listItemSelectedColor ?? Colors.grey[100])
+                    : Colors.transparent,
                 padding: _listItemPadding,
                 child: listItemBuilder(
                   context,

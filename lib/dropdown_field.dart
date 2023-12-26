@@ -18,12 +18,10 @@ class _DropDownField<T> extends StatefulWidget {
   final TextStyle? errorStyle;
   final BorderSide? errorBorderSide;
   final Widget? suffixIcon;
+  final List<BoxShadow>? shadow;
   final int maxLines;
-  // ignore: library_private_types_in_public_api
   final _HeaderBuilder<T>? headerBuilder;
-  // ignore: library_private_types_in_public_api
   final _HeaderListBuilder<T>? headerListBuilder;
-  // ignore: library_private_types_in_public_api
   final _HintBuilder? hintBuilder;
   final _DropdownType dropdownType;
   final _ValueNotifierList<T> selectedItemsNotifier;
@@ -43,6 +41,7 @@ class _DropDownField<T> extends StatefulWidget {
     this.errorStyle,
     this.errorBorderSide,
     this.headerBuilder,
+    this.shadow,
     this.headerListBuilder,
     this.hintBuilder,
     this.suffixIcon,
@@ -126,6 +125,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
           color: widget.fillColor ?? _defaultFillColor,
           border: widget.border,
           borderRadius: widget.borderRadius ?? _defaultBorderRadius,
+          boxShadow: widget.shadow,
         ),
         child: Row(
           children: [

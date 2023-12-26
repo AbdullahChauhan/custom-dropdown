@@ -9,12 +9,14 @@ class _SearchField<T> extends StatefulWidget {
   final Duration? futureRequestDelay;
   final ValueChanged<bool>? onFutureRequestLoading;
   final ValueChanged<bool>? mayFoundResult;
+  final SearchFieldDecoration? decoration;
 
   const _SearchField.forListData({
     super.key,
     required this.items,
     required this.onSearchedItems,
     required this.searchHintText,
+    required this.decoration,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
@@ -30,6 +32,7 @@ class _SearchField<T> extends StatefulWidget {
     required this.futureRequestDelay,
     required this.onFutureRequestLoading,
     required this.mayFoundResult,
+    required this.decoration,
   }) : searchType = _SearchType.onRequestData;
 
   @override
@@ -100,6 +103,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextField(
         focusNode: focusNode,
+        style: widget.decoration?.textStyle,
         onChanged: (val) async {
           if (val.isEmpty) {
             isFieldEmpty = true;
@@ -130,37 +134,45 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
         controller: searchCtrl,
         decoration: InputDecoration(
           filled: true,
-          fillColor: Colors.grey[50],
-          constraints: const BoxConstraints.tightFor(height: 40),
-          contentPadding: const EdgeInsets.all(8),
+          fillColor: widget.decoration?.fillColor ?? Colors.grey[50],
+          constraints: widget.decoration?.constraints ??
+              const BoxConstraints.tightFor(height: 40),
+          contentPadding:
+              widget.decoration?.contentPadding ?? const EdgeInsets.all(8),
           hintText: widget.searchHintText,
-          hintStyle: const TextStyle(color: Colors.grey),
-          prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 22),
-          suffixIcon: GestureDetector(
-            onTap: onClear,
-            child: const Icon(Icons.close, color: Colors.grey, size: 20),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(
-              color: Colors.grey.withOpacity(.25),
-              width: 1,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(
-              color: Colors.grey.withOpacity(.25),
-              width: 1,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(
-              color: Colors.grey.withOpacity(.25),
-              width: 1,
-            ),
-          ),
+          hintStyle: widget.decoration?.hintStyle ??
+              const TextStyle(color: Colors.grey),
+          prefixIcon: widget.decoration?.prefixIcon ??
+              const Icon(Icons.search, color: Colors.grey, size: 22),
+          suffixIcon: widget.decoration?.suffixIcon?.call(onClear) ??
+              GestureDetector(
+                onTap: onClear,
+                child: const Icon(Icons.close, color: Colors.grey, size: 20),
+              ),
+          border: widget.decoration?.border ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: Colors.grey.withOpacity(.25),
+                  width: 1,
+                ),
+              ),
+          enabledBorder: widget.decoration?.border ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: Colors.grey.withOpacity(.25),
+                  width: 1,
+                ),
+              ),
+          focusedBorder: widget.decoration?.focusedBorder ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: Colors.grey.withOpacity(.25),
+                  width: 1,
+                ),
+              ),
         ),
       ),
     );
