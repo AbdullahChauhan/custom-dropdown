@@ -349,27 +349,27 @@ class FullyCustomizedDropDown extends StatelessWidget {
             onChanged: (value) {
               debugPrint('changing value to: $value');
             },
-            closedSuffixIcon: const Icon(Icons.account_balance),
-            expandedSuffixIcon: const Icon(Icons.access_alarm),
+            // closedSuffixIcon: const Icon(Icons.account_balance),
+            // expandedSuffixIcon: const Icon(Icons.access_alarm),
             hintText: 'Select job role',
             excludeSelected: false,
-            closedFillColor: Colors.pink,
-            expandedFillColor: Colors.red[900],
-            closedBorder: Border.all(
-              color: Colors.black,
-              width: 5,
-            ),
-            closedBorderRadius: BorderRadius.circular(15),
-            expandedBorder: Border.all(
-              color: Colors.orangeAccent,
-              width: 5,
-            ),
-            expandedBorderRadius: BorderRadius.circular(5),
+            // closedFillColor: Colors.pink,
+            // expandedFillColor: Colors.red[900],
+            // closedBorder: Border.all(
+            //   color: Colors.black,
+            //   width: 5,
+            // ),
+            // closedBorderRadius: BorderRadius.circular(15),
+            // expandedBorder: Border.all(
+            //   color: Colors.orangeAccent,
+            //   width: 5,
+            // ),
+            // expandedBorderRadius: BorderRadius.circular(5),
             listItemBuilder: _listItemBuilder,
             headerBuilder: _selectedHeaderBuilder,
             hintBuilder: _hintBuilder,
-            closedErrorBorder: Border.all(color: Colors.blue, width: 10),
-            closedErrorBorderRadius: BorderRadius.circular(15),
+            // closedErrorBorder: Border.all(color: Colors.blue, width: 10),
+            // closedErrorBorderRadius: BorderRadius.circular(15),
             errorStyle: const TextStyle(color: Colors.deepPurple, fontSize: 18),
             validateOnChange: true,
             validator: (value) {

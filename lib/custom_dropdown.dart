@@ -98,18 +98,6 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Text that suggests what to search in the search field.
   final String? searchHintText;
 
-  /// Border for closed state of [CustomDropdown].
-  final BoxBorder? closedBorder;
-
-  /// Border radius for closed state of [CustomDropdown].
-  final BorderRadius? closedBorderRadius;
-
-  /// Border for opened/expanded state of [CustomDropdown].
-  final BoxBorder? expandedBorder;
-
-  /// Border radius for opened/expanded state of [CustomDropdown].
-  final BorderRadius? expandedBorderRadius;
-
   /// A method that validates the selected item.
   /// Returns an error string to display as per the validation, or null otherwise.
   final String? Function(T?)? validator;
@@ -118,24 +106,12 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Returns an error string to display as per the validation, or null otherwise.
   final String? Function(List<T>)? listValidator;
 
-  /// Error border for closed state of [CustomDropdown].
-  final BoxBorder? closedErrorBorder;
-
-  /// Error border radius for closed state of [CustomDropdown].
-  final BorderRadius? closedErrorBorderRadius;
-
   /// The style to use for the string returning from [validator].
   final TextStyle? errorStyle;
 
   /// Enable the validation listener on item change.
   /// This implies to [validator] everytime when the item change.
   final bool validateOnChange;
-
-  /// Suffix icon for closed state of [CustomDropdown].
-  final Widget? closedSuffixIcon;
-
-  /// Suffix icon for opened/expanded state of [CustomDropdown].
-  final Widget? expandedSuffixIcon;
 
   /// Called when the item of the [CustomDropdown] should change.
   final Function(T)? onChanged;
@@ -145,12 +121,6 @@ class CustomDropdown<T> extends StatefulWidget {
 
   /// Hide the selected item from the [items] list.
   final bool excludeSelected;
-
-  /// [CustomDropdown] field color (closed state).
-  final Color? closedFillColor;
-
-  /// [CustomDropdown] overlay color (opened/expanded state).
-  final Color? expandedFillColor;
 
   /// Can close [CustomDropdown] overlay by tapping outside.
   /// Here "outside" covers the entire screen.
@@ -202,16 +172,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.searchHintText,
     this.noResultFoundText,
     this.errorStyle,
-    this.closedErrorBorder,
-    this.closedErrorBorderRadius,
     this.validator,
     this.validateOnChange = true,
-    this.closedBorder,
-    this.closedBorderRadius,
-    this.expandedBorder,
-    this.expandedBorderRadius,
-    this.closedSuffixIcon,
-    this.expandedSuffixIcon,
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
@@ -220,8 +182,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.excludeSelected = true,
-    this.closedFillColor = Colors.white,
-    this.expandedFillColor = Colors.white,
   })  : assert(
           items!.isNotEmpty,
           'Items list must contain at least one item.',
@@ -253,23 +213,13 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintBuilder,
     this.noResultFoundBuilder,
     this.errorStyle,
-    this.closedErrorBorder,
-    this.closedErrorBorderRadius,
     this.validator,
     this.validateOnChange = true,
-    this.closedBorder,
-    this.closedBorderRadius,
-    this.closedSuffixIcon,
-    this.expandedSuffixIcon,
-    this.expandedBorder,
-    this.expandedBorderRadius,
     this.onChanged,
     this.maxlines = 1,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
-    this.closedFillColor = Colors.white,
-    this.expandedFillColor = Colors.white,
   })  : assert(
           items!.isNotEmpty,
           'Items list must contain at least one item.',
@@ -302,23 +252,13 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintBuilder,
     this.noResultFoundBuilder,
     this.errorStyle,
-    this.closedErrorBorder,
-    this.closedErrorBorderRadius,
     this.validator,
     this.validateOnChange = true,
-    this.closedBorder,
-    this.closedBorderRadius,
-    this.expandedBorder,
-    this.expandedBorderRadius,
-    this.closedSuffixIcon,
-    this.expandedSuffixIcon,
     this.onChanged,
     this.maxlines = 1,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
-    this.closedFillColor = Colors.white,
-    this.expandedFillColor = Colors.white,
   })  : _searchType = _SearchType.onRequestData,
         _dropdownType = _DropdownType.singleSelect,
         initialItems = null,
@@ -337,21 +277,11 @@ class CustomDropdown<T> extends StatefulWidget {
     this.decoration,
     this.searchHintText,
     this.errorStyle,
-    this.closedErrorBorder,
-    this.closedErrorBorderRadius,
     this.validateOnChange = true,
-    this.closedBorder,
-    this.closedBorderRadius,
-    this.expandedBorder,
-    this.expandedBorderRadius,
-    this.closedSuffixIcon,
-    this.expandedSuffixIcon,
     this.listItemBuilder,
     this.hintBuilder,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
-    this.closedFillColor = Colors.white,
-    this.expandedFillColor = Colors.white,
     this.maxlines = 1,
   })  : assert(
           items!.isNotEmpty,
@@ -390,19 +320,9 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintText,
     this.searchHintText,
     this.errorStyle,
-    this.closedErrorBorder,
-    this.closedErrorBorderRadius,
     this.validateOnChange = true,
-    this.closedBorder,
-    this.closedBorderRadius,
-    this.expandedBorder,
-    this.expandedBorderRadius,
-    this.closedSuffixIcon,
-    this.expandedSuffixIcon,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
-    this.closedFillColor = Colors.white,
-    this.expandedFillColor = Colors.white,
     this.maxlines = 1,
   })  : assert(
           items!.isNotEmpty,
@@ -440,21 +360,11 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintBuilder,
     this.noResultFoundBuilder,
     this.errorStyle,
-    this.closedErrorBorder,
-    this.closedErrorBorderRadius,
     this.listValidator,
     this.validateOnChange = true,
-    this.closedBorder,
-    this.closedBorderRadius,
-    this.expandedBorder,
-    this.expandedBorderRadius,
-    this.closedSuffixIcon,
-    this.expandedSuffixIcon,
     this.maxlines = 1,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
-    this.closedFillColor = Colors.white,
-    this.expandedFillColor = Colors.white,
   })  : _searchType = _SearchType.onRequestData,
         _dropdownType = _DropdownType.multipleSelect,
         initialItem = null,
