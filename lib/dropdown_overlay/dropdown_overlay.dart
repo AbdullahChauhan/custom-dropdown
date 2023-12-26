@@ -105,6 +105,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             child: Checkbox(
               onChanged: (_) => onItemSelect(),
               value: isSelected,
+              fillColor:
+                  widget.decoration?.listItemDecoration?.selectedIconColor,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               visualDensity: const VisualDensity(
                 horizontal: VisualDensity.minimumDensity,
