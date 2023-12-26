@@ -12,6 +12,10 @@ part 'dropdown_overlay/widgets/items_list.dart';
 part 'dropdown_overlay/widgets/search_field.dart';
 part 'overlay_builder.dart';
 
+// models
+part 'models/custom_dropdown_decoration.dart';
+part 'models/search_field_decoration.dart';
+
 enum _DropdownType { singleSelect, multipleSelect }
 
 enum _SearchType { onListData, onRequestData }
