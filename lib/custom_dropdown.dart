@@ -151,6 +151,9 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Padding for [CustomDropdown] each list item.
   final EdgeInsets? listItemPadding;
 
+  /// Widget to display while search request loading.
+  final Widget? searchRequestLoadingIndicator;
+
   /// The [listItemBuilder] that will be used to build item on demand.
   final _ListItemBuilder<T>? listItemBuilder;
 
@@ -212,7 +215,8 @@ class CustomDropdown<T> extends StatefulWidget {
         initialItems = null,
         onListChanged = null,
         listValidator = null,
-        headerListBuilder = null;
+        headerListBuilder = null,
+        searchRequestLoadingIndicator = null;
 
   CustomDropdown.search({
     super.key,
@@ -252,7 +256,8 @@ class CustomDropdown<T> extends StatefulWidget {
         initialItems = null,
         onListChanged = null,
         listValidator = null,
-        headerListBuilder = null;
+        headerListBuilder = null,
+        searchRequestLoadingIndicator = null;
 
   const CustomDropdown.searchRequest({
     super.key,
@@ -276,6 +281,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.headerPadding,
     this.itemsListPadding,
     this.listItemPadding,
+    this.searchRequestLoadingIndicator,
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
@@ -326,7 +332,8 @@ class CustomDropdown<T> extends StatefulWidget {
         excludeSelected = false,
         futureRequest = null,
         futureRequestDelay = null,
-        noResultFoundBuilder = null;
+        noResultFoundBuilder = null,
+        searchRequestLoadingIndicator = null;
 
   CustomDropdown.multiSelectSearch({
     super.key,
@@ -368,7 +375,8 @@ class CustomDropdown<T> extends StatefulWidget {
         excludeSelected = false,
         headerBuilder = null,
         futureRequest = null,
-        futureRequestDelay = null;
+        futureRequestDelay = null,
+        searchRequestLoadingIndicator = null;
 
   const CustomDropdown.multiSelectSearchRequest({
     super.key,
@@ -389,6 +397,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listValidator,
     this.validateOnChange = true,
     this.maxlines = 1,
+    this.searchRequestLoadingIndicator,
     this.headerPadding,
     this.itemsListPadding,
     this.listItemPadding,
@@ -500,6 +509,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 headerPadding: widget.headerPadding,
                 itemsListPadding: widget.itemsListPadding,
                 listItemPadding: widget.listItemPadding,
+                searchRequestLoadingIndicator:
+                    widget.searchRequestLoadingIndicator,
                 dropdownType: widget._dropdownType,
               );
             },

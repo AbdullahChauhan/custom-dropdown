@@ -32,6 +32,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final EdgeInsets? headerPadding;
   final EdgeInsets? listItemPadding;
   final EdgeInsets? itemsListPadding;
+  final Widget? searchRequestLoadingIndicator;
   final _ListItemBuilder<T>? listItemBuilder;
   final _HeaderBuilder<T>? headerBuilder;
   final _HeaderListBuilder<T>? headerListBuilder;
@@ -57,6 +58,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.maxLines,
     required this.dropdownType,
     required this.decoration,
+    this.searchRequestLoadingIndicator,
     this.headerPadding,
     this.itemsListPadding,
     this.listItemPadding,
@@ -468,19 +470,22 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                       ),
                                     ),
                                 if (isSearchRequestLoading)
-                                  const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 20.0),
-                                    child: Center(
-                                        child: SizedBox(
-                                      width: 25,
-                                      height: 25,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.black,
-                                        strokeWidth: 3,
-                                      ),
-                                    )),
-                                  )
+                                  widget.searchRequestLoadingIndicator ??
+                                      const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 20.0,
+                                        ),
+                                        child: Center(
+                                          child: SizedBox(
+                                            width: 25,
+                                            height: 25,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.black,
+                                              strokeWidth: 3,
+                                            ),
+                                          ),
+                                        ),
+                                      )
                                 else
                                   items.length > 4
                                       ? Expanded(child: list)
