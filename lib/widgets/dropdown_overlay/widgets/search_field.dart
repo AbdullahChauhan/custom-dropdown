@@ -1,4 +1,4 @@
-part of '../../custom_dropdown.dart';
+part of '../../../custom_dropdown.dart';
 
 class _SearchField<T> extends StatefulWidget {
   final List<T> items;
@@ -134,7 +134,8 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
         controller: searchCtrl,
         decoration: InputDecoration(
           filled: true,
-          fillColor: widget.decoration?.fillColor ?? Colors.grey[50],
+          fillColor: widget.decoration?.fillColor ??
+              SearchFieldDecoration._defaultFillColor,
           constraints: widget.decoration?.constraints ??
               const BoxConstraints.tightFor(height: 40),
           contentPadding:

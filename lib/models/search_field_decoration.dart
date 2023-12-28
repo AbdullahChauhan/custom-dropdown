@@ -2,6 +2,8 @@ part of '../custom_dropdown.dart';
 
 class SearchFieldDecoration {
   /// Fill color for [CustomDropdown] search field.
+  ///
+  /// Default to Color(0xFFFAFAFA).
   final Color? fillColor;
 
   /// Layout constraints for [CustomDropdown] search field.
@@ -40,4 +42,6 @@ class SearchFieldDecoration {
     this.border,
     this.focusedBorder,
   });
+
+  static const _defaultFillColor = Color(0xFFFAFAFA);
 }

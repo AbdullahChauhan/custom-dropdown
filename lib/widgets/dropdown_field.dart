@@ -1,4 +1,4 @@
-part of 'custom_dropdown.dart';
+part of '../custom_dropdown.dart';
 
 // overlay icon
 const _defaultOverlayIconDown = Icon(
@@ -64,19 +64,19 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
     selectedItems = widget.selectedItemsNotifier.value;
   }
 
-  Widget get hintBuilder {
+  Widget hintBuilder(BuildContext context) {
     return widget.hintBuilder != null
         ? widget.hintBuilder!(context, widget.hintText)
         : defaultHintBuilder(widget.hintText);
   }
 
-  Widget get headerBuilder {
+  Widget headerBuilder(BuildContext context) {
     return widget.headerBuilder != null
         ? widget.headerBuilder!(context, selectedItem as T)
         : defaultHeaderBuilder(oneItem: selectedItem);
   }
 
-  Widget get headerListBuilder {
+  Widget headerListBuilder(BuildContext context) {
     return widget.headerListBuilder != null
         ? widget.headerListBuilder!(context, selectedItems)
         : defaultHeaderBuilder(itemList: selectedItems);
@@ -122,9 +122,9 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
-        padding: widget.headerPadding ?? _headerPadding,
+        padding: widget.headerPadding ?? _defaultHeaderPadding,
         decoration: BoxDecoration(
-          color: widget.fillColor ?? _defaultFillColor,
+          color: widget.fillColor ?? CustomDropdownDecoration._defaultFillColor,
           border: widget.border,
           borderRadius: widget.borderRadius ?? _defaultBorderRadius,
           boxShadow: widget.shadow,
@@ -133,10 +133,12 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
           children: [
             Expanded(
               child: switch (widget.dropdownType) {
-                _DropdownType.singleSelect =>
-                  selectedItem != null ? headerBuilder : hintBuilder,
-                _DropdownType.multipleSelect =>
-                  selectedItems.isNotEmpty ? headerListBuilder : hintBuilder,
+                _DropdownType.singleSelect => selectedItem != null
+                    ? headerBuilder(context)
+                    : hintBuilder(context),
+                _DropdownType.multipleSelect => selectedItems.isNotEmpty
+                    ? headerListBuilder(context)
+                    : hintBuilder(context),
               },
             ),
             const SizedBox(width: 12),

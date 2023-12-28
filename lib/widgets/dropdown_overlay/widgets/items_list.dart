@@ -1,4 +1,4 @@
-part of '../../custom_dropdown.dart';
+part of '../../../custom_dropdown.dart';
 
 class _ItemsList<T> extends StatelessWidget {
   final ScrollController scrollController;
@@ -46,12 +46,15 @@ class _ItemsList<T> extends StatelessWidget {
           return Material(
             color: Colors.transparent,
             child: InkWell(
-              splashColor: decoration?.splashColor ?? Colors.transparent,
-              highlightColor: decoration?.highlightColor ?? Colors.grey[200],
+              splashColor: decoration?.splashColor ??
+                  ListItemDecoration._defaultSplashColor,
+              highlightColor: decoration?.highlightColor ??
+                  ListItemDecoration._defaultHighlightColor,
               onTap: () => onItemSelect(items[index]),
               child: Ink(
                 color: selected
-                    ? (decoration?.selectedColor ?? Colors.grey[100])
+                    ? (decoration?.selectedColor ??
+                        ListItemDecoration._defaultSelectedColor)
                     : Colors.transparent,
                 padding: listItemPadding,
                 child: listItemBuilder(

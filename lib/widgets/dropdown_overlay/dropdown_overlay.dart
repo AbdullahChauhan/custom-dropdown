@@ -1,4 +1,4 @@
-part of '../custom_dropdown.dart';
+part of '../../custom_dropdown.dart';
 
 const _defaultOverlayIconUp = Icon(
   Icons.keyboard_arrow_up_rounded,
@@ -6,10 +6,11 @@ const _defaultOverlayIconUp = Icon(
   size: 20,
 );
 
-const _headerPadding = EdgeInsets.all(16.0);
+const _defaultHeaderPadding = EdgeInsets.all(16.0);
 const _overlayOuterPadding = EdgeInsets.only(bottom: 12, left: 12, right: 12);
-const _overlayShadowOffset = Offset(0, 6);
-const _listItemPadding = EdgeInsets.symmetric(vertical: 12, horizontal: 16);
+const _defaultOverlayShadowOffset = Offset(0, 6);
+const _defaultListItemPadding =
+    EdgeInsets.symmetric(vertical: 12, horizontal: 16);
 
 class _DropdownOverlay<T> extends StatefulWidget {
   final List<T> items;
@@ -22,7 +23,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final String hintText;
   final String searchHintText;
   final bool excludeSelected;
-  final bool? hideSelectedFieldWhenOpen;
+  final bool hideSelectedFieldWhenOpen;
   final bool canCloseOutsideBounds;
   final _SearchType? searchType;
   final Future<List<T>> Function(String)? futureRequest;
@@ -58,19 +59,19 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.maxLines,
     required this.dropdownType,
     required this.decoration,
-    this.searchRequestLoadingIndicator,
-    this.headerPadding,
-    this.itemsListPadding,
-    this.listItemPadding,
-    this.headerBuilder,
-    this.hintBuilder,
-    this.hideSelectedFieldWhenOpen = false,
-    this.searchType,
-    this.futureRequest,
-    this.futureRequestDelay,
-    this.listItemBuilder,
-    this.headerListBuilder,
-    this.noResultFoundBuilder,
+    required this.hideSelectedFieldWhenOpen,
+    required this.searchRequestLoadingIndicator,
+    required this.headerPadding,
+    required this.itemsListPadding,
+    required this.listItemPadding,
+    required this.headerBuilder,
+    required this.hintBuilder,
+    required this.searchType,
+    required this.futureRequest,
+    required this.futureRequestDelay,
+    required this.listItemBuilder,
+    required this.headerListBuilder,
+    required this.noResultFoundBuilder,
   });
 
   @override
@@ -90,6 +91,30 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
   final key1 = GlobalKey(), key2 = GlobalKey();
   final scrollController = ScrollController();
+
+  Widget hintBuilder(BuildContext context) {
+    return widget.hintBuilder != null
+        ? widget.hintBuilder!(context, widget.hintText)
+        : defaultHintBuilder(context, widget.hintText);
+  }
+
+  Widget headerBuilder(BuildContext context) {
+    return widget.headerBuilder != null
+        ? widget.headerBuilder!(context, selectedItem as T)
+        : defaultHeaderBuilder(context, item: selectedItem);
+  }
+
+  Widget headerListBuilder(BuildContext context) {
+    return widget.headerListBuilder != null
+        ? widget.headerListBuilder!(context, selectedItems)
+        : defaultHeaderBuilder(context, items: selectedItems);
+  }
+
+  Widget noResultFoundBuilder(BuildContext context) {
+    return widget.noResultFoundBuilder != null
+        ? widget.noResultFoundBuilder!(context, widget.noResultFoundText)
+        : defaultNoResultFoundBuilder(context, widget.noResultFoundText);
+  }
 
   Widget defaultListItemBuilder(
     BuildContext context,
@@ -113,8 +138,10 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             child: Checkbox(
               onChanged: (_) => onItemSelect(),
               value: isSelected,
-              fillColor:
+              activeColor:
                   widget.decoration?.listItemDecoration?.selectedIconColor,
+              side: widget.decoration?.listItemDecoration?.selectedIconBorder,
+              shape: widget.decoration?.listItemDecoration?.selectedIconShape,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               visualDensity: const VisualDensity(
                 horizontal: VisualDensity.minimumDensity,
@@ -151,11 +178,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     );
   }
 
-  Widget noResultFoundBuilder(BuildContext context, String text) {
-    if (widget.noResultFoundBuilder != null) {
-      return widget.noResultFoundBuilder!(context, text);
-    }
-
+  Widget defaultNoResultFoundBuilder(BuildContext context, String text) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -229,10 +252,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     final listPadding =
         onSearch ? const EdgeInsets.only(top: 8) : EdgeInsets.zero;
 
-    Widget hintBuilder() => widget.hintBuilder != null
-        ? widget.hintBuilder!(context, widget.hintText)
-        : defaultHintBuilder(context, widget.hintText);
-
     // items list
     final list = items.isNotEmpty
         ? _ItemsList<T>(
@@ -243,7 +262,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             selectedItems: selectedItems,
             items: items,
             itemsListPadding: widget.itemsListPadding ?? listPadding,
-            listItemPadding: widget.listItemPadding ?? _listItemPadding,
+            listItemPadding: widget.listItemPadding ?? _defaultListItemPadding,
             onItemSelect: onItemSelect,
             decoration: decoration?.listItemDecoration,
             dropdownType: widget.dropdownType,
@@ -251,7 +270,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
         : (mayFoundSearchRequestResult != null &&
                     !mayFoundSearchRequestResult!) ||
                 widget.searchType == _SearchType.onListData
-            ? noResultFoundBuilder(context, widget.noResultFoundText)
+            ? noResultFoundBuilder(context)
             : const SizedBox(height: 12);
 
     final child = Stack(
@@ -269,7 +288,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
               padding: _overlayOuterPadding,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: decoration?.expandedFillColor ?? _defaultFillColor,
+                  color: decoration?.expandedFillColor ??
+                      CustomDropdownDecoration._defaultFillColor,
                   border: decoration?.expandedBorder,
                   borderRadius:
                       decoration?.expandedBorderRadius ?? _defaultBorderRadius,
@@ -278,13 +298,13 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                         BoxShadow(
                           blurRadius: 24.0,
                           color: Colors.black.withOpacity(.08),
-                          offset: _overlayShadowOffset,
+                          offset: _defaultOverlayShadowOffset,
                         ),
                       ],
                 ),
                 child: Material(
                   color: Colors.transparent,
-                  child: AnimatedSection(
+                  child: _AnimatedSection(
                     animationDismissed: widget.hideOverlay,
                     expand: displayOverly,
                     axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
@@ -323,7 +343,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                if (!widget.hideSelectedFieldWhenOpen!)
+                                if (!widget.hideSelectedFieldWhenOpen)
                                   GestureDetector(
                                     behavior: HitTestBehavior.opaque,
                                     onTap: () {
@@ -331,7 +351,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     },
                                     child: Padding(
                                       padding: widget.headerPadding ??
-                                          _headerPadding,
+                                          _defaultHeaderPadding,
                                       child: Row(
                                         children: [
                                           Expanded(
@@ -339,27 +359,12 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                                 widget.dropdownType) {
                                               _DropdownType.singleSelect =>
                                                 selectedItem != null
-                                                    ? widget.headerBuilder !=
-                                                            null
-                                                        ? widget.headerBuilder!(
-                                                            context,
-                                                            selectedItem as T)
-                                                        : defaultHeaderBuilder(
-                                                            context,
-                                                            item: selectedItem)
-                                                    : hintBuilder(),
+                                                    ? headerBuilder(context)
+                                                    : hintBuilder(context),
                                               _DropdownType.multipleSelect =>
                                                 selectedItems.isNotEmpty
-                                                    ? widget.headerListBuilder !=
-                                                            null
-                                                        ? widget.headerListBuilder!(
-                                                            context,
-                                                            selectedItems)
-                                                        : defaultHeaderBuilder(
-                                                            context,
-                                                            items:
-                                                                selectedItems)
-                                                    : hintBuilder(),
+                                                    ? headerListBuilder(context)
+                                                    : hintBuilder(context),
                                             },
                                           ),
                                           const SizedBox(width: 12),
@@ -371,7 +376,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                   ),
                                 if (onSearch &&
                                     widget.searchType == _SearchType.onListData)
-                                  if (!widget.hideSelectedFieldWhenOpen!)
+                                  if (!widget.hideSelectedFieldWhenOpen)
                                     _SearchField<T>.forListData(
                                       items: widget.items,
                                       searchHintText: widget.searchHintText,
@@ -382,35 +387,42 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                           decoration?.searchFieldDecoration,
                                     )
                                   else
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 12.0,
-                                        left: 8.0,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: _SearchField<T>.forListData(
-                                              items: widget.items,
-                                              searchHintText:
-                                                  widget.searchHintText,
-                                              onSearchedItems: (val) {
-                                                setState(() => items = val);
-                                              },
-                                              decoration: decoration
-                                                  ?.searchFieldDecoration,
+                                    GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () {
+                                        setState(() => displayOverly = false);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 12.0,
+                                          left: 8.0,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child:
+                                                  _SearchField<T>.forListData(
+                                                items: widget.items,
+                                                searchHintText:
+                                                    widget.searchHintText,
+                                                onSearchedItems: (val) {
+                                                  setState(() => items = val);
+                                                },
+                                                decoration: decoration
+                                                    ?.searchFieldDecoration,
+                                              ),
                                             ),
-                                          ),
-                                          decoration?.expandedSuffixIcon ??
-                                              _defaultOverlayIconUp,
-                                          const SizedBox(width: 14),
-                                        ],
+                                            decoration?.expandedSuffixIcon ??
+                                                _defaultOverlayIconUp,
+                                            const SizedBox(width: 14),
+                                          ],
+                                        ),
                                       ),
                                     )
                                 else if (onSearch &&
                                     widget.searchType ==
                                         _SearchType.onRequestData)
-                                  if (!widget.hideSelectedFieldWhenOpen!)
+                                  if (!widget.hideSelectedFieldWhenOpen)
                                     _SearchField<T>.forRequestData(
                                       items: widget.items,
                                       searchHintText: widget.searchHintText,
@@ -431,42 +443,49 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                           decoration?.searchFieldDecoration,
                                     )
                                   else
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 12.0,
-                                        left: 8.0,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child:
-                                                _SearchField<T>.forRequestData(
-                                              items: items,
-                                              searchHintText:
-                                                  widget.searchHintText,
-                                              onFutureRequestLoading: (val) {
-                                                setState(() {
-                                                  isSearchRequestLoading = val;
-                                                });
-                                              },
-                                              futureRequest:
-                                                  widget.futureRequest,
-                                              futureRequestDelay:
-                                                  widget.futureRequestDelay,
-                                              onSearchedItems: (val) {
-                                                setState(() => items = val);
-                                              },
-                                              mayFoundResult: (val) =>
-                                                  mayFoundSearchRequestResult =
-                                                      val,
-                                              decoration: decoration
-                                                  ?.searchFieldDecoration,
+                                    GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () {
+                                        setState(() => displayOverly = false);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 12.0,
+                                          left: 8.0,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: _SearchField<
+                                                  T>.forRequestData(
+                                                items: widget.items,
+                                                searchHintText:
+                                                    widget.searchHintText,
+                                                onFutureRequestLoading: (val) {
+                                                  setState(() {
+                                                    isSearchRequestLoading =
+                                                        val;
+                                                  });
+                                                },
+                                                futureRequest:
+                                                    widget.futureRequest,
+                                                futureRequestDelay:
+                                                    widget.futureRequestDelay,
+                                                onSearchedItems: (val) {
+                                                  setState(() => items = val);
+                                                },
+                                                mayFoundResult: (val) =>
+                                                    mayFoundSearchRequestResult =
+                                                        val,
+                                                decoration: decoration
+                                                    ?.searchFieldDecoration,
+                                              ),
                                             ),
-                                          ),
-                                          decoration?.expandedSuffixIcon ??
-                                              _defaultOverlayIconUp,
-                                          const SizedBox(width: 14),
-                                        ],
+                                            decoration?.expandedSuffixIcon ??
+                                                _defaultOverlayIconUp,
+                                            const SizedBox(width: 14),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                 if (isSearchRequestLoading)

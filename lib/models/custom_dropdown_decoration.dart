@@ -2,9 +2,13 @@ part of '../custom_dropdown.dart';
 
 class CustomDropdownDecoration {
   /// [CustomDropdown] field color (closed state).
+  ///
+  /// Default to [Colors.white].
   final Color? closedFillColor;
 
   /// [CustomDropdown] overlay color (opened/expanded state).
+  ///
+  /// Default to [Colors.white].
   final Color? expandedFillColor;
 
   /// [CustomDropdown] box shadow (closed state).
@@ -63,4 +67,6 @@ class CustomDropdownDecoration {
     this.searchFieldDecoration,
     this.listItemDecoration,
   });
+
+  static const Color _defaultFillColor = Colors.white;
 }
