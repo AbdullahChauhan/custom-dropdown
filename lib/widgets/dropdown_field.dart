@@ -15,7 +15,7 @@ class _DropDownField<T> extends StatefulWidget {
   final BoxBorder? border;
   final BorderRadius? borderRadius;
   final String? errorText;
-  final TextStyle? errorStyle;
+  final TextStyle? errorStyle, headerStyle, hintStyle;
   final BorderSide? errorBorderSide;
   final Widget? suffixIcon;
   final List<BoxShadow>? shadow;
@@ -40,6 +40,8 @@ class _DropDownField<T> extends StatefulWidget {
     this.borderRadius,
     this.errorText,
     this.errorStyle,
+    this.hintStyle,
+    this.headerStyle,
     this.errorBorderSide,
     this.headerBuilder,
     this.shadow,
@@ -87,10 +89,11 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       itemList != null ? itemList.join(', ') : oneItem.toString(),
       maxLines: widget.maxLines,
       overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-      ),
+      style: widget.headerStyle ??
+          const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
     );
   }
 
@@ -99,10 +102,11 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       hint,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
-        fontSize: 16,
-        color: Color(0xFFA7A7A7),
-      ),
+      style: widget.hintStyle ??
+          const TextStyle(
+            fontSize: 16,
+            color: Color(0xFFA7A7A7),
+          ),
     );
   }
 

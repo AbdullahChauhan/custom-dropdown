@@ -20,19 +20,14 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final Size size;
   final LayerLink layerLink;
   final VoidCallback hideOverlay;
-  final String hintText;
-  final String searchHintText;
-  final bool excludeSelected;
-  final bool hideSelectedFieldWhenOpen;
-  final bool canCloseOutsideBounds;
+  final String hintText, searchHintText, noResultFoundText;
+  final bool excludeSelected, hideSelectedFieldWhenOpen, canCloseOutsideBounds;
   final _SearchType? searchType;
   final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
-  final String noResultFoundText;
   final int maxLines;
-  final EdgeInsets? headerPadding;
-  final EdgeInsets? listItemPadding;
-  final EdgeInsets? itemsListPadding;
+  final TextStyle? hintStyle, headerStyle, noResultFoundStyle, listItemStyle;
+  final EdgeInsets? headerPadding, listItemPadding, itemsListPadding;
   final Widget? searchRequestLoadingIndicator;
   final _ListItemBuilder<T>? listItemBuilder;
   final _HeaderBuilder<T>? headerBuilder;
@@ -59,6 +54,10 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.maxLines,
     required this.dropdownType,
     required this.decoration,
+    required this.hintStyle,
+    required this.headerStyle,
+    required this.listItemStyle,
+    required this.noResultFoundStyle,
     required this.hideSelectedFieldWhenOpen,
     required this.searchRequestLoadingIndicator,
     required this.headerPadding,
@@ -79,16 +78,12 @@ class _DropdownOverlay<T> extends StatefulWidget {
 }
 
 class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
-  bool displayOverly = true;
-  bool displayOverlayBottom = true;
+  bool displayOverly = true, displayOverlayBottom = true;
   bool isSearchRequestLoading = false;
   bool? mayFoundSearchRequestResult;
-
   late List<T> items;
   late T? selectedItem;
-
   late List<T> selectedItems;
-
   final key1 = GlobalKey(), key2 = GlobalKey();
   final scrollController = ScrollController();
 
@@ -129,7 +124,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             result.toString(),
             maxLines: widget.maxLines,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 16),
+            style: widget.listItemStyle ?? const TextStyle(fontSize: 16),
           ),
         ),
         if (widget.dropdownType == _DropdownType.multipleSelect)
@@ -158,10 +153,11 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
       items != null ? items.join(', ') : item.toString(),
       maxLines: widget.maxLines,
       overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-      ),
+      style: widget.headerStyle ??
+          const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
     );
   }
 
@@ -170,11 +166,12 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
       hint,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
-        fontSize: 16,
-        color: Color(0xFFA7A7A7),
-        fontWeight: FontWeight.w400,
-      ),
+      style: widget.hintStyle ??
+          const TextStyle(
+            fontSize: 16,
+            color: Color(0xFFA7A7A7),
+            fontWeight: FontWeight.w400,
+          ),
     );
   }
 
@@ -184,7 +181,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
         padding: const EdgeInsets.symmetric(vertical: 12.0),
         child: Text(
           text,
-          style: const TextStyle(fontSize: 16),
+          style: widget.noResultFoundStyle ?? const TextStyle(fontSize: 16),
         ),
       ),
     );

@@ -12,6 +12,7 @@ class DecoratedDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomDropdown<Job>.search(
       items: jobItems,
+      initialItem: jobItems[2],
       hintText: 'Select job role',
       searchHintText: 'Search job role',
       excludeSelected: false,
@@ -99,24 +100,13 @@ class MultiSelectDecoratedDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomDropdown<Job>.multiSelectSearch(
       items: jobItems,
-      initialItems: List.from(jobItems),
       hintText: 'Select job role',
       searchHintText: 'Search job role',
-      hideSelectedFieldWhenExpanded: true,
       closedHeaderPadding: const EdgeInsets.all(20),
       onListChanged: (value) {
         log('MultiSelectDecoratedDropdown onChanged value: $value');
       },
-      headerListBuilder: (context, selectedItem) {
-        return Text(
-          selectedItem.join(', '),
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-          ),
-        );
-      },
+      maxlines: 2,
       listItemBuilder: (context, item, isSelected, onItemSelect) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,27 +122,29 @@ class MultiSelectDecoratedDropdown extends StatelessWidget {
           ],
         );
       },
-      noResultFoundBuilder: (context, text) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(
-              text,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
-            ),
-          ),
-        );
-      },
       decoration: CustomDropdownDecoration(
         closedFillColor: Colors.black,
         expandedFillColor: Colors.black,
+        hintStyle: TextStyle(
+          color: Colors.yellow[200],
+          fontSize: 16,
+        ),
+        headerStyle: const TextStyle(
+          color: Colors.yellow,
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+        ),
+        noResultFoundStyle: const TextStyle(
+          color: Colors.yellow,
+          fontSize: 16,
+        ),
         closedSuffixIcon: const Icon(
           Icons.keyboard_arrow_down,
-          color: Colors.white,
+          color: Colors.yellow,
         ),
         expandedSuffixIcon: const Icon(
           Icons.keyboard_arrow_up,
-          color: Colors.grey,
+          color: Colors.yellow,
         ),
         closedShadow: [
           const BoxShadow(

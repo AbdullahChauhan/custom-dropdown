@@ -41,6 +41,21 @@ class CustomDropdownDecoration {
   /// Border radius for opened/expanded state of [CustomDropdown].
   final BorderRadius? expandedBorderRadius;
 
+  /// The style to use for the [CustomDropdown] header hint.
+  final TextStyle? hintStyle;
+
+  /// The style to use for the [CustomDropdown] header text.
+  final TextStyle? headerStyle;
+
+  /// The style to use for the [CustomDropdown] no result found area.
+  final TextStyle? noResultFoundStyle;
+
+  /// The style to use for the string returning from [validator].
+  final TextStyle? errorStyle;
+
+  /// The style to use for the [CustomDropdown] list item text.
+  final TextStyle? listItemStyle;
+
   /// [CustomDropdown] scrollbar decoration (opened/expanded state).
   final ScrollbarThemeData? overlayScrollbarDecoration;
 
@@ -63,6 +78,11 @@ class CustomDropdownDecoration {
     this.closedErrorBorderRadius,
     this.expandedBorder,
     this.expandedBorderRadius,
+    this.hintStyle,
+    this.headerStyle,
+    this.noResultFoundStyle,
+    this.errorStyle,
+    this.listItemStyle,
     this.overlayScrollbarDecoration,
     this.searchFieldDecoration,
     this.listItemDecoration,

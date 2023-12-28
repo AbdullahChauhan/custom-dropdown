@@ -3,12 +3,10 @@ part of '../../../custom_dropdown.dart';
 class _ItemsList<T> extends StatelessWidget {
   final ScrollController scrollController;
   final T? selectedItem;
-  final List<T> items;
-  final List<T> selectedItems;
+  final List<T> items, selectedItems;
   final Function(T) onItemSelect;
   final bool excludeSelected;
-  final EdgeInsets itemsListPadding;
-  final EdgeInsets listItemPadding;
+  final EdgeInsets itemsListPadding, listItemPadding;
   final _ListItemBuilder<T> listItemBuilder;
   final ListItemDecoration? decoration;
   final _DropdownType dropdownType;

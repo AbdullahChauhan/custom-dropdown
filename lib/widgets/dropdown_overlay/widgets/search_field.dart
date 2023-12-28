@@ -7,8 +7,7 @@ class _SearchField<T> extends StatefulWidget {
   final _SearchType? searchType;
   final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
-  final ValueChanged<bool>? onFutureRequestLoading;
-  final ValueChanged<bool>? mayFoundResult;
+  final ValueChanged<bool>? onFutureRequestLoading, mayFoundResult;
   final SearchFieldDecoration? decoration;
 
   const _SearchField.forListData({

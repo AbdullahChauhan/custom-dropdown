@@ -71,9 +71,6 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Returns an error string to display as per the validation, or null otherwise.
   final String? Function(List<T>)? listValidator;
 
-  /// The style to use for the string returning from [validator].
-  final TextStyle? errorStyle;
-
   /// Enable the validation listener on item change.
   /// This implies to [validator] everytime when the item change.
   final bool validateOnChange;
@@ -154,7 +151,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.decoration,
     this.searchHintText,
     this.noResultFoundText,
-    this.errorStyle,
     this.validator,
     this.validateOnChange = true,
     this.listItemBuilder,
@@ -200,7 +196,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.headerBuilder,
     this.hintBuilder,
     this.noResultFoundBuilder,
-    this.errorStyle,
     this.validator,
     this.validateOnChange = true,
     this.onChanged,
@@ -244,7 +239,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.headerBuilder,
     this.hintBuilder,
     this.noResultFoundBuilder,
-    this.errorStyle,
     this.validator,
     this.validateOnChange = true,
     this.onChanged,
@@ -274,7 +268,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintText,
     this.decoration,
     this.searchHintText,
-    this.errorStyle,
     this.validateOnChange = true,
     this.listItemBuilder,
     this.hintBuilder,
@@ -322,7 +315,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.noResultFoundBuilder,
     this.hintText,
     this.searchHintText,
-    this.errorStyle,
     this.validateOnChange = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
@@ -367,7 +359,6 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listItemBuilder,
     this.hintBuilder,
     this.noResultFoundBuilder,
-    this.errorStyle,
     this.listValidator,
     this.validateOnChange = true,
     this.maxlines = 1,
@@ -443,7 +434,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
       builder: (formFieldState) {
         return InputDecorator(
           decoration: InputDecoration(
-            errorStyle: widget.errorStyle ?? _defaultErrorStyle,
+            errorStyle: decoration?.errorStyle ?? _defaultErrorStyle,
             errorText: formFieldState.errorText,
             border: InputBorder.none,
           ),
@@ -481,6 +472,10 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 listItemBuilder: widget.listItemBuilder,
                 layerLink: layerLink,
                 hideOverlay: hideCallback,
+                hintStyle: decoration?.hintStyle,
+                headerStyle: decoration?.headerStyle,
+                noResultFoundStyle: decoration?.noResultFoundStyle,
+                listItemStyle: decoration?.listItemStyle,
                 headerBuilder: widget.headerBuilder,
                 headerListBuilder: widget.headerListBuilder,
                 hintText: safeHintText,
@@ -515,6 +510,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                       ? decoration?.closedErrorBorderRadius
                       : decoration?.closedBorderRadius,
                   shadow: decoration?.closedShadow,
+                  hintStyle: decoration?.hintStyle,
+                  headerStyle: decoration?.headerStyle,
                   hintText: safeHintText,
                   hintBuilder: widget.hintBuilder,
                   headerBuilder: widget.headerBuilder,
