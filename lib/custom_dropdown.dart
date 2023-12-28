@@ -120,6 +120,10 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Widget to display while search request loading.
   final Widget? searchRequestLoadingIndicator;
 
+  /// [CustomDropdown] opened/expanded area height.
+  /// Only applicable if items are greater than 4 otherwise adjust automatically.
+  final double? overlayHeight;
+
   /// The [listItemBuilder] that will be used to build item on demand.
   final _ListItemBuilder<T>? listItemBuilder;
 
@@ -158,6 +162,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hintBuilder,
     this.onChanged,
     this.maxlines = 1,
+    this.overlayHeight,
     this.closedHeaderPadding,
     this.expandedHeaderPadding,
     this.itemsListPadding,
@@ -200,6 +205,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.validateOnChange = true,
     this.onChanged,
     this.maxlines = 1,
+    this.overlayHeight,
     this.closedHeaderPadding,
     this.expandedHeaderPadding,
     this.itemsListPadding,
@@ -243,6 +249,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.validateOnChange = true,
     this.onChanged,
     this.maxlines = 1,
+    this.overlayHeight,
     this.closedHeaderPadding,
     this.expandedHeaderPadding,
     this.itemsListPadding,
@@ -274,6 +281,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.maxlines = 1,
+    this.overlayHeight,
     this.closedHeaderPadding,
     this.expandedHeaderPadding,
     this.itemsListPadding,
@@ -319,6 +327,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.maxlines = 1,
+    this.overlayHeight,
     this.closedHeaderPadding,
     this.expandedHeaderPadding,
     this.itemsListPadding,
@@ -362,6 +371,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listValidator,
     this.validateOnChange = true,
     this.maxlines = 1,
+    this.overlayHeight,
     this.searchRequestLoadingIndicator,
     this.closedHeaderPadding,
     this.expandedHeaderPadding,
@@ -483,6 +493,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 searchHintText: widget.searchHintText ?? 'Search',
                 hintBuilder: widget.hintBuilder,
                 decoration: decoration,
+                overlayHeight: widget.overlayHeight,
                 excludeSelected: widget.excludeSelected,
                 canCloseOutsideBounds: widget.canCloseOutsideBounds,
                 searchType: widget._searchType,
