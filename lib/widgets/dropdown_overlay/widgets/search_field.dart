@@ -1,4 +1,4 @@
-part of '../../custom_dropdown.dart';
+part of '../../../custom_dropdown.dart';
 
 class _SearchField<T> extends StatefulWidget {
   final List<T> items;
@@ -7,23 +7,23 @@ class _SearchField<T> extends StatefulWidget {
   final _SearchType? searchType;
   final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
-  final ValueChanged<bool>? onFutureRequestLoading;
-  final ValueChanged<bool>? mayFoundResult;
+  final ValueChanged<bool>? onFutureRequestLoading, mayFoundResult;
+  final SearchFieldDecoration? decoration;
 
   const _SearchField.forListData({
-    Key? key,
+    super.key,
     required this.items,
     required this.onSearchedItems,
     required this.searchHintText,
+    required this.decoration,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
         onFutureRequestLoading = null,
-        mayFoundResult = null,
-        super(key: key);
+        mayFoundResult = null;
 
   const _SearchField.forRequestData({
-    Key? key,
+    super.key,
     required this.items,
     required this.onSearchedItems,
     required this.searchHintText,
@@ -31,8 +31,8 @@ class _SearchField<T> extends StatefulWidget {
     required this.futureRequestDelay,
     required this.onFutureRequestLoading,
     required this.mayFoundResult,
-  })  : searchType = _SearchType.onRequestData,
-        super(key: key);
+    required this.decoration,
+  }) : searchType = _SearchType.onRequestData;
 
   @override
   State<_SearchField<T>> createState() => _SearchFieldState<T>();
@@ -102,6 +102,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextField(
         focusNode: focusNode,
+        style: widget.decoration?.textStyle,
         onChanged: (val) async {
           if (val.isEmpty) {
             isFieldEmpty = true;
@@ -132,37 +133,46 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
         controller: searchCtrl,
         decoration: InputDecoration(
           filled: true,
-          fillColor: Colors.grey[50],
-          constraints: const BoxConstraints.tightFor(height: 40),
-          contentPadding: const EdgeInsets.all(8),
+          fillColor: widget.decoration?.fillColor ??
+              SearchFieldDecoration._defaultFillColor,
+          constraints: widget.decoration?.constraints ??
+              const BoxConstraints.tightFor(height: 40),
+          contentPadding:
+              widget.decoration?.contentPadding ?? const EdgeInsets.all(8),
           hintText: widget.searchHintText,
-          hintStyle: const TextStyle(color: Colors.grey),
-          prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 22),
-          suffixIcon: GestureDetector(
-            onTap: onClear,
-            child: const Icon(Icons.close, color: Colors.grey, size: 20),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(
-              color: Colors.grey.withOpacity(.25),
-              width: 1,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(
-              color: Colors.grey.withOpacity(.25),
-              width: 1,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(
-              color: Colors.grey.withOpacity(.25),
-              width: 1,
-            ),
-          ),
+          hintStyle: widget.decoration?.hintStyle ??
+              const TextStyle(color: Colors.grey),
+          prefixIcon: widget.decoration?.prefixIcon ??
+              const Icon(Icons.search, color: Colors.grey, size: 22),
+          suffixIcon: widget.decoration?.suffixIcon?.call(onClear) ??
+              GestureDetector(
+                onTap: onClear,
+                child: const Icon(Icons.close, color: Colors.grey, size: 20),
+              ),
+          border: widget.decoration?.border ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: Colors.grey.withOpacity(.25),
+                  width: 1,
+                ),
+              ),
+          enabledBorder: widget.decoration?.border ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: Colors.grey.withOpacity(.25),
+                  width: 1,
+                ),
+              ),
+          focusedBorder: widget.decoration?.focusedBorder ??
+              OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: Colors.grey.withOpacity(.25),
+                  width: 1,
+                ),
+              ),
         ),
       ),
     );

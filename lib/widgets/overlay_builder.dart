@@ -1,14 +1,14 @@
-part of 'custom_dropdown.dart';
+part of '../custom_dropdown.dart';
 
 class _OverlayBuilder extends StatefulWidget {
   final Widget Function(Size, VoidCallback hide) overlay;
   final Widget Function(VoidCallback show) child;
 
   const _OverlayBuilder({
-    Key? key,
+    super.key,
     required this.overlay,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   _OverlayBuilderState createState() => _OverlayBuilderState();
