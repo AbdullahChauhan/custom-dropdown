@@ -170,7 +170,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
           const TextStyle(
             fontSize: 16,
             color: Color(0xFFA7A7A7),
-            fontWeight: FontWeight.w400,
           ),
     );
   }
