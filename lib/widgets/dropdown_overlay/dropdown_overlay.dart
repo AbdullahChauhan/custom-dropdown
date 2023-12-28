@@ -26,6 +26,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
   final int maxLines;
+  final double? overlayHeight;
   final TextStyle? hintStyle, headerStyle, noResultFoundStyle, listItemStyle;
   final EdgeInsets? headerPadding, listItemPadding, itemsListPadding;
   final Widget? searchRequestLoadingIndicator;
@@ -52,6 +53,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.noResultFoundText,
     required this.canCloseOutsideBounds,
     required this.maxLines,
+    required this.overlayHeight,
     required this.dropdownType,
     required this.decoration,
     required this.hintStyle,
@@ -307,9 +309,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                     child: SizedBox(
                       key: key2,
                       height: items.length > 4
-                          ? onSearch
-                              ? 270
-                              : 225
+                          ? widget.overlayHeight ?? (onSearch ? 270 : 225)
                           : null,
                       child: ClipRRect(
                         borderRadius: decoration?.expandedBorderRadius ??

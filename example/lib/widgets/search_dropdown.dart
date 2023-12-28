@@ -20,7 +20,7 @@ class SearchDropdown extends StatelessWidget {
     return CustomDropdown<String>.search(
       hintText: 'Select cuisines',
       items: _list,
-      excludeSelected: false,
+      overlayHeight: 342,
       onChanged: (value) {
         log('SearchDropdown onChanged value: $value');
       },
