@@ -1,15 +1,14 @@
-part of '../../custom_dropdown.dart';
+part of '../../../custom_dropdown.dart';
 
 class _ItemsList<T> extends StatelessWidget {
   final ScrollController scrollController;
   final T? selectedItem;
-  final List<T> items;
-  final List<T> selectedItems;
+  final List<T> items, selectedItems;
   final Function(T) onItemSelect;
   final bool excludeSelected;
-  final EdgeInsets padding;
-  // ignore: library_private_types_in_public_api
+  final EdgeInsets itemsListPadding, listItemPadding;
   final _ListItemBuilder<T> listItemBuilder;
+  final ListItemDecoration? decoration;
   final _DropdownType dropdownType;
 
   const _ItemsList({
@@ -19,9 +18,11 @@ class _ItemsList<T> extends StatelessWidget {
     required this.items,
     required this.onItemSelect,
     required this.excludeSelected,
-    required this.padding,
+    required this.itemsListPadding,
+    required this.listItemPadding,
     required this.listItemBuilder,
     required this.selectedItems,
+    required this.decoration,
     required this.dropdownType,
   });
 
@@ -32,7 +33,7 @@ class _ItemsList<T> extends StatelessWidget {
       child: ListView.builder(
         controller: scrollController,
         shrinkWrap: true,
-        padding: padding,
+        padding: itemsListPadding,
         itemCount: items.length,
         itemBuilder: (_, index) {
           final selected = switch (dropdownType) {
@@ -43,12 +44,17 @@ class _ItemsList<T> extends StatelessWidget {
           return Material(
             color: Colors.transparent,
             child: InkWell(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.grey[200],
+              splashColor: decoration?.splashColor ??
+                  ListItemDecoration._defaultSplashColor,
+              highlightColor: decoration?.highlightColor ??
+                  ListItemDecoration._defaultHighlightColor,
               onTap: () => onItemSelect(items[index]),
               child: Ink(
-                color: selected ? Colors.grey[100] : Colors.transparent,
-                padding: _listItemPadding,
+                color: selected
+                    ? (decoration?.selectedColor ??
+                        ListItemDecoration._defaultSelectedColor)
+                    : Colors.transparent,
+                padding: listItemPadding,
                 child: listItemBuilder(
                   context,
                   items[index],

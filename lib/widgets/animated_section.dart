@@ -1,12 +1,12 @@
-part of 'custom_dropdown.dart';
+part of '../custom_dropdown.dart';
 
-class AnimatedSection extends StatefulWidget {
+class _AnimatedSection extends StatefulWidget {
   final bool expand;
   final VoidCallback animationDismissed;
   final Widget child;
   final double axisAlignment;
 
-  const AnimatedSection({
+  const _AnimatedSection({
     super.key,
     this.expand = false,
     required this.animationDismissed,
@@ -15,10 +15,10 @@ class AnimatedSection extends StatefulWidget {
   });
 
   @override
-  State<AnimatedSection> createState() => _AnimatedSectionState();
+  State<_AnimatedSection> createState() => _AnimatedSectionState();
 }
 
-class _AnimatedSectionState extends State<AnimatedSection>
+class _AnimatedSectionState extends State<_AnimatedSection>
     with SingleTickerProviderStateMixin {
   late AnimationController animController;
   late Animation<double> animation;
@@ -55,7 +55,7 @@ class _AnimatedSectionState extends State<AnimatedSection>
   }
 
   @override
-  void didUpdateWidget(AnimatedSection oldWidget) {
+  void didUpdateWidget(_AnimatedSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     runExpand();
   }
