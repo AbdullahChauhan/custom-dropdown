@@ -15,12 +15,12 @@
 
 Lots of properties to use and customize dropdown widget as per your need. Also usable under Form widget for required validation.
 
-- Custom dropdown using constructor **CustomDropdown<T>(...)**.
-- Custom dropdown with search field using named constructor **CustomDropdown<T>.search(...)**.
-- Custom dropdown with search request field using named constructor **CustomDropdown<T>.searchRequest(...)**.
-- Multi select custom dropdown using named constructor **CustomDropdown<T>.multiSelect(...)**.
-- Multi select custom dropdown with search field using named constructor **CustomDropdown<T>.multiSelectSearch(...)**.
-- Custom dropdown with search request field using named constructor **CustomDropdown<T>.multiSelectSearchRequest(...)**.
+- Custom dropdown using constructor **CustomDropdown<T>()**.
+- Custom dropdown with search field using named constructor **CustomDropdown<T>.search()**.
+- Custom dropdown with search request field using named constructor **CustomDropdown<T>.searchRequest()**.
+- Multi select custom dropdown using named constructor **CustomDropdown<T>.multiSelect()**.
+- Multi select custom dropdown with search field using named constructor **CustomDropdown<T>.multiSelectSearch()**.
+- Multi select custom dropdown with search request field using named constructor **CustomDropdown<T>.multiSelectSearchRequest()**.
 
 ## Preview
 
@@ -439,10 +439,12 @@ class MultiSelectValidationDropdown extends StatelessWidget {
 ```
 
 ## Customization
-For a complete customization of the package, go to the [example](https://github.com/AbdullahChauhan/custom-dropdown/blob/master/example/lib/main.dart).
+For a complete customization of the package, go to the [example](https://github.com/AbdullahChauhan/custom-dropdown/blob/master/example).
 
-<hr>
+## Contributors
+
+[![](https://contrib.rocks/image?repo=AbdullahChauhan/custom-dropdown)](https://github.com/AbdullahChauhan/custom-dropdown/graphs/contributors)
 
 ## Issues & Feedback
 
-Please file an [issue](https://github.com/AbdullahChauhan/custom-dropdown/issues) to send feedback or report a bug. Thank you!
+Please file an [issue](https://github.com/AbdullahChauhan/custom-dropdown/issues) to send feedback or report a bug. PRs are always welcome. Thank you!
