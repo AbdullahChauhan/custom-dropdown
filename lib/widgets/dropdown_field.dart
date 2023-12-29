@@ -3,7 +3,6 @@ part of '../custom_dropdown.dart';
 // overlay icon
 const _defaultOverlayIconDown = Icon(
   Icons.keyboard_arrow_down_rounded,
-  color: Colors.black,
   size: 20,
 );
 

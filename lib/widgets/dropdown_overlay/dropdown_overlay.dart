@@ -2,7 +2,6 @@ part of '../../custom_dropdown.dart';
 
 const _defaultOverlayIconUp = Icon(
   Icons.keyboard_arrow_up_rounded,
-  color: Colors.black,
   size: 20,
 );
 
@@ -495,7 +494,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                             width: 25,
                                             height: 25,
                                             child: CircularProgressIndicator(
-                                              color: Colors.black,
                                               strokeWidth: 3,
                                             ),
                                           ),

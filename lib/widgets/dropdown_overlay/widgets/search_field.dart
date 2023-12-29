@@ -140,14 +140,13 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
           contentPadding:
               widget.decoration?.contentPadding ?? const EdgeInsets.all(8),
           hintText: widget.searchHintText,
-          hintStyle: widget.decoration?.hintStyle ??
-              const TextStyle(color: Colors.grey),
+          hintStyle: widget.decoration?.hintStyle,
           prefixIcon: widget.decoration?.prefixIcon ??
-              const Icon(Icons.search, color: Colors.grey, size: 22),
+              const Icon(Icons.search, size: 22),
           suffixIcon: widget.decoration?.suffixIcon?.call(onClear) ??
               GestureDetector(
                 onTap: onClear,
-                child: const Icon(Icons.close, color: Colors.grey, size: 20),
+                child: const Icon(Icons.close, size: 20),
               ),
           border: widget.decoration?.border ??
               OutlineInputBorder(
