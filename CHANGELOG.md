@@ -1,3 +1,37 @@
+# 3.0.0
+
+- Add: Multi selection support (Thanks [@KabaDH for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/40))
+  - `CustomDropdown.multiSelect`
+  - `CustomDropdown.multiSelectSearch`
+  - `CustomDropdown.multiSelectSearchRequest`
+- Add: Decoration support
+  - `CustomDropdownDecoration`
+    - `SearchFieldDecoration`
+    - `ListItemDecoration`
+    - `ScrollbarThemeData`
+- Add: Dropdown overlay height support (Thanks [@aguilastorm for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/38))
+  - `overlayHeight`
+- Add: Custom loading widget for search request
+  - `searchRequestLoadingIndicator`
+- Add: Padding properties:
+  - `closedHeaderPadding`
+  - `expandedHeaderPadding`
+  - `itemsListPadding`
+  - `listItemPadding`
+- Fix: Stop the scrolling and dropdown should remains in expanded state (Thanks [@s-saens for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/34))
+- Breaking: Properties move inside decoration:
+  - `closedFillColor`
+  - `expandedFillColor`
+  - `errorStyle`
+  - `closedBorder`
+  - `closedBorderRadius`
+  - `expandedBorder`
+  - `expandedBorderRadius`
+  - `closedErrorBorder`
+  - `closedErrorBorderRadius`
+  - `closedSuffixIcon`
+  - `expandedSuffixIcon`
+
 # 2.0.0
 
 - Add: Migration to support List of generatic type `T` (Thanks [@JesusHdez960717 for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/20))
