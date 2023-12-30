@@ -6,7 +6,8 @@ const _defaultOverlayIconUp = Icon(
 );
 
 const _defaultHeaderPadding = EdgeInsets.all(16.0);
-const _overlayOuterPadding = EdgeInsets.only(bottom: 12, left: 12, right: 12);
+const _overlayOuterPadding =
+    EdgeInsetsDirectional.only(bottom: 12, start: 12, end: 12);
 const _defaultOverlayShadowOffset = Offset(0, 6);
 const _defaultListItemPadding =
     EdgeInsets.symmetric(vertical: 12, horizontal: 16);
@@ -130,7 +131,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
         ),
         if (widget.dropdownType == _DropdownType.multipleSelect)
           Padding(
-            padding: const EdgeInsets.only(left: 12.0),
+            padding: const EdgeInsetsDirectional.only(start: 12.0),
             child: Checkbox(
               onChanged: (_) => onItemSelect(),
               value: isSelected,
@@ -388,9 +389,10 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         setState(() => displayOverly = false);
                                       },
                                       child: Padding(
-                                        padding: const EdgeInsets.only(
+                                        padding:
+                                            const EdgeInsetsDirectional.only(
                                           top: 12.0,
-                                          left: 8.0,
+                                          start: 8.0,
                                         ),
                                         child: Row(
                                           children: [
@@ -444,9 +446,10 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         setState(() => displayOverly = false);
                                       },
                                       child: Padding(
-                                        padding: const EdgeInsets.only(
+                                        padding:
+                                            const EdgeInsetsDirectional.only(
                                           top: 12.0,
-                                          left: 8.0,
+                                          start: 8.0,
                                         ),
                                         child: Row(
                                           children: [
