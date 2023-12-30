@@ -28,6 +28,8 @@ screenshots:
     path: screenshots/example_1.jpg
   - description: "Search dropdown example"
     path: screenshots/example_2.jpg
+  - description: "Multi select dropdown example"
+    path: screenshots/example_3.jpg
 
 topics:
   - ui
