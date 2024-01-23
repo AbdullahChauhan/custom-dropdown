@@ -533,6 +533,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   searchRequestLoadingIndicator:
                       widget.searchRequestLoadingIndicator,
                   dropdownType: widget._dropdownType,
+                  enabled: widget.enabled,
                 );
               },
               child: (showCallback) {

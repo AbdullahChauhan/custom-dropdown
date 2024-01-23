@@ -21,7 +21,7 @@ class DecoratedDropdown extends StatelessWidget {
       onChanged: (value) {
         log('DecoratedDropdown onChanged value: $value');
       },
-      headerBuilder: (context, selectedItem) {
+      headerBuilder: (context, selectedItem, enabled) {
         return Text(
           selectedItem.toString(),
           style: const TextStyle(

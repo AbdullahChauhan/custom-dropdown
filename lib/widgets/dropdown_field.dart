@@ -69,19 +69,19 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
 
   Widget hintBuilder(BuildContext context) {
     return widget.hintBuilder != null
-        ? widget.hintBuilder!(context, widget.hintText)
+        ? widget.hintBuilder!(context, widget.hintText, widget.enabled)
         : defaultHintBuilder(widget.hintText, widget.enabled);
   }
 
   Widget headerBuilder(BuildContext context) {
     return widget.headerBuilder != null
-        ? widget.headerBuilder!(context, selectedItem as T)
+        ? widget.headerBuilder!(context, selectedItem as T, widget.enabled)
         : defaultHeaderBuilder(oneItem: selectedItem);
   }
 
   Widget headerListBuilder(BuildContext context) {
     return widget.headerListBuilder != null
-        ? widget.headerListBuilder!(context, selectedItems)
+        ? widget.headerListBuilder!(context, selectedItems, widget.enabled)
         : defaultHeaderBuilder(itemList: selectedItems);
   }
 
