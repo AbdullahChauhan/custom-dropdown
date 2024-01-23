@@ -561,6 +561,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     headerPadding: widget.closedHeaderPadding,
                     dropdownType: widget._dropdownType,
                     selectedItemsNotifier: selectedItemsNotifier,
+                    enabled: widget.enabled,
                   ),
                 );
               },
