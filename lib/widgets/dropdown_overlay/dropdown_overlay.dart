@@ -38,6 +38,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final CustomDropdownDecoration? decoration;
   final _DropdownType dropdownType;
   final bool enabled;
+  final bool closeDropDownOnClearFilterSearch;
 
   const _DropdownOverlay({
     Key? key,
@@ -75,6 +76,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.headerListBuilder,
     required this.noResultFoundBuilder,
     required this.enabled,
+    required this.closeDropDownOnClearFilterSearch,
   });
 
   @override
@@ -237,6 +239,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     setState(() => displayOverly = false);
   }
 
+  void closeDropDown() => setState(() => displayOverly = false);
+
   @override
   Widget build(BuildContext context) {
     // decoration
@@ -383,6 +387,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                       },
                                       decoration:
                                           decoration?.searchFieldDecoration,
+                                      closeDropDownOnClearFilterSearch: widget
+                                          .closeDropDownOnClearFilterSearch,
+                                      closeDropDown: closeDropDown,
                                     )
                                   else
                                     GestureDetector(
@@ -409,6 +416,10 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                                 },
                                                 decoration: decoration
                                                     ?.searchFieldDecoration,
+                                                closeDropDownOnClearFilterSearch:
+                                                    widget
+                                                        .closeDropDownOnClearFilterSearch,
+                                                closeDropDown: closeDropDown,
                                               ),
                                             ),
                                             decoration?.expandedSuffixIcon ??
@@ -440,6 +451,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                           mayFoundSearchRequestResult = val,
                                       decoration:
                                           decoration?.searchFieldDecoration,
+                                      closeDropDownOnClearFilterSearch: widget
+                                          .closeDropDownOnClearFilterSearch,
+                                      closeDropDown: closeDropDown,
                                     )
                                   else
                                     GestureDetector(
@@ -479,6 +493,10 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                                         val,
                                                 decoration: decoration
                                                     ?.searchFieldDecoration,
+                                                closeDropDownOnClearFilterSearch:
+                                                    widget
+                                                        .closeDropDownOnClearFilterSearch,
+                                                closeDropDown: closeDropDown,
                                               ),
                                             ),
                                             decoration?.expandedSuffixIcon ??

@@ -151,6 +151,10 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Contain sub-decorations [SearchFieldDecoration], [ListItemDecoration] and [ScrollbarThemeData].
   final CustomDropdownDecoration? disabledDecoration;
 
+  /// [CustomDropdown] will close on tap Clear filter for all search
+  /// and searchRequest constructors
+  final bool closeDropDownOnClearFilterSearch;
+
   final _SearchType? _searchType;
 
   final _DropdownType _dropdownType;
@@ -197,7 +201,8 @@ class CustomDropdown<T> extends StatefulWidget {
         onListChanged = null,
         listValidator = null,
         headerListBuilder = null,
-        searchRequestLoadingIndicator = null;
+        searchRequestLoadingIndicator = null,
+        closeDropDownOnClearFilterSearch = false;
 
   CustomDropdown.search({
     super.key,
@@ -225,6 +230,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hideSelectedFieldWhenExpanded = false,
     this.enabled = true,
     this.disabledDecoration,
+    this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
           items!.isNotEmpty || !enabled,
           'Items list must contain at least one item.',
@@ -272,6 +278,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hideSelectedFieldWhenExpanded = false,
     this.enabled = true,
     this.disabledDecoration,
+    this.closeDropDownOnClearFilterSearch = false,
   })  : _searchType = _SearchType.onRequestData,
         _dropdownType = _DropdownType.singleSelect,
         initialItems = null,
@@ -324,7 +331,8 @@ class CustomDropdown<T> extends StatefulWidget {
         futureRequestDelay = null,
         noResultFoundBuilder = null,
         searchHintText = null,
-        searchRequestLoadingIndicator = null;
+        searchRequestLoadingIndicator = null,
+        closeDropDownOnClearFilterSearch = false;
 
   CustomDropdown.multiSelectSearch({
     super.key,
@@ -351,6 +359,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listItemPadding,
     this.enabled = true,
     this.disabledDecoration,
+    this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
           items!.isNotEmpty || !enabled,
           'Items list must contain at least one item.',
@@ -401,6 +410,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hideSelectedFieldWhenExpanded = false,
     this.enabled = true,
     this.disabledDecoration,
+    this.closeDropDownOnClearFilterSearch = false,
   })  : _searchType = _SearchType.onRequestData,
         _dropdownType = _DropdownType.multipleSelect,
         initialItem = null,
@@ -534,6 +544,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                       widget.searchRequestLoadingIndicator,
                   dropdownType: widget._dropdownType,
                   enabled: widget.enabled,
+                  closeDropDownOnClearFilterSearch:
+                      widget.closeDropDownOnClearFilterSearch,
                 );
               },
               child: (showCallback) {

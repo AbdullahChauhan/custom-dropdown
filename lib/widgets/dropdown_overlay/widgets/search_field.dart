@@ -9,6 +9,8 @@ class _SearchField<T> extends StatefulWidget {
   final Duration? futureRequestDelay;
   final ValueChanged<bool>? onFutureRequestLoading, mayFoundResult;
   final SearchFieldDecoration? decoration;
+  final bool closeDropDownOnClearFilterSearch;
+  final VoidCallback closeDropDown;
 
   const _SearchField.forListData({
     super.key,
@@ -16,6 +18,8 @@ class _SearchField<T> extends StatefulWidget {
     required this.onSearchedItems,
     required this.searchHintText,
     required this.decoration,
+    required this.closeDropDownOnClearFilterSearch,
+    required this.closeDropDown,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
@@ -32,6 +36,8 @@ class _SearchField<T> extends StatefulWidget {
     required this.onFutureRequestLoading,
     required this.mayFoundResult,
     required this.decoration,
+    required this.closeDropDownOnClearFilterSearch,
+    required this.closeDropDown,
   }) : searchType = _SearchType.onRequestData;
 
   @override
@@ -78,6 +84,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
       searchCtrl.clear();
       widget.onSearchedItems(widget.items);
     }
+    if (widget.closeDropDownOnClearFilterSearch) widget.closeDropDown.call();
   }
 
   void searchRequest(String val) async {
