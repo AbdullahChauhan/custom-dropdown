@@ -25,6 +25,7 @@ class _DropDownField<T> extends StatefulWidget {
   final _HintBuilder? hintBuilder;
   final _DropdownType dropdownType;
   final _ValueNotifierList<T> selectedItemsNotifier;
+  final bool enabled;
 
   const _DropDownField({
     super.key,
@@ -48,6 +49,7 @@ class _DropDownField<T> extends StatefulWidget {
     this.hintBuilder,
     this.suffixIcon,
     this.headerPadding,
+    this.enabled = true,
   });
 
   @override
@@ -68,7 +70,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   Widget hintBuilder(BuildContext context) {
     return widget.hintBuilder != null
         ? widget.hintBuilder!(context, widget.hintText)
-        : defaultHintBuilder(widget.hintText);
+        : defaultHintBuilder(widget.hintText, widget.enabled);
   }
 
   Widget headerBuilder(BuildContext context) {
@@ -96,15 +98,15 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
     );
   }
 
-  Widget defaultHintBuilder(String hint) {
+  Widget defaultHintBuilder(String hint, bool enabled) {
     return Text(
       hint,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       style: widget.hintStyle ??
-          const TextStyle(
+          TextStyle(
             fontSize: 16,
-            color: Color(0xFFA7A7A7),
+            color: enabled ? const Color(0xFFA7A7A7) : const Color(0xFFB9B9B9),
           ),
     );
   }
@@ -127,7 +129,10 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       child: Container(
         padding: widget.headerPadding ?? _defaultHeaderPadding,
         decoration: BoxDecoration(
-          color: widget.fillColor ?? CustomDropdownDecoration._defaultFillColor,
+          color: widget.fillColor ??
+              (widget.enabled
+                  ? CustomDropdownDecoration._defaultFillColor
+                  : CustomDropdownDecoration._defaultDisabledFillColor),
           border: widget.border,
           borderRadius: widget.borderRadius ?? _defaultBorderRadius,
           boxShadow: widget.shadow,
