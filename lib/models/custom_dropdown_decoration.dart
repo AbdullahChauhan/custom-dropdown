@@ -89,4 +89,5 @@ class CustomDropdownDecoration {
   });
 
   static const Color _defaultFillColor = Colors.white;
+  static const Color _defaultDisabledFillColor = Color(0xFFF3F3F3);
 }

@@ -9,14 +9,17 @@ typedef _ListItemBuilder<T> = Widget Function(
 typedef _HeaderBuilder<T> = Widget Function(
   BuildContext context,
   T selectedItem,
+  bool enabled,
 );
 typedef _HeaderListBuilder<T> = Widget Function(
   BuildContext context,
   List<T> selectedItems,
+  bool enabled,
 );
 typedef _HintBuilder = Widget Function(
   BuildContext context,
   String hint,
+  bool enabled,
 );
 typedef _NoResultFoundBuilder = Widget Function(
   BuildContext context,
