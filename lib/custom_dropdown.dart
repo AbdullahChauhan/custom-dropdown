@@ -100,27 +100,30 @@ class CustomDropdown extends StatefulWidget {
 
 class _CustomDropdownState extends State<CustomDropdown> {
   final layerLink = LayerLink();
-
   late TextEditingController textEditingController;
-  List<String> dataItems = [];
-
+  String? _initSelected;
   @override
   void initState() {
     init();
     super.initState();
   }
 
+  String? get widgetSelectedValue =>
+      (widget.selectedValue?[widget.nameKey] is Map)
+          ? (widget.selectedValue?[widget.nameKey][widget.nameMapKey])
+          : widget.selectedValue?[widget.nameKey];
+
+  List<String> get dataItems =>
+      widget.items
+          ?.map((element) => (element[widget.nameKey] is Map)
+              ? (element[widget.nameKey][widget.nameMapKey]).toString()
+              : element[widget.nameKey].toString())
+          .toList() ??
+      [];
+
   void init() {
-    textEditingController = TextEditingController(
-        text: (widget.selectedValue?[widget.nameKey] is Map)
-            ? (widget.selectedValue?[widget.nameKey][widget.nameMapKey])
-            : widget.selectedValue?[widget.nameKey]);
-    dataItems = widget.items
-            ?.map((element) => (element[widget.nameKey] is Map)
-                ? (element[widget.nameKey][widget.nameMapKey]).toString()
-                : element[widget.nameKey].toString())
-            .toList() ??
-        [];
+    textEditingController = TextEditingController(text: widgetSelectedValue);
+    _initSelected = textEditingController.text;
   }
 
   void onChangeEx(String value) {
@@ -139,6 +142,11 @@ class _CustomDropdownState extends State<CustomDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    if (_initSelected != widgetSelectedValue) {
+      textEditingController.text = widgetSelectedValue ?? '';
+      _initSelected = widgetSelectedValue;
+    }
+
     /// hint text
     final hintText = widget.hintText ?? 'Select value';
 

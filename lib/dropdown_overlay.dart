@@ -147,12 +147,13 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
             padding: listPadding,
             headerText: headerText,
             itemTextStyle: widget.listItemStyle,
-            onItemSelect: (value) {
+            onItemSelect: (value) async {
+              setState(() => displayOverly = false);
+              await Future.delayed(const Duration(milliseconds: 300));
               if (headerText != value) {
                 widget.controller.text = value;
                 widget.onChanged?.call(widget.controller.text);
               }
-              setState(() => displayOverly = false);
             },
           )
         : const Center(
