@@ -15,7 +15,7 @@ const _defaultListItemPadding =
 class _DropdownOverlay<T> extends StatefulWidget {
   final List<T> items;
   final ValueNotifier<T?> selectedItemNotifier;
-  final _ValueNotifierList<T> selectedItemsNotifier;
+  final MultiSelectController<T> selectedItemsNotifier;
   final Function(T) onItemSelect;
   final Size size;
   final LayerLink layerLink;
@@ -205,6 +205,12 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     selectedItem = widget.selectedItemNotifier.value;
     selectedItems = widget.selectedItemsNotifier.value;
 
+    widget.selectedItemsNotifier.addListener(() {
+      if (mounted) {
+        selectedItems = widget.selectedItemsNotifier.value;
+      }
+    });
+
     if (widget.excludeSelected &&
         widget.items.length > 1 &&
         selectedItem != null) {
@@ -224,11 +230,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   void onItemSelect(T value) {
     widget.onItemSelect(value);
     if (widget.dropdownType == _DropdownType.multipleSelect) {
-      if (selectedItems.contains(value)) {
-        selectedItems.remove(value);
-      } else {
-        selectedItems.add(value);
-      }
       setState(() {});
       return;
     }
