@@ -15,7 +15,7 @@ const _defaultListItemPadding =
 class _DropdownOverlay<T> extends StatefulWidget {
   final List<T> items;
   final ValueNotifier<T?> selectedItemNotifier;
-  final _ValueNotifierList<T> selectedItemsNotifier;
+  final MultiSelectController<T> selectedItemsNotifier;
   final Function(T) onItemSelect;
   final Size size;
   final LayerLink layerLink;

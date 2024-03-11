@@ -24,7 +24,7 @@ class _DropDownField<T> extends StatefulWidget {
   final _HeaderListBuilder<T>? headerListBuilder;
   final _HintBuilder? hintBuilder;
   final _DropdownType dropdownType;
-  final _ValueNotifierList<T> selectedItemsNotifier;
+  final MultiSelectController<T> selectedItemsNotifier;
 
   const _DropDownField({
     super.key,
