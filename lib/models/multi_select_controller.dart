@@ -1,7 +1,7 @@
 part of '../custom_dropdown.dart';
 
-class _ValueNotifierList<T> extends ValueNotifier<List<T>> {
-  _ValueNotifierList(super.value);
+class MultiSelectController<T> extends ValueNotifier<List<T>> {
+  MultiSelectController(super.value);
 
   void add(T valueToAdd) {
     value = [...value, valueToAdd];
@@ -9,5 +9,9 @@ class _ValueNotifierList<T> extends ValueNotifier<List<T>> {
 
   void remove(T valueToRemove) {
     value = value.where((value) => value != valueToRemove).toList();
+  }
+
+  void clear() {
+    value = [];
   }
 }
