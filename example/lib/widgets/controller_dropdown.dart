@@ -28,7 +28,7 @@ class _MultiSelectControllerDropdownState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomDropdown<Job>.multiSelect(
-          controller: controller,
+          multiSelectController: controller,
           hintText: 'Select job role',
           items: jobItems,
           decoration: CustomDropdownDecoration(

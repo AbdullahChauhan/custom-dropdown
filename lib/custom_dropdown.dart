@@ -147,8 +147,8 @@ class CustomDropdown<T> extends StatefulWidget {
 
   final _DropdownType _dropdownType;
 
-  /// The [controller] that can be used to control [CustomDropdown] multi-select variants selected items
-  final MultiSelectController<T>? controller;
+  /// The [multiSelectController] that can be used to control [CustomDropdown] multi-select variants selected items
+  final MultiSelectController<T>? multiSelectController;
 
   CustomDropdown({
     super.key,
@@ -191,7 +191,7 @@ class CustomDropdown<T> extends StatefulWidget {
         listValidator = null,
         headerListBuilder = null,
         searchRequestLoadingIndicator = null,
-        controller = null;
+        multiSelectController = null;
 
   CustomDropdown.search({
     super.key,
@@ -234,7 +234,7 @@ class CustomDropdown<T> extends StatefulWidget {
         listValidator = null,
         headerListBuilder = null,
         searchRequestLoadingIndicator = null,
-        controller = null;
+        multiSelectController = null;
 
   const CustomDropdown.searchRequest({
     super.key,
@@ -269,13 +269,13 @@ class CustomDropdown<T> extends StatefulWidget {
         onListChanged = null,
         listValidator = null,
         headerListBuilder = null,
-        controller = null;
+        multiSelectController = null;
 
   CustomDropdown.multiSelect({
     super.key,
     required this.items,
     required this.onListChanged,
-    this.controller,
+    this.multiSelectController,
     this.initialItems,
     this.listValidator,
     this.headerListBuilder,
@@ -293,7 +293,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsListPadding,
     this.listItemPadding,
   })  : assert(
-          initialItems == null || controller == null,
+          initialItems == null || multiSelectController == null,
           'Only one of initialItems or controller can be specified at a time',
         ),
         assert(
@@ -320,7 +320,7 @@ class CustomDropdown<T> extends StatefulWidget {
     super.key,
     required this.items,
     required this.onListChanged,
-    this.controller,
+    this.multiSelectController,
     this.initialItems,
     this.listValidator,
     this.listItemBuilder,
@@ -341,7 +341,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsListPadding,
     this.listItemPadding,
   })  : assert(
-          initialItems == null || controller == null,
+          initialItems == null || multiSelectController == null,
           'Only one of initialItems or controller can be specified at a time',
         ),
         assert(
@@ -365,7 +365,7 @@ class CustomDropdown<T> extends StatefulWidget {
     super.key,
     required this.futureRequest,
     required this.onListChanged,
-    this.controller,
+    this.multiSelectController,
     this.futureRequestDelay,
     this.initialItems,
     this.items,
@@ -389,7 +389,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
   })  : assert(
-          initialItems == null || controller == null,
+          initialItems == null || multiSelectController == null,
           'Only one of initialItems or controller can be specified at a time',
         ),
         _searchType = _SearchType.onRequestData,
@@ -414,18 +414,19 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   void initState() {
     super.initState();
 
-    if (widget.controller != null && widget.items != null) {
+    if (widget.multiSelectController != null && widget.items != null) {
       assert(
-        widget.controller!.value.isEmpty ||
-            widget.controller!.value.any((e) => widget.items!.contains(e)),
+        widget.multiSelectController!.value.isEmpty ||
+            widget.multiSelectController!.value
+                .any((e) => widget.items!.contains(e)),
         'Controller initial items must match with the items in the items list.',
       );
     }
 
     selectedItemNotifier = ValueNotifier(widget.initialItem);
 
-    selectedItemsNotifier =
-        widget.controller ?? MultiSelectController(widget.initialItems ?? []);
+    selectedItemsNotifier = widget.multiSelectController ??
+        MultiSelectController(widget.initialItems ?? []);
 
     selectedItemsNotifier.addListener(() {
       widget.onListChanged?.call(selectedItemsNotifier.value);
@@ -448,16 +449,16 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
       selectedItemsNotifier = MultiSelectController(widget.initialItems ?? []);
     }
 
-    if (widget.controller != oldWidget.controller &&
-        widget.controller != null) {
-      selectedItemsNotifier = widget.controller!;
+    if (widget.multiSelectController != oldWidget.multiSelectController &&
+        widget.multiSelectController != null) {
+      selectedItemsNotifier = widget.multiSelectController!;
     }
   }
 
   @override
   void dispose() {
     selectedItemNotifier.dispose();
-    if (widget.controller == null) {
+    if (widget.multiSelectController == null) {
       selectedItemsNotifier.dispose();
     }
     super.dispose();
