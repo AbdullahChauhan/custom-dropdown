@@ -229,11 +229,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
   void onItemSelect(T value) {
     widget.onItemSelect(value);
-    if (widget.dropdownType == _DropdownType.multipleSelect) {
-      setState(() {});
-      return;
+    if (widget.dropdownType == _DropdownType.singleSelect) {
+      setState(() => displayOverly = false);
     }
-    setState(() => displayOverly = false);
   }
 
   @override
