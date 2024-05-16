@@ -1,4 +1,4 @@
-import 'package:animated_custom_dropdown_example/widgets/controller_dropdown.dart';
+import 'package:animated_custom_dropdown_example/widgets/multi_select_controller_dropdown.dart';
 import 'package:animated_custom_dropdown_example/widgets/decorated_dropdown.dart';
 import 'package:animated_custom_dropdown_example/widgets/multi_select_dropdown.dart';
 import 'package:animated_custom_dropdown_example/widgets/search_dropdown.dart';
