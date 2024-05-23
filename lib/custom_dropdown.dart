@@ -53,6 +53,9 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Initial selected items from the list of [items].
   final List<T>? initialItems;
 
+  /// Scroll controller to access items list scroll behavior.
+  final ScrollController? itemsScrollController;
+
   /// Text that suggests what sort of data the dropdown represents.
   ///
   /// Default to "Select value".
@@ -154,6 +157,7 @@ class CustomDropdown<T> extends StatefulWidget {
     super.key,
     required this.items,
     required this.onChanged,
+    this.itemsScrollController,
     this.initialItem,
     this.hintText,
     this.decoration,
@@ -197,6 +201,7 @@ class CustomDropdown<T> extends StatefulWidget {
     super.key,
     required this.items,
     required this.onChanged,
+    this.itemsScrollController,
     this.initialItem,
     this.hintText,
     this.decoration,
@@ -243,6 +248,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.futureRequestDelay,
     this.initialItem,
     this.items,
+    this.itemsScrollController,
     this.hintText,
     this.decoration,
     this.searchHintText,
@@ -277,6 +283,7 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.onListChanged,
     this.multiSelectController,
     this.initialItems,
+    this.itemsScrollController,
     this.listValidator,
     this.headerListBuilder,
     this.hintText,
@@ -322,6 +329,7 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.onListChanged,
     this.multiSelectController,
     this.initialItems,
+    this.itemsScrollController,
     this.listValidator,
     this.listItemBuilder,
     this.hintBuilder,
@@ -369,6 +377,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.futureRequestDelay,
     this.initialItems,
     this.items,
+    this.itemsScrollController,
     this.hintText,
     this.decoration,
     this.searchHintText,
@@ -517,6 +526,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     widget.noResultFoundText ?? 'No result found.',
                 noResultFoundBuilder: widget.noResultFoundBuilder,
                 items: widget.items ?? [],
+                itemsScrollCtrl: widget.itemsScrollController,
                 selectedItemNotifier: selectedItemNotifier,
                 selectedItemsNotifier: selectedItemsNotifier,
                 size: size,

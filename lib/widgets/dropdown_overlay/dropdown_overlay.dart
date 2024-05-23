@@ -14,6 +14,7 @@ const _defaultListItemPadding =
 
 class _DropdownOverlay<T> extends StatefulWidget {
   final List<T> items;
+  final ScrollController? itemsScrollCtrl;
   final ValueNotifier<T?> selectedItemNotifier;
   final MultiSelectController<T> selectedItemsNotifier;
   final Function(T) onItemSelect;
@@ -41,6 +42,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   const _DropdownOverlay({
     Key? key,
     required this.items,
+    required this.itemsScrollCtrl,
     required this.size,
     required this.layerLink,
     required this.hideOverlay,
@@ -86,8 +88,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   late List<T> items;
   late T? selectedItem;
   late List<T> selectedItems;
+  late ScrollController scrollController;
   final key1 = GlobalKey(), key2 = GlobalKey();
-  final scrollController = ScrollController();
 
   Widget hintBuilder(BuildContext context) {
     return widget.hintBuilder != null
@@ -191,6 +193,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   @override
   void initState() {
     super.initState();
+    scrollController = widget.itemsScrollCtrl ?? ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final render1 = key1.currentContext?.findRenderObject() as RenderBox;
       final render2 = key2.currentContext?.findRenderObject() as RenderBox;
