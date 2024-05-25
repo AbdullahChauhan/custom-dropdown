@@ -15,7 +15,7 @@ const _defaultListItemPadding =
 class _DropdownOverlay<T> extends StatefulWidget {
   final List<T> items;
   final ScrollController? itemsScrollCtrl;
-  final ValueNotifier<T?> selectedItemNotifier;
+  final SingleSelectController<T?> selectedItemNotifier;
   final MultiSelectController<T> selectedItemsNotifier;
   final Function(T) onItemSelect;
   final Size size;
@@ -207,6 +207,12 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
     selectedItem = widget.selectedItemNotifier.value;
     selectedItems = widget.selectedItemsNotifier.value;
+
+    widget.selectedItemNotifier.addListener(() {
+      if (mounted) {
+        selectedItem = widget.selectedItemNotifier.value;
+      }
+    });
 
     widget.selectedItemsNotifier.addListener(() {
       if (mounted) {
