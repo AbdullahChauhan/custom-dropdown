@@ -226,7 +226,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
   @override
   void dispose() {
-    scrollController.dispose();
+    if (widget.itemsScrollCtrl == null) {
+      scrollController.dispose();
+    }
     super.dispose();
   }
 
