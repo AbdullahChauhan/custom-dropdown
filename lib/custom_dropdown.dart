@@ -507,7 +507,10 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
 
   @override
   void dispose() {
-    selectedItemNotifier.dispose();
+    if (widget.controller == null) {
+      selectedItemNotifier.dispose();
+    }
+
     if (widget.multiSelectController == null) {
       selectedItemsNotifier.dispose();
     }
