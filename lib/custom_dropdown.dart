@@ -184,10 +184,6 @@ class CustomDropdown<T> extends StatefulWidget {
           'Only one of initialItem or controller can be specified at a time',
         ),
         assert(
-          items!.isNotEmpty,
-          'Items list must contain at least one item.',
-        ),
-        assert(
           initialItem == null || items!.contains(initialItem),
           'Initial item must match with one of the item in items list.',
         ),
@@ -195,7 +191,7 @@ class CustomDropdown<T> extends StatefulWidget {
           controller == null ||
               controller.value == null ||
               items!.contains(controller.value),
-          'Initial item must match with one of the item in items list.',
+          'Controller value must match with one of the item in items list.',
         ),
         _searchType = null,
         _dropdownType = _DropdownType.singleSelect,
@@ -242,12 +238,14 @@ class CustomDropdown<T> extends StatefulWidget {
           'Only one of initialItem or controller can be specified at a time',
         ),
         assert(
-          items!.isNotEmpty,
-          'Items list must contain at least one item.',
-        ),
-        assert(
           initialItem == null || items!.contains(initialItem),
           'Initial item must match with one of the item in items list.',
+        ),
+        assert(
+          controller == null ||
+              controller.value == null ||
+              items!.contains(controller.value),
+          'Controller value must match with one of the item in items list.',
         ),
         _searchType = _SearchType.onListData,
         _dropdownType = _DropdownType.singleSelect,
@@ -334,6 +332,12 @@ class CustomDropdown<T> extends StatefulWidget {
               initialItems.any((e) => items!.contains(e)),
           'Initial items must match with the items in the items list.',
         ),
+        assert(
+          multiSelectController == null ||
+              multiSelectController.value.isEmpty ||
+              multiSelectController.value.any((e) => items!.contains(e)),
+          'Controller value must match with one of the item in items list.',
+        ),
         _searchType = null,
         _dropdownType = _DropdownType.multipleSelect,
         initialItem = null,
@@ -383,6 +387,12 @@ class CustomDropdown<T> extends StatefulWidget {
               initialItems.isEmpty ||
               initialItems.any((e) => items!.contains(e)),
           'Initial items must match with the items in the items list.',
+        ),
+        assert(
+          multiSelectController == null ||
+              multiSelectController.value.isEmpty ||
+              multiSelectController.value.any((e) => items!.contains(e)),
+          'Controller value must match with one of the item in items list.',
         ),
         _searchType = _SearchType.onListData,
         _dropdownType = _DropdownType.multipleSelect,
@@ -449,15 +459,6 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   @override
   void initState() {
     super.initState();
-
-    if (widget.multiSelectController != null && widget.items != null) {
-      assert(
-        widget.multiSelectController!.value.isEmpty ||
-            widget.multiSelectController!.value
-                .any((e) => widget.items!.contains(e)),
-        'Controller initial items must match with the items in the items list.',
-      );
-    }
 
     selectedItemNotifier =
         widget.controller ?? SingleSelectController(widget.initialItem);
