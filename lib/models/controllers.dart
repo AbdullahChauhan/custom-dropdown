@@ -1,11 +1,13 @@
 part of '../custom_dropdown.dart';
 
 class SingleSelectController<T> extends ValueNotifier<T?> {
-  SingleSelectController(super.value);
+  SingleSelectController(super._value);
 
   void clear() {
     value = null;
   }
+
+  bool get hasValue => value != null;
 }
 
 class MultiSelectController<T> extends ValueNotifier<List<T>> {
@@ -22,4 +24,6 @@ class MultiSelectController<T> extends ValueNotifier<List<T>> {
   void clear() {
     value = [];
   }
+
+  bool get hasValues => value.isNotEmpty;
 }
