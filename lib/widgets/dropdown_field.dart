@@ -8,7 +8,7 @@ const _defaultOverlayIconDown = Icon(
 
 class _DropDownField<T> extends StatefulWidget {
   final VoidCallback onTap;
-  final ValueNotifier<T?> selectedItemNotifier;
+  final SingleSelectController<T?> selectedItemNotifier;
   final String hintText;
   final Color? fillColor;
   final BoxBorder? border;
