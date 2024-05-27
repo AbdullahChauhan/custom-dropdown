@@ -3,11 +3,13 @@ part of '../custom_dropdown.dart';
 class _OverlayBuilder extends StatefulWidget {
   final Widget Function(Size, VoidCallback hide) overlay;
   final Widget Function(VoidCallback show) child;
+  final OverlayPortalController? overlayPortalController;
 
   const _OverlayBuilder({
     super.key,
     required this.overlay,
     required this.child,
+    this.overlayPortalController,
   });
 
   @override
@@ -15,7 +17,14 @@ class _OverlayBuilder extends StatefulWidget {
 }
 
 class _OverlayBuilderState extends State<_OverlayBuilder> {
-  final overlayController = OverlayPortalController();
+  late OverlayPortalController overlayController;
+
+  @override
+  void initState() {
+    super.initState();
+    overlayController =
+        widget.overlayPortalController ?? OverlayPortalController();
+  }
 
   @override
   Widget build(BuildContext context) {

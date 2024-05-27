@@ -146,6 +146,9 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Contain sub-decorations [SearchFieldDecoration], [ListItemDecoration] and [ScrollbarThemeData].
   final CustomDropdownDecoration? decoration;
 
+  /// The [overlayController] allows you to explicitly handle the [CustomDropdown] overlay states (show/hide).
+  final OverlayPortalController? overlayController;
+
   /// The [controller] that can be used to control [CustomDropdown] selected item.
   final SingleSelectController<T?>? controller;
 
@@ -167,6 +170,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.decoration,
     this.validator,
     this.validateOnChange = true,
+    this.overlayController,
     this.listItemBuilder,
     this.headerBuilder,
     this.hintBuilder,
@@ -216,6 +220,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.initialItem,
     this.hintText,
     this.decoration,
+    this.overlayController,
     this.searchHintText,
     this.noResultFoundText,
     this.listItemBuilder,
@@ -269,6 +274,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsScrollController,
     this.hintText,
     this.decoration,
+    this.overlayController,
     this.searchHintText,
     this.noResultFoundText,
     this.listItemBuilder,
@@ -306,6 +312,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.multiSelectController,
     this.controller,
     this.initialItems,
+    this.overlayController,
     this.itemsScrollController,
     this.listValidator,
     this.headerListBuilder,
@@ -360,6 +367,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.initialItems,
     this.controller,
     this.itemsScrollController,
+    this.overlayController,
     this.listValidator,
     this.listItemBuilder,
     this.hintBuilder,
@@ -415,6 +423,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.items,
     this.controller,
     this.itemsScrollController,
+    this.overlayController,
     this.hintText,
     this.decoration,
     this.searchHintText,
@@ -546,6 +555,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
             contentPadding: EdgeInsets.zero,
           ),
           child: _OverlayBuilder(
+            overlayPortalController: widget.overlayController,
             overlay: (size, hideCallback) {
               return _DropdownOverlay<T>(
                 onItemSelect: (T value) {
