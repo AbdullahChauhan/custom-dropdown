@@ -641,6 +641,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   hintBuilder: widget.hintBuilder,
                   headerBuilder: widget.headerBuilder,
                   headerListBuilder: widget.headerListBuilder,
+                  prefixIcon: decoration?.prefixIcon,
                   suffixIcon: decoration?.closedSuffixIcon,
                   fillColor: decoration?.closedFillColor,
                   maxLines: widget.maxlines,

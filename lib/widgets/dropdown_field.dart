@@ -16,7 +16,7 @@ class _DropDownField<T> extends StatefulWidget {
   final String? errorText;
   final TextStyle? errorStyle, headerStyle, hintStyle;
   final BorderSide? errorBorderSide;
-  final Widget? suffixIcon;
+  final Widget? prefixIcon, suffixIcon;
   final List<BoxShadow>? shadow;
   final EdgeInsets? headerPadding;
   final int maxLines;
@@ -46,6 +46,7 @@ class _DropDownField<T> extends StatefulWidget {
     this.shadow,
     this.headerListBuilder,
     this.hintBuilder,
+    this.prefixIcon,
     this.suffixIcon,
     this.headerPadding,
   });
@@ -134,6 +135,10 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
         ),
         child: Row(
           children: [
+            if (widget.prefixIcon != null) ...[
+              widget.prefixIcon!,
+              const SizedBox(width: 12),
+            ],
             Expanded(
               child: switch (widget.dropdownType) {
                 _DropdownType.singleSelect => selectedItem != null

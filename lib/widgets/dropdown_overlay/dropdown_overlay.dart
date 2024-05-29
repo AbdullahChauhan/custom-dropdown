@@ -360,6 +360,11 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                           _defaultHeaderPadding,
                                       child: Row(
                                         children: [
+                                          if (widget.decoration?.prefixIcon !=
+                                              null) ...[
+                                            widget.decoration!.prefixIcon!,
+                                            const SizedBox(width: 12),
+                                          ],
                                           Expanded(
                                             child: switch (
                                                 widget.dropdownType) {
@@ -406,6 +411,11 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         ),
                                         child: Row(
                                           children: [
+                                            if (widget.decoration?.prefixIcon !=
+                                                null) ...[
+                                              widget.decoration!.prefixIcon!,
+                                              const SizedBox(width: 12),
+                                            ],
                                             Expanded(
                                               child:
                                                   _SearchField<T>.forListData(
@@ -463,6 +473,11 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         ),
                                         child: Row(
                                           children: [
+                                            if (widget.decoration?.prefixIcon !=
+                                                null) ...[
+                                              widget.decoration!.prefixIcon!,
+                                              const SizedBox(width: 12),
+                                            ],
                                             Expanded(
                                               child: _SearchField<
                                                   T>.forRequestData(
