@@ -155,6 +155,12 @@ class CustomDropdown<T> extends StatefulWidget {
   /// The [multiSelectController] that can be used to control [CustomDropdown.multiSelect] selected items.
   final MultiSelectController<T>? multiSelectController;
 
+  /// Callback for dropdown [visibility].
+  ///
+  /// If both [visibility] and [overlayController] are provided, this callback never listens the changes of [overlayController].
+  /// You have to explicitly check for [overlayController] visibility states using [overlayController.isShowing] property.
+  final Function(bool)? visibility;
+
   final _SearchType? _searchType;
 
   final _DropdownType _dropdownType;
@@ -170,6 +176,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.decoration,
     this.validator,
     this.validateOnChange = true,
+    this.visibility,
     this.overlayController,
     this.listItemBuilder,
     this.headerBuilder,
@@ -220,6 +227,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.initialItem,
     this.hintText,
     this.decoration,
+    this.visibility,
     this.overlayController,
     this.searchHintText,
     this.noResultFoundText,
@@ -274,6 +282,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsScrollController,
     this.hintText,
     this.decoration,
+    this.visibility,
     this.overlayController,
     this.searchHintText,
     this.noResultFoundText,
@@ -315,6 +324,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.overlayController,
     this.itemsScrollController,
     this.listValidator,
+    this.visibility,
     this.headerListBuilder,
     this.hintText,
     this.decoration,
@@ -366,6 +376,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.multiSelectController,
     this.initialItems,
     this.controller,
+    this.visibility,
     this.itemsScrollController,
     this.overlayController,
     this.listValidator,
@@ -424,6 +435,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.controller,
     this.itemsScrollController,
     this.overlayController,
+    this.visibility,
     this.hintText,
     this.decoration,
     this.searchHintText,
@@ -556,6 +568,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
           ),
           child: _OverlayBuilder(
             overlayPortalController: widget.overlayController,
+            visibility: widget.visibility,
             overlay: (size, hideCallback) {
               return _DropdownOverlay<T>(
                 onItemSelect: (T value) {
