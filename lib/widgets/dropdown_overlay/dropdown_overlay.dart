@@ -14,8 +14,9 @@ const _defaultListItemPadding =
 
 class _DropdownOverlay<T> extends StatefulWidget {
   final List<T> items;
-  final ValueNotifier<T?> selectedItemNotifier;
-  final _ValueNotifierList<T> selectedItemsNotifier;
+  final ScrollController? itemsScrollCtrl;
+  final SingleSelectController<T?> selectedItemNotifier;
+  final MultiSelectController<T> selectedItemsNotifier;
   final Function(T) onItemSelect;
   final Size size;
   final LayerLink layerLink;
@@ -43,6 +44,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   const _DropdownOverlay({
     Key? key,
     required this.items,
+    required this.itemsScrollCtrl,
     required this.size,
     required this.layerLink,
     required this.hideOverlay,
@@ -90,8 +92,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   late List<T> items;
   late T? selectedItem;
   late List<T> selectedItems;
+  late ScrollController scrollController;
   final key1 = GlobalKey(), key2 = GlobalKey();
-  final scrollController = ScrollController();
 
   Widget hintBuilder(BuildContext context) {
     return widget.hintBuilder != null
@@ -195,6 +197,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   @override
   void initState() {
     super.initState();
+    scrollController = widget.itemsScrollCtrl ?? ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final render1 = key1.currentContext?.findRenderObject() as RenderBox;
       final render2 = key2.currentContext?.findRenderObject() as RenderBox;
@@ -209,6 +212,18 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     selectedItem = widget.selectedItemNotifier.value;
     selectedItems = widget.selectedItemsNotifier.value;
 
+    widget.selectedItemNotifier.addListener(() {
+      if (mounted) {
+        selectedItem = widget.selectedItemNotifier.value;
+      }
+    });
+
+    widget.selectedItemsNotifier.addListener(() {
+      if (mounted) {
+        selectedItems = widget.selectedItemsNotifier.value;
+      }
+    });
+
     if (widget.excludeSelected &&
         widget.items.length > 1 &&
         selectedItem != null) {
@@ -221,22 +236,17 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
   @override
   void dispose() {
-    scrollController.dispose();
+    if (widget.itemsScrollCtrl == null) {
+      scrollController.dispose();
+    }
     super.dispose();
   }
 
   void onItemSelect(T value) {
     widget.onItemSelect(value);
-    if (widget.dropdownType == _DropdownType.multipleSelect) {
-      if (selectedItems.contains(value)) {
-        selectedItems.remove(value);
-      } else {
-        selectedItems.add(value);
-      }
-      setState(() {});
-      return;
+    if (widget.dropdownType == _DropdownType.singleSelect) {
+      setState(() => displayOverly = false);
     }
-    setState(() => displayOverly = false);
   }
 
   void closeDropDown() => setState(() => displayOverly = false);
@@ -356,6 +366,11 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                           _defaultHeaderPadding,
                                       child: Row(
                                         children: [
+                                          if (widget.decoration?.prefixIcon !=
+                                              null) ...[
+                                            widget.decoration!.prefixIcon!,
+                                            const SizedBox(width: 12),
+                                          ],
                                           Expanded(
                                             child: switch (
                                                 widget.dropdownType) {
@@ -405,6 +420,11 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         ),
                                         child: Row(
                                           children: [
+                                            if (widget.decoration?.prefixIcon !=
+                                                null) ...[
+                                              widget.decoration!.prefixIcon!,
+                                              const SizedBox(width: 12),
+                                            ],
                                             Expanded(
                                               child:
                                                   _SearchField<T>.forListData(
@@ -469,6 +489,11 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         ),
                                         child: Row(
                                           children: [
+                                            if (widget.decoration?.prefixIcon !=
+                                                null) ...[
+                                              widget.decoration!.prefixIcon!,
+                                              const SizedBox(width: 12),
+                                            ],
                                             Expanded(
                                               child: _SearchField<
                                                   T>.forRequestData(
