@@ -38,8 +38,6 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final _NoResultFoundBuilder? noResultFoundBuilder;
   final CustomDropdownDecoration? decoration;
   final _DropdownType dropdownType;
-  final bool enabled;
-  final bool closeDropDownOnClearFilterSearch;
 
   const _DropdownOverlay({
     Key? key,
@@ -77,8 +75,6 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.listItemBuilder,
     required this.headerListBuilder,
     required this.noResultFoundBuilder,
-    required this.enabled,
-    required this.closeDropDownOnClearFilterSearch,
   });
 
   @override
@@ -97,19 +93,19 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
   Widget hintBuilder(BuildContext context) {
     return widget.hintBuilder != null
-        ? widget.hintBuilder!(context, widget.hintText, widget.enabled)
+        ? widget.hintBuilder!(context, widget.hintText, true)
         : defaultHintBuilder(context, widget.hintText);
   }
 
   Widget headerBuilder(BuildContext context) {
     return widget.headerBuilder != null
-        ? widget.headerBuilder!(context, selectedItem as T, widget.enabled)
+        ? widget.headerBuilder!(context, selectedItem as T, true)
         : defaultHeaderBuilder(context, item: selectedItem);
   }
 
   Widget headerListBuilder(BuildContext context) {
     return widget.headerListBuilder != null
-        ? widget.headerListBuilder!(context, selectedItems, widget.enabled)
+        ? widget.headerListBuilder!(context, selectedItems, true)
         : defaultHeaderBuilder(context, items: selectedItems);
   }
 
@@ -248,8 +244,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
       setState(() => displayOverly = false);
     }
   }
-
-  void closeDropDown() => setState(() => displayOverly = false);
 
   @override
   Widget build(BuildContext context) {
@@ -402,9 +396,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                       },
                                       decoration:
                                           decoration?.searchFieldDecoration,
-                                      closeDropDownOnClearFilterSearch: widget
-                                          .closeDropDownOnClearFilterSearch,
-                                      closeDropDown: closeDropDown,
                                     )
                                   else
                                     GestureDetector(
@@ -436,10 +427,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                                 },
                                                 decoration: decoration
                                                     ?.searchFieldDecoration,
-                                                closeDropDownOnClearFilterSearch:
-                                                    widget
-                                                        .closeDropDownOnClearFilterSearch,
-                                                closeDropDown: closeDropDown,
                                               ),
                                             ),
                                             decoration?.expandedSuffixIcon ??
@@ -471,9 +458,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                           mayFoundSearchRequestResult = val,
                                       decoration:
                                           decoration?.searchFieldDecoration,
-                                      closeDropDownOnClearFilterSearch: widget
-                                          .closeDropDownOnClearFilterSearch,
-                                      closeDropDown: closeDropDown,
                                     )
                                   else
                                     GestureDetector(
@@ -518,10 +502,6 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                                         val,
                                                 decoration: decoration
                                                     ?.searchFieldDecoration,
-                                                closeDropDownOnClearFilterSearch:
-                                                    widget
-                                                        .closeDropDownOnClearFilterSearch,
-                                                closeDropDown: closeDropDown,
                                               ),
                                             ),
                                             decoration?.expandedSuffixIcon ??

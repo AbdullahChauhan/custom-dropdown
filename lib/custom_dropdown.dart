@@ -654,9 +654,6 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   listItemPadding: widget.listItemPadding,
                   searchRequestLoadingIndicator:
                       widget.searchRequestLoadingIndicator,
-                  enabled: widget.enabled,
-                  closeDropDownOnClearFilterSearch:
-                      widget.closeDropDownOnClearFilterSearch,
                   dropdownType: widget._dropdownType,
                 );
               },
