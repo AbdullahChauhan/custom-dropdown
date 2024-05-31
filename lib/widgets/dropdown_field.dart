@@ -92,9 +92,10 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       maxLines: widget.maxLines,
       overflow: TextOverflow.ellipsis,
       style: widget.headerStyle ??
-          const TextStyle(
+          TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
+            color: widget.enabled ? null : Colors.black.withOpacity(.5),
           ),
     );
   }
@@ -105,9 +106,9 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       style: widget.hintStyle ??
-          TextStyle(
+          const TextStyle(
             fontSize: 16,
-            color: enabled ? const Color(0xFFA7A7A7) : const Color(0xFFB9B9B9),
+            color: Color(0xFFA7A7A7),
           ),
     );
   }
@@ -133,7 +134,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
           color: widget.fillColor ??
               (widget.enabled
                   ? CustomDropdownDecoration._defaultFillColor
-                  : CustomDropdownDecoration._defaultDisabledFillColor),
+                  : CustomDropdownDecoration._defaultFillColor.withOpacity(.5)),
           border: widget.border,
           borderRadius: widget.borderRadius ?? _defaultBorderRadius,
           boxShadow: widget.shadow,
@@ -155,7 +156,11 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
               },
             ),
             const SizedBox(width: 12),
-            widget.suffixIcon ?? _defaultOverlayIconDown,
+            widget.suffixIcon ?? (widget.enabled ? _defaultOverlayIconDown : Icon(
+  Icons.keyboard_arrow_down_rounded,
+  color: Colors.black.withOpacity(.5),
+  size: 20,
+)),
           ],
         ),
       ),

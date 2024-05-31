@@ -9,6 +9,7 @@ export 'custom_dropdown.dart';
 // models
 part 'models/custom_dropdown_decoration.dart';
 part 'models/custom_dropdown_list_filter.dart';
+part 'models/disabled_decoration.dart';
 part 'models/list_item_decoration.dart';
 part 'models/controllers.dart';
 part 'models/search_field_decoration.dart';
@@ -151,8 +152,7 @@ class CustomDropdown<T> extends StatefulWidget {
   final bool enabled;
 
   /// [CustomDropdown] disabled decoration.
-  /// Contain sub-decorations [SearchFieldDecoration], [ListItemDecoration] and [ScrollbarThemeData].
-  final CustomDropdownDecoration? disabledDecoration;
+  final CustomDropdownDisabledDecoration? disabledDecoration;
 
   /// [CustomDropdown] will close on tap Clear filter for all search
   /// and searchRequest constructors
@@ -573,7 +573,9 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final enabled = widget.enabled;
     final decoration = widget.decoration;
+    final disabledDecoration = widget.disabledDecoration;
     final safeHintText = widget.hintText ?? 'Select value';
 
     return IgnorePointer(
@@ -665,20 +667,32 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     selectedItemNotifier: selectedItemNotifier,
                     border: formFieldState.hasError
                         ? (decoration?.closedErrorBorder ?? _defaultErrorBorder)
-                        : decoration?.closedBorder,
+                        : enabled
+                            ? decoration?.closedBorder
+                            : disabledDecoration?.border,
                     borderRadius: formFieldState.hasError
                         ? decoration?.closedErrorBorderRadius
-                        : decoration?.closedBorderRadius,
-                    shadow: decoration?.closedShadow,
+                        : enabled
+                            ? decoration?.closedBorderRadius
+                            : disabledDecoration?.borderRadius,
+                    shadow: enabled
+                        ? decoration?.closedShadow
+                        : disabledDecoration?.shadow,
                     hintStyle: decoration?.hintStyle,
                     headerStyle: decoration?.headerStyle,
                     hintText: safeHintText,
                     hintBuilder: widget.hintBuilder,
                     headerBuilder: widget.headerBuilder,
                     headerListBuilder: widget.headerListBuilder,
-                    prefixIcon: decoration?.prefixIcon,
-                    suffixIcon: decoration?.closedSuffixIcon,
-                    fillColor: decoration?.closedFillColor,
+                    prefixIcon: enabled
+                        ? decoration?.prefixIcon
+                        : disabledDecoration?.prefixIcon,
+                    suffixIcon: enabled
+                        ? decoration?.closedSuffixIcon
+                        : disabledDecoration?.suffixIcon,
+                    fillColor: enabled
+                        ? decoration?.closedFillColor
+                        : disabledDecoration?.fillColor,
                     maxLines: widget.maxlines,
                     headerPadding: widget.closedHeaderPadding,
                     dropdownType: widget._dropdownType,
