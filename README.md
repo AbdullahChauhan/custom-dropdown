@@ -15,12 +15,12 @@
 
 Lots of properties to use and customize dropdown widget as per your need. Also usable under Form widget for required validation.
 
-- Custom dropdown using constructor **CustomDropdown<T>()**.
-- Custom dropdown with search field using named constructor **CustomDropdown<T>.search()**.
-- Custom dropdown with search request field using named constructor **CustomDropdown<T>.searchRequest()**.
-- Multi select custom dropdown using named constructor **CustomDropdown<T>.multiSelect()**.
-- Multi select custom dropdown with search field using named constructor **CustomDropdown<T>.multiSelectSearch()**.
-- Multi select custom dropdown with search request field using named constructor **CustomDropdown<T>.multiSelectSearchRequest()**.
+- Custom dropdown using constructor CustomDropdown<T>().
+- Custom dropdown with search field using named constructor CustomDropdown<T>.search().
+- Custom dropdown with search request field using named constructor CustomDropdown<T>.searchRequest().
+- Multi select custom dropdown using named constructor CustomDropdown<T>.multiSelect().
+- Multi select custom dropdown with search field using named constructor CustomDropdown<T>.multiSelectSearch().
+- Multi select custom dropdown with search request field using named constructor CustomDropdown<T>.multiSelectSearchRequest().
 
 ## Preview
 
