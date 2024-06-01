@@ -211,7 +211,7 @@ class CustomDropdown<T> extends StatefulWidget {
           'Only one of initialItem or controller can be specified at a time',
         ),
         assert(
-          initialItem == null || items!.contains(initialItem) || !enabled,
+          initialItem == null || items!.contains(initialItem),
           'Initial item must match with one of the item in items list.',
         ),
         assert(
@@ -271,7 +271,7 @@ class CustomDropdown<T> extends StatefulWidget {
           'Only one of initialItem or controller can be specified at a time',
         ),
         assert(
-          initialItem == null || items!.contains(initialItem) || !enabled,
+          initialItem == null || items!.contains(initialItem),
           'Initial item must match with one of the item in items list.',
         ),
         assert(
@@ -371,8 +371,7 @@ class CustomDropdown<T> extends StatefulWidget {
         assert(
           initialItems == null ||
               initialItems.isEmpty ||
-              initialItems.any((e) => items!.contains(e)) ||
-              !enabled,
+              initialItems.any((e) => items!.contains(e)),
           'Initial items must match with the items in the items list.',
         ),
         assert(
@@ -434,8 +433,7 @@ class CustomDropdown<T> extends StatefulWidget {
         assert(
           initialItems == null ||
               initialItems.isEmpty ||
-              initialItems.any((e) => items!.contains(e)) ||
-              !enabled,
+              initialItems.any((e) => items!.contains(e)),
           'Initial items must match with the items in the items list.',
         ),
         assert(
