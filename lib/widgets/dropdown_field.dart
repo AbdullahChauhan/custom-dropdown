@@ -13,9 +13,7 @@ class _DropDownField<T> extends StatefulWidget {
   final Color? fillColor;
   final BoxBorder? border;
   final BorderRadius? borderRadius;
-  final String? errorText;
-  final TextStyle? errorStyle, headerStyle, hintStyle;
-  final BorderSide? errorBorderSide;
+  final TextStyle? headerStyle, hintStyle;
   final Widget? prefixIcon, suffixIcon;
   final List<BoxShadow>? shadow;
   final EdgeInsets? headerPadding;
@@ -38,11 +36,8 @@ class _DropDownField<T> extends StatefulWidget {
     this.fillColor,
     this.border,
     this.borderRadius,
-    this.errorText,
-    this.errorStyle,
     this.hintStyle,
     this.headerStyle,
-    this.errorBorderSide,
     this.headerBuilder,
     this.shadow,
     this.headerListBuilder,
