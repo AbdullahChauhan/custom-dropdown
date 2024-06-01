@@ -152,6 +152,8 @@ class CustomDropdown<T> extends StatefulWidget {
   final bool enabled;
 
   /// [CustomDropdown] disabled decoration.
+  ///
+  /// Note: Only applicable if dropdown is disabled.
   final CustomDropdownDisabledDecoration? disabledDecoration;
 
   /// [CustomDropdown] will close on tap Clear filter for all search
@@ -678,8 +680,12 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     shadow: enabled
                         ? decoration?.closedShadow
                         : disabledDecoration?.shadow,
-                    hintStyle: decoration?.hintStyle,
-                    headerStyle: decoration?.headerStyle,
+                    hintStyle: enabled
+                        ? decoration?.hintStyle
+                        : disabledDecoration?.hintStyle,
+                    headerStyle: enabled
+                        ? decoration?.headerStyle
+                        : disabledDecoration?.headerStyle,
                     hintText: safeHintText,
                     hintBuilder: widget.hintBuilder,
                     headerBuilder: widget.headerBuilder,

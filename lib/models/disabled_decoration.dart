@@ -21,6 +21,12 @@ class CustomDropdownDisabledDecoration {
   /// Border radius for disabled state of [CustomDropdown].
   final BorderRadius? borderRadius;
 
+  /// The style to use for the [CustomDropdown] header hint (disabled state).
+  final TextStyle? hintStyle;
+
+  /// The style to use for the [CustomDropdown] header text (disabled state).
+  final TextStyle? headerStyle;
+
   const CustomDropdownDisabledDecoration({
     this.fillColor,
     this.shadow,
@@ -28,5 +34,7 @@ class CustomDropdownDisabledDecoration {
     this.prefixIcon,
     this.border,
     this.borderRadius,
+    this.headerStyle,
+    this.hintStyle,
   });
 }
