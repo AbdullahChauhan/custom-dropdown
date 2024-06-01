@@ -293,71 +293,119 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             offset: overlayOffset,
             child: Container(
               key: key1,
-              padding: _overlayOuterPadding,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: decoration?.expandedFillColor ??
-                      CustomDropdownDecoration._defaultFillColor,
-                  border: decoration?.expandedBorder,
-                  borderRadius:
-                      decoration?.expandedBorderRadius ?? _defaultBorderRadius,
-                  boxShadow: decoration?.expandedShadow ??
-                      [
-                        BoxShadow(
-                          blurRadius: 24.0,
-                          color: Colors.black.withOpacity(.08),
-                          offset: _defaultOverlayShadowOffset,
-                        ),
-                      ],
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: _AnimatedSection(
-                    animationDismissed: widget.hideOverlay,
-                    expand: displayOverly,
-                    axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
-                    child: SizedBox(
-                      key: key2,
-                      height: items.length > 4
-                          ? widget.overlayHeight ?? (onSearch ? 270 : 225)
-                          : null,
-                      child: ClipRRect(
-                        borderRadius: decoration?.expandedBorderRadius ??
-                            _defaultBorderRadius,
-                        child: NotificationListener<
-                            OverscrollIndicatorNotification>(
-                          onNotification: (notification) {
-                            notification.disallowIndicator();
-                            return true;
-                          },
-                          child: Theme(
-                            data: Theme.of(context).copyWith(
-                              scrollbarTheme: decoration
-                                      ?.overlayScrollbarDecoration ??
-                                  ScrollbarThemeData(
-                                    thumbVisibility: MaterialStateProperty.all(
-                                      true,
-                                    ),
-                                    thickness: MaterialStateProperty.all(5),
-                                    radius: const Radius.circular(4),
-                                    thumbColor: MaterialStateProperty.all(
-                                      Colors.grey[300],
+              margin: _overlayOuterPadding,
+              decoration: BoxDecoration(
+                color: decoration?.expandedFillColor ??
+                    CustomDropdownDecoration._defaultFillColor,
+                border: decoration?.expandedBorder,
+                borderRadius:
+                    decoration?.expandedBorderRadius ?? _defaultBorderRadius,
+                boxShadow: decoration?.expandedShadow ??
+                    [
+                      BoxShadow(
+                        blurRadius: 24.0,
+                        color: Colors.black.withOpacity(.08),
+                        offset: _defaultOverlayShadowOffset,
+                      ),
+                    ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: _AnimatedSection(
+                  animationDismissed: widget.hideOverlay,
+                  expand: displayOverly,
+                  axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
+                  child: SizedBox(
+                    key: key2,
+                    height: items.length > 4
+                        ? widget.overlayHeight ?? (onSearch ? 270 : 225)
+                        : null,
+                    child: ClipRRect(
+                      borderRadius: decoration?.expandedBorderRadius ??
+                          _defaultBorderRadius,
+                      child:
+                          NotificationListener<OverscrollIndicatorNotification>(
+                        onNotification: (notification) {
+                          notification.disallowIndicator();
+                          return true;
+                        },
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                            scrollbarTheme: decoration
+                                    ?.overlayScrollbarDecoration ??
+                                ScrollbarThemeData(
+                                  thumbVisibility: MaterialStateProperty.all(
+                                    true,
+                                  ),
+                                  thickness: MaterialStateProperty.all(5),
+                                  radius: const Radius.circular(4),
+                                  thumbColor: MaterialStateProperty.all(
+                                    Colors.grey[300],
+                                  ),
+                                ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (!widget.hideSelectedFieldWhenOpen)
+                                GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () {
+                                    setState(() => displayOverly = false);
+                                  },
+                                  child: Padding(
+                                    padding: widget.headerPadding ??
+                                        _defaultHeaderPadding,
+                                    child: Row(
+                                      children: [
+                                        if (widget.decoration?.prefixIcon !=
+                                            null) ...[
+                                          widget.decoration!.prefixIcon!,
+                                          const SizedBox(width: 12),
+                                        ],
+                                        Expanded(
+                                          child: switch (widget.dropdownType) {
+                                            _DropdownType.singleSelect =>
+                                              selectedItem != null
+                                                  ? headerBuilder(context)
+                                                  : hintBuilder(context),
+                                            _DropdownType.multipleSelect =>
+                                              selectedItems.isNotEmpty
+                                                  ? headerListBuilder(context)
+                                                  : hintBuilder(context),
+                                          },
+                                        ),
+                                        const SizedBox(width: 12),
+                                        decoration?.expandedSuffixIcon ??
+                                            _defaultOverlayIconUp,
+                                      ],
                                     ),
                                   ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
+                                ),
+                              if (onSearch &&
+                                  widget.searchType == _SearchType.onListData)
                                 if (!widget.hideSelectedFieldWhenOpen)
+                                  _SearchField<T>.forListData(
+                                    items: widget.items,
+                                    searchHintText: widget.searchHintText,
+                                    onSearchedItems: (val) {
+                                      setState(() => items = val);
+                                    },
+                                    decoration:
+                                        decoration?.searchFieldDecoration,
+                                  )
+                                else
                                   GestureDetector(
                                     behavior: HitTestBehavior.opaque,
                                     onTap: () {
                                       setState(() => displayOverly = false);
                                     },
                                     child: Padding(
-                                      padding: widget.headerPadding ??
-                                          _defaultHeaderPadding,
+                                      padding: const EdgeInsetsDirectional.only(
+                                        top: 12.0,
+                                        start: 8.0,
+                                      ),
                                       child: Row(
                                         children: [
                                           if (widget.decoration?.prefixIcon !=
@@ -366,173 +414,116 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                             const SizedBox(width: 12),
                                           ],
                                           Expanded(
-                                            child: switch (
-                                                widget.dropdownType) {
-                                              _DropdownType.singleSelect =>
-                                                selectedItem != null
-                                                    ? headerBuilder(context)
-                                                    : hintBuilder(context),
-                                              _DropdownType.multipleSelect =>
-                                                selectedItems.isNotEmpty
-                                                    ? headerListBuilder(context)
-                                                    : hintBuilder(context),
-                                            },
+                                            child: _SearchField<T>.forListData(
+                                              items: widget.items,
+                                              searchHintText:
+                                                  widget.searchHintText,
+                                              onSearchedItems: (val) {
+                                                setState(() => items = val);
+                                              },
+                                              decoration: decoration
+                                                  ?.searchFieldDecoration,
+                                            ),
                                           ),
-                                          const SizedBox(width: 12),
                                           decoration?.expandedSuffixIcon ??
                                               _defaultOverlayIconUp,
+                                          const SizedBox(width: 14),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                              else if (onSearch &&
+                                  widget.searchType ==
+                                      _SearchType.onRequestData)
+                                if (!widget.hideSelectedFieldWhenOpen)
+                                  _SearchField<T>.forRequestData(
+                                    items: widget.items,
+                                    searchHintText: widget.searchHintText,
+                                    onFutureRequestLoading: (val) {
+                                      setState(() {
+                                        isSearchRequestLoading = val;
+                                      });
+                                    },
+                                    futureRequest: widget.futureRequest,
+                                    futureRequestDelay:
+                                        widget.futureRequestDelay,
+                                    onSearchedItems: (val) {
+                                      setState(() => items = val);
+                                    },
+                                    mayFoundResult: (val) =>
+                                        mayFoundSearchRequestResult = val,
+                                    decoration:
+                                        decoration?.searchFieldDecoration,
+                                  )
+                                else
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () {
+                                      setState(() => displayOverly = false);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsetsDirectional.only(
+                                        top: 12.0,
+                                        start: 8.0,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          if (widget.decoration?.prefixIcon !=
+                                              null) ...[
+                                            widget.decoration!.prefixIcon!,
+                                            const SizedBox(width: 12),
+                                          ],
+                                          Expanded(
+                                            child:
+                                                _SearchField<T>.forRequestData(
+                                              items: widget.items,
+                                              searchHintText:
+                                                  widget.searchHintText,
+                                              onFutureRequestLoading: (val) {
+                                                setState(() {
+                                                  isSearchRequestLoading = val;
+                                                });
+                                              },
+                                              futureRequest:
+                                                  widget.futureRequest,
+                                              futureRequestDelay:
+                                                  widget.futureRequestDelay,
+                                              onSearchedItems: (val) {
+                                                setState(() => items = val);
+                                              },
+                                              mayFoundResult: (val) =>
+                                                  mayFoundSearchRequestResult =
+                                                      val,
+                                              decoration: decoration
+                                                  ?.searchFieldDecoration,
+                                            ),
+                                          ),
+                                          decoration?.expandedSuffixIcon ??
+                                              _defaultOverlayIconUp,
+                                          const SizedBox(width: 14),
                                         ],
                                       ),
                                     ),
                                   ),
-                                if (onSearch &&
-                                    widget.searchType == _SearchType.onListData)
-                                  if (!widget.hideSelectedFieldWhenOpen)
-                                    _SearchField<T>.forListData(
-                                      items: widget.items,
-                                      searchHintText: widget.searchHintText,
-                                      onSearchedItems: (val) {
-                                        setState(() => items = val);
-                                      },
-                                      decoration:
-                                          decoration?.searchFieldDecoration,
-                                    )
-                                  else
-                                    GestureDetector(
-                                      behavior: HitTestBehavior.opaque,
-                                      onTap: () {
-                                        setState(() => displayOverly = false);
-                                      },
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsetsDirectional.only(
-                                          top: 12.0,
-                                          start: 8.0,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            if (widget.decoration?.prefixIcon !=
-                                                null) ...[
-                                              widget.decoration!.prefixIcon!,
-                                              const SizedBox(width: 12),
-                                            ],
-                                            Expanded(
-                                              child:
-                                                  _SearchField<T>.forListData(
-                                                items: widget.items,
-                                                searchHintText:
-                                                    widget.searchHintText,
-                                                onSearchedItems: (val) {
-                                                  setState(() => items = val);
-                                                },
-                                                decoration: decoration
-                                                    ?.searchFieldDecoration,
-                                              ),
-                                            ),
-                                            decoration?.expandedSuffixIcon ??
-                                                _defaultOverlayIconUp,
-                                            const SizedBox(width: 14),
-                                          ],
-                                        ),
+                              if (isSearchRequestLoading)
+                                widget.searchRequestLoadingIndicator ??
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 20.0,
                                       ),
-                                    )
-                                else if (onSearch &&
-                                    widget.searchType ==
-                                        _SearchType.onRequestData)
-                                  if (!widget.hideSelectedFieldWhenOpen)
-                                    _SearchField<T>.forRequestData(
-                                      items: widget.items,
-                                      searchHintText: widget.searchHintText,
-                                      onFutureRequestLoading: (val) {
-                                        setState(() {
-                                          isSearchRequestLoading = val;
-                                        });
-                                      },
-                                      futureRequest: widget.futureRequest,
-                                      futureRequestDelay:
-                                          widget.futureRequestDelay,
-                                      onSearchedItems: (val) {
-                                        setState(() => items = val);
-                                      },
-                                      mayFoundResult: (val) =>
-                                          mayFoundSearchRequestResult = val,
-                                      decoration:
-                                          decoration?.searchFieldDecoration,
-                                    )
-                                  else
-                                    GestureDetector(
-                                      behavior: HitTestBehavior.opaque,
-                                      onTap: () {
-                                        setState(() => displayOverly = false);
-                                      },
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsetsDirectional.only(
-                                          top: 12.0,
-                                          start: 8.0,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            if (widget.decoration?.prefixIcon !=
-                                                null) ...[
-                                              widget.decoration!.prefixIcon!,
-                                              const SizedBox(width: 12),
-                                            ],
-                                            Expanded(
-                                              child: _SearchField<
-                                                  T>.forRequestData(
-                                                items: widget.items,
-                                                searchHintText:
-                                                    widget.searchHintText,
-                                                onFutureRequestLoading: (val) {
-                                                  setState(() {
-                                                    isSearchRequestLoading =
-                                                        val;
-                                                  });
-                                                },
-                                                futureRequest:
-                                                    widget.futureRequest,
-                                                futureRequestDelay:
-                                                    widget.futureRequestDelay,
-                                                onSearchedItems: (val) {
-                                                  setState(() => items = val);
-                                                },
-                                                mayFoundResult: (val) =>
-                                                    mayFoundSearchRequestResult =
-                                                        val,
-                                                decoration: decoration
-                                                    ?.searchFieldDecoration,
-                                              ),
-                                            ),
-                                            decoration?.expandedSuffixIcon ??
-                                                _defaultOverlayIconUp,
-                                            const SizedBox(width: 14),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                if (isSearchRequestLoading)
-                                  widget.searchRequestLoadingIndicator ??
-                                      const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 20.0,
-                                        ),
-                                        child: Center(
-                                          child: SizedBox(
-                                            width: 25,
-                                            height: 25,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 3,
-                                            ),
+                                      child: Center(
+                                        child: SizedBox(
+                                          width: 25,
+                                          height: 25,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 3,
                                           ),
                                         ),
-                                      )
-                                else
-                                  items.length > 4
-                                      ? Expanded(child: list)
-                                      : list
-                              ],
-                            ),
+                                      ),
+                                    )
+                              else
+                                items.length > 4 ? Expanded(child: list) : list
+                            ],
                           ),
                         ),
                       ),
