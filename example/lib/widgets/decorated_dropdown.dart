@@ -138,6 +138,7 @@ class MultiSelectDecoratedDropdown extends StatelessWidget {
           color: Colors.yellow,
           fontSize: 16,
         ),
+        prefixIcon: const Icon(Icons.person, color: Colors.yellow),
         closedSuffixIcon: const Icon(
           Icons.keyboard_arrow_down,
           color: Colors.yellow,
