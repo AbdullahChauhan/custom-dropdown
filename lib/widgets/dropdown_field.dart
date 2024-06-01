@@ -24,6 +24,7 @@ class _DropDownField<T> extends StatefulWidget {
   final _HeaderListBuilder<T>? headerListBuilder;
   final _HintBuilder? hintBuilder;
   final _DropdownType dropdownType;
+  final bool enabled;
   final MultiSelectController<T> selectedItemsNotifier;
 
   const _DropDownField({
@@ -49,6 +50,7 @@ class _DropDownField<T> extends StatefulWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.headerPadding,
+    this.enabled = true,
   });
 
   @override
@@ -68,19 +70,19 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
 
   Widget hintBuilder(BuildContext context) {
     return widget.hintBuilder != null
-        ? widget.hintBuilder!(context, widget.hintText)
-        : defaultHintBuilder(widget.hintText);
+        ? widget.hintBuilder!(context, widget.hintText, widget.enabled)
+        : defaultHintBuilder(widget.hintText, widget.enabled);
   }
 
   Widget headerBuilder(BuildContext context) {
     return widget.headerBuilder != null
-        ? widget.headerBuilder!(context, selectedItem as T)
+        ? widget.headerBuilder!(context, selectedItem as T, widget.enabled)
         : defaultHeaderBuilder(oneItem: selectedItem);
   }
 
   Widget headerListBuilder(BuildContext context) {
     return widget.headerListBuilder != null
-        ? widget.headerListBuilder!(context, selectedItems)
+        ? widget.headerListBuilder!(context, selectedItems, widget.enabled)
         : defaultHeaderBuilder(itemList: selectedItems);
   }
 
@@ -90,14 +92,15 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       maxLines: widget.maxLines,
       overflow: TextOverflow.ellipsis,
       style: widget.headerStyle ??
-          const TextStyle(
+          TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
+            color: widget.enabled ? null : Colors.black.withOpacity(.5),
           ),
     );
   }
 
-  Widget defaultHintBuilder(String hint) {
+  Widget defaultHintBuilder(String hint, bool enabled) {
     return Text(
       hint,
       maxLines: 1,
@@ -128,7 +131,10 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       child: Container(
         padding: widget.headerPadding ?? _defaultHeaderPadding,
         decoration: BoxDecoration(
-          color: widget.fillColor ?? CustomDropdownDecoration._defaultFillColor,
+          color: widget.fillColor ??
+              (widget.enabled
+                  ? CustomDropdownDecoration._defaultFillColor
+                  : CustomDropdownDecoration._defaultFillColor.withOpacity(.5)),
           border: widget.border,
           borderRadius: widget.borderRadius ?? _defaultBorderRadius,
           boxShadow: widget.shadow,
@@ -150,7 +156,14 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
               },
             ),
             const SizedBox(width: 12),
-            widget.suffixIcon ?? _defaultOverlayIconDown,
+            widget.suffixIcon ??
+                (widget.enabled
+                    ? _defaultOverlayIconDown
+                    : Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: Colors.black.withOpacity(.5),
+                        size: 20,
+                      )),
           ],
         ),
       ),

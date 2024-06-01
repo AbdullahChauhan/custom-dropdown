@@ -9,6 +9,7 @@ export 'custom_dropdown.dart';
 // models
 part 'models/custom_dropdown_decoration.dart';
 part 'models/custom_dropdown_list_filter.dart';
+part 'models/disabled_decoration.dart';
 part 'models/list_item_decoration.dart';
 part 'models/controllers.dart';
 part 'models/search_field_decoration.dart';
@@ -146,6 +147,19 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Contain sub-decorations [SearchFieldDecoration], [ListItemDecoration] and [ScrollbarThemeData].
   final CustomDropdownDecoration? decoration;
 
+  /// [CustomDropdown] enabled/disabled state.
+  /// If disabled, you can not open the dropdown.
+  final bool enabled;
+
+  /// [CustomDropdown] disabled decoration.
+  ///
+  /// Note: Only applicable if dropdown is disabled.
+  final CustomDropdownDisabledDecoration? disabledDecoration;
+
+  /// [CustomDropdown] will close on tap Clear filter for all search
+  /// and searchRequest constructors
+  final bool closeDropDownOnClearFilterSearch;
+
   /// The [overlayController] allows you to explicitly handle the [CustomDropdown] overlay states (show/hide).
   final OverlayPortalController? overlayController;
 
@@ -190,6 +204,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.excludeSelected = true,
+    this.enabled = true,
+    this.disabledDecoration,
   })  : assert(
           initialItem == null || controller == null,
           'Only one of initialItem or controller can be specified at a time',
@@ -216,6 +232,7 @@ class CustomDropdown<T> extends StatefulWidget {
         listValidator = null,
         headerListBuilder = null,
         searchRequestLoadingIndicator = null,
+        closeDropDownOnClearFilterSearch = false,
         multiSelectController = null;
 
   CustomDropdown.search({
@@ -246,6 +263,9 @@ class CustomDropdown<T> extends StatefulWidget {
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
+    this.enabled = true,
+    this.disabledDecoration,
+    this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
           initialItem == null || controller == null,
           'Only one of initialItem or controller can be specified at a time',
@@ -302,6 +322,9 @@ class CustomDropdown<T> extends StatefulWidget {
     this.excludeSelected = true,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
+    this.enabled = true,
+    this.disabledDecoration,
+    this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
           initialItem == null || controller == null,
           'Only one of initialItem or controller can be specified at a time',
@@ -339,6 +362,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.expandedHeaderPadding,
     this.itemsListPadding,
     this.listItemPadding,
+    this.enabled = true,
+    this.disabledDecoration,
   })  : assert(
           initialItems == null || multiSelectController == null,
           'Only one of initialItems or controller can be specified at a time',
@@ -367,7 +392,8 @@ class CustomDropdown<T> extends StatefulWidget {
         futureRequestDelay = null,
         noResultFoundBuilder = null,
         searchHintText = null,
-        searchRequestLoadingIndicator = null;
+        searchRequestLoadingIndicator = null,
+        closeDropDownOnClearFilterSearch = false;
 
   CustomDropdown.multiSelectSearch({
     super.key,
@@ -397,6 +423,9 @@ class CustomDropdown<T> extends StatefulWidget {
     this.expandedHeaderPadding,
     this.itemsListPadding,
     this.listItemPadding,
+    this.enabled = true,
+    this.disabledDecoration,
+    this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
           initialItems == null || multiSelectController == null,
           'Only one of initialItems or controller can be specified at a time',
@@ -455,6 +484,9 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listItemPadding,
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
+    this.enabled = true,
+    this.disabledDecoration,
+    this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
           initialItems == null || multiSelectController == null,
           'Only one of initialItems or controller can be specified at a time',
@@ -541,119 +573,142 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final enabled = widget.enabled;
     final decoration = widget.decoration;
+    final disabledDecoration = widget.disabledDecoration;
     final safeHintText = widget.hintText ?? 'Select value';
 
-    return FormField<(T?, List<T>)>(
-      initialValue: (selectedItemNotifier.value, selectedItemsNotifier.value),
-      validator: (val) {
-        if (widget._dropdownType == _DropdownType.singleSelect &&
-            widget.validator != null) {
-          return widget.validator!(val?.$1);
-        }
-        if (widget._dropdownType == _DropdownType.multipleSelect &&
-            widget.listValidator != null) {
-          return widget.listValidator!(val?.$2 ?? []);
-        }
-        return null;
-      },
-      builder: (formFieldState) {
-        _formFieldState = formFieldState;
-        return InputDecorator(
-          decoration: InputDecoration(
-            errorStyle: decoration?.errorStyle ?? _defaultErrorStyle,
-            errorText: formFieldState.errorText,
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.zero,
-          ),
-          child: _OverlayBuilder(
-            overlayPortalController: widget.overlayController,
-            visibility: widget.visibility,
-            overlay: (size, hideCallback) {
-              return _DropdownOverlay<T>(
-                onItemSelect: (T value) {
-                  switch (widget._dropdownType) {
-                    case _DropdownType.singleSelect:
-                      selectedItemNotifier.value = value;
-                    case _DropdownType.multipleSelect:
-                      final currentVal = selectedItemsNotifier.value.toList();
-                      if (currentVal.contains(value)) {
-                        currentVal.remove(value);
-                      } else {
-                        currentVal.add(value);
-                      }
-                      selectedItemsNotifier.value = currentVal;
-                  }
-                },
-                noResultFoundText:
-                    widget.noResultFoundText ?? 'No result found.',
-                noResultFoundBuilder: widget.noResultFoundBuilder,
-                items: widget.items ?? [],
-                itemsScrollCtrl: widget.itemsScrollController,
-                selectedItemNotifier: selectedItemNotifier,
-                selectedItemsNotifier: selectedItemsNotifier,
-                size: size,
-                listItemBuilder: widget.listItemBuilder,
-                layerLink: layerLink,
-                hideOverlay: hideCallback,
-                hintStyle: decoration?.hintStyle,
-                headerStyle: decoration?.headerStyle,
-                noResultFoundStyle: decoration?.noResultFoundStyle,
-                listItemStyle: decoration?.listItemStyle,
-                headerBuilder: widget.headerBuilder,
-                headerListBuilder: widget.headerListBuilder,
-                hintText: safeHintText,
-                searchHintText: widget.searchHintText ?? 'Search',
-                hintBuilder: widget.hintBuilder,
-                decoration: decoration,
-                overlayHeight: widget.overlayHeight,
-                excludeSelected: widget.excludeSelected,
-                canCloseOutsideBounds: widget.canCloseOutsideBounds,
-                searchType: widget._searchType,
-                futureRequest: widget.futureRequest,
-                futureRequestDelay: widget.futureRequestDelay,
-                hideSelectedFieldWhenOpen: widget.hideSelectedFieldWhenExpanded,
-                maxLines: widget.maxlines,
-                headerPadding: widget.expandedHeaderPadding,
-                itemsListPadding: widget.itemsListPadding,
-                listItemPadding: widget.listItemPadding,
-                searchRequestLoadingIndicator:
-                    widget.searchRequestLoadingIndicator,
-                dropdownType: widget._dropdownType,
-              );
-            },
-            child: (showCallback) {
-              return CompositedTransformTarget(
-                link: layerLink,
-                child: _DropDownField<T>(
-                  onTap: showCallback,
+    return IgnorePointer(
+      ignoring: !widget.enabled,
+      child: FormField<(T?, List<T>)>(
+        initialValue: (selectedItemNotifier.value, selectedItemsNotifier.value),
+        validator: (val) {
+          if (widget._dropdownType == _DropdownType.singleSelect &&
+              widget.validator != null) {
+            return widget.validator!(val?.$1);
+          }
+          if (widget._dropdownType == _DropdownType.multipleSelect &&
+              widget.listValidator != null) {
+            return widget.listValidator!(val?.$2 ?? []);
+          }
+          return null;
+        },
+        builder: (formFieldState) {
+          _formFieldState = formFieldState;
+          return InputDecorator(
+            decoration: InputDecoration(
+              errorStyle: decoration?.errorStyle ?? _defaultErrorStyle,
+              errorText: formFieldState.errorText,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
+            ),
+            child: _OverlayBuilder(
+              overlayPortalController: widget.overlayController,
+              visibility: widget.visibility,
+              overlay: (size, hideCallback) {
+                return _DropdownOverlay<T>(
+                  onItemSelect: (T value) {
+                    switch (widget._dropdownType) {
+                      case _DropdownType.singleSelect:
+                        selectedItemNotifier.value = value;
+                      case _DropdownType.multipleSelect:
+                        final currentVal = selectedItemsNotifier.value.toList();
+                        if (currentVal.contains(value)) {
+                          currentVal.remove(value);
+                        } else {
+                          currentVal.add(value);
+                        }
+                        selectedItemsNotifier.value = currentVal;
+                    }
+                  },
+                  noResultFoundText:
+                      widget.noResultFoundText ?? 'No result found.',
+                  noResultFoundBuilder: widget.noResultFoundBuilder,
+                  items: widget.items ?? [],
+                  itemsScrollCtrl: widget.itemsScrollController,
                   selectedItemNotifier: selectedItemNotifier,
-                  border: formFieldState.hasError
-                      ? (decoration?.closedErrorBorder ?? _defaultErrorBorder)
-                      : decoration?.closedBorder,
-                  borderRadius: formFieldState.hasError
-                      ? decoration?.closedErrorBorderRadius
-                      : decoration?.closedBorderRadius,
-                  shadow: decoration?.closedShadow,
+                  selectedItemsNotifier: selectedItemsNotifier,
+                  size: size,
+                  listItemBuilder: widget.listItemBuilder,
+                  layerLink: layerLink,
+                  hideOverlay: hideCallback,
                   hintStyle: decoration?.hintStyle,
                   headerStyle: decoration?.headerStyle,
-                  hintText: safeHintText,
-                  hintBuilder: widget.hintBuilder,
+                  noResultFoundStyle: decoration?.noResultFoundStyle,
+                  listItemStyle: decoration?.listItemStyle,
                   headerBuilder: widget.headerBuilder,
                   headerListBuilder: widget.headerListBuilder,
-                  prefixIcon: decoration?.prefixIcon,
-                  suffixIcon: decoration?.closedSuffixIcon,
-                  fillColor: decoration?.closedFillColor,
+                  hintText: safeHintText,
+                  searchHintText: widget.searchHintText ?? 'Search',
+                  hintBuilder: widget.hintBuilder,
+                  decoration: decoration,
+                  overlayHeight: widget.overlayHeight,
+                  excludeSelected: widget.excludeSelected,
+                  canCloseOutsideBounds: widget.canCloseOutsideBounds,
+                  searchType: widget._searchType,
+                  futureRequest: widget.futureRequest,
+                  futureRequestDelay: widget.futureRequestDelay,
+                  hideSelectedFieldWhenOpen:
+                      widget.hideSelectedFieldWhenExpanded,
                   maxLines: widget.maxlines,
-                  headerPadding: widget.closedHeaderPadding,
+                  headerPadding: widget.expandedHeaderPadding,
+                  itemsListPadding: widget.itemsListPadding,
+                  listItemPadding: widget.listItemPadding,
+                  searchRequestLoadingIndicator:
+                      widget.searchRequestLoadingIndicator,
                   dropdownType: widget._dropdownType,
-                  selectedItemsNotifier: selectedItemsNotifier,
-                ),
-              );
-            },
-          ),
-        );
-      },
+                );
+              },
+              child: (showCallback) {
+                return CompositedTransformTarget(
+                  link: layerLink,
+                  child: _DropDownField<T>(
+                    onTap: showCallback,
+                    selectedItemNotifier: selectedItemNotifier,
+                    border: formFieldState.hasError
+                        ? (decoration?.closedErrorBorder ?? _defaultErrorBorder)
+                        : enabled
+                            ? decoration?.closedBorder
+                            : disabledDecoration?.border,
+                    borderRadius: formFieldState.hasError
+                        ? decoration?.closedErrorBorderRadius
+                        : enabled
+                            ? decoration?.closedBorderRadius
+                            : disabledDecoration?.borderRadius,
+                    shadow: enabled
+                        ? decoration?.closedShadow
+                        : disabledDecoration?.shadow,
+                    hintStyle: enabled
+                        ? decoration?.hintStyle
+                        : disabledDecoration?.hintStyle,
+                    headerStyle: enabled
+                        ? decoration?.headerStyle
+                        : disabledDecoration?.headerStyle,
+                    hintText: safeHintText,
+                    hintBuilder: widget.hintBuilder,
+                    headerBuilder: widget.headerBuilder,
+                    headerListBuilder: widget.headerListBuilder,
+                    prefixIcon: enabled
+                        ? decoration?.prefixIcon
+                        : disabledDecoration?.prefixIcon,
+                    suffixIcon: enabled
+                        ? decoration?.closedSuffixIcon
+                        : disabledDecoration?.suffixIcon,
+                    fillColor: enabled
+                        ? decoration?.closedFillColor
+                        : disabledDecoration?.fillColor,
+                    maxLines: widget.maxlines,
+                    headerPadding: widget.closedHeaderPadding,
+                    dropdownType: widget._dropdownType,
+                    selectedItemsNotifier: selectedItemsNotifier,
+                    enabled: widget.enabled,
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }

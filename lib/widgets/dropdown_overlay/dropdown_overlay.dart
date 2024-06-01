@@ -93,19 +93,19 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
   Widget hintBuilder(BuildContext context) {
     return widget.hintBuilder != null
-        ? widget.hintBuilder!(context, widget.hintText)
+        ? widget.hintBuilder!(context, widget.hintText, true)
         : defaultHintBuilder(context, widget.hintText);
   }
 
   Widget headerBuilder(BuildContext context) {
     return widget.headerBuilder != null
-        ? widget.headerBuilder!(context, selectedItem as T)
+        ? widget.headerBuilder!(context, selectedItem as T, true)
         : defaultHeaderBuilder(context, item: selectedItem);
   }
 
   Widget headerListBuilder(BuildContext context) {
     return widget.headerListBuilder != null
-        ? widget.headerListBuilder!(context, selectedItems)
+        ? widget.headerListBuilder!(context, selectedItems, true)
         : defaultHeaderBuilder(context, items: selectedItems);
   }
 
