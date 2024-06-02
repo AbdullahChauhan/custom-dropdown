@@ -1,3 +1,21 @@
+# 3.1.0
+
+- Add: Controllers support (Thanks [@hbatalhaStch for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/66))
+  - `SingleSelectController`
+  - `MultiSelectController`
+- Add: Enabled/Disabled state support (Thanks [@KabaDH for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/55))
+- Add: Dropdown disabled state decoration support
+  - `CustomDropdownDisabledDecoration`
+- Add: Items list scroll controller support
+  - `itemsScrollController`
+- Add: Dropdown overlay controller support
+  - `overlayController`
+- Add: Dropdown visibility status callback
+  - `visibility`
+- Update: Enhance decoration support
+  - `prefixIcon`
+- Remove: Empty items list assertion (Thanks [@hbatalhaStch for the issue](https://github.com/AbdullahChauhan/custom-dropdown/issues/64))
+
 # 3.0.0
 
 - Add: Multi selection support (Thanks [@KabaDH for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/40))
