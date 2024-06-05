@@ -541,11 +541,11 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
     super.didUpdateWidget(oldWidget);
 
     if (widget.initialItem != oldWidget.initialItem) {
-      selectedItemNotifier = SingleSelectController(widget.initialItem);
+      selectedItemNotifier.value = widget.initialItem;
     }
 
     if (widget.initialItems != oldWidget.initialItems) {
-      selectedItemsNotifier = MultiSelectController(widget.initialItems ?? []);
+      selectedItemsNotifier.value = widget.initialItems ?? [];
     }
 
     if (widget.controller != oldWidget.controller &&
