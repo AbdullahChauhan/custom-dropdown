@@ -20,19 +20,20 @@ class SearchDropdown extends StatefulWidget {
 }
 
 class _SearchDropdownState extends State<SearchDropdown> {
-  String? _selectedItem = _list[2];
+  String? selectedItem = _list[2];
+
   @override
   Widget build(BuildContext context) {
     return CustomDropdown<String>.search(
       hintText: 'Select cuisines',
       items: _list,
-      initialItem: _selectedItem,
+      initialItem: selectedItem,
       overlayHeight: 342,
       onChanged: (value) {
-        setState(() {
-          _selectedItem = value;
-        });
         log('SearchDropdown onChanged value: $value');
+        setState(() {
+          selectedItem = value;
+        });
       },
     );
   }
