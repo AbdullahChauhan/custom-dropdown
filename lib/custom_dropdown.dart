@@ -3,6 +3,7 @@ library animated_custom_dropdown;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 export 'custom_dropdown.dart';
 
@@ -540,12 +541,18 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   void didUpdateWidget(covariant CustomDropdown<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.initialItem != oldWidget.initialItem) {
-      selectedItemNotifier = SingleSelectController(widget.initialItem);
+    if (widget.initialItem != oldWidget.initialItem &&
+        selectedItemNotifier.value != widget.initialItem) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        selectedItemNotifier.value = widget.initialItem;
+      });
     }
 
-    if (widget.initialItems != oldWidget.initialItems) {
-      selectedItemsNotifier = MultiSelectController(widget.initialItems ?? []);
+    if (widget.initialItems != oldWidget.initialItems &&
+        selectedItemsNotifier.value != widget.initialItems) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        selectedItemsNotifier.value = widget.initialItems ?? [];
+      });
     }
 
     if (widget.controller != oldWidget.controller &&
