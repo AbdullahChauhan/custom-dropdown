@@ -543,14 +543,14 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
 
     if (widget.initialItem != oldWidget.initialItem &&
         selectedItemNotifier.value != widget.initialItem) {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
         selectedItemNotifier.value = widget.initialItem;
       });
     }
 
     if (widget.initialItems != oldWidget.initialItems &&
         selectedItemsNotifier.value != widget.initialItems) {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
         selectedItemsNotifier.value = widget.initialItems ?? [];
       });
     }
