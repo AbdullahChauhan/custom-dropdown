@@ -1,3 +1,7 @@
+# 3.1.1
+
+- Fix: onChanged not invoked after first invocation (Thanks [@ravindrabarthwal for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/76))
+
 # 3.1.0
 
 - Add: Controllers support (Thanks [@hbatalhaStch for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/66))
