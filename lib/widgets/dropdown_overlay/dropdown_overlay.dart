@@ -208,17 +208,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     selectedItem = widget.selectedItemNotifier.value;
     selectedItems = widget.selectedItemsNotifier.value;
 
-    widget.selectedItemNotifier.addListener(() {
-      if (mounted) {
-        selectedItem = widget.selectedItemNotifier.value;
-      }
-    });
-
-    widget.selectedItemsNotifier.addListener(() {
-      if (mounted) {
-        selectedItems = widget.selectedItemsNotifier.value;
-      }
-    });
+    widget.selectedItemNotifier.addListener(singleSelectListener);
+    widget.selectedItemsNotifier.addListener(multiSelectListener);
 
     if (widget.excludeSelected &&
         widget.items.length > 1 &&
@@ -232,10 +223,25 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
   @override
   void dispose() {
+    widget.selectedItemNotifier.removeListener(singleSelectListener);
+    widget.selectedItemsNotifier.removeListener(multiSelectListener);
+
     if (widget.itemsScrollCtrl == null) {
       scrollController.dispose();
     }
     super.dispose();
+  }
+
+  void singleSelectListener() {
+    if (mounted) {
+      selectedItem = widget.selectedItemNotifier.value;
+    }
+  }
+
+  void multiSelectListener() {
+    if (mounted) {
+      selectedItems = widget.selectedItemsNotifier.value;
+    }
   }
 
   void onItemSelect(T value) {
