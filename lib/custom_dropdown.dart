@@ -510,6 +510,22 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   late MultiSelectController<T> selectedItemsNotifier;
   FormFieldState<(T?, List<T>)>? _formFieldState;
 
+  void _selectedItemListener() {
+    widget.onChanged?.call(selectedItemNotifier.value);
+    _formFieldState?.didChange((selectedItemNotifier.value, []));
+    if (widget.validateOnChange) {
+      _formFieldState?.validate();
+    }
+  }
+
+  void _selectedItemsListener() {
+    widget.onListChanged?.call(selectedItemsNotifier.value);
+    _formFieldState?.didChange((null, selectedItemsNotifier.value));
+    if (widget.validateOnChange) {
+      _formFieldState?.validate();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -520,21 +536,9 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
     selectedItemsNotifier = widget.multiSelectController ??
         MultiSelectController(widget.initialItems ?? []);
 
-    selectedItemNotifier.addListener(() {
-      widget.onChanged?.call(selectedItemNotifier.value);
-      _formFieldState?.didChange((selectedItemNotifier.value, []));
-      if (widget.validateOnChange) {
-        _formFieldState?.validate();
-      }
-    });
+    selectedItemNotifier.addListener(_selectedItemListener);
 
-    selectedItemsNotifier.addListener(() {
-      widget.onListChanged?.call(selectedItemsNotifier.value);
-      _formFieldState?.didChange((null, selectedItemsNotifier.value));
-      if (widget.validateOnChange) {
-        _formFieldState?.validate();
-      }
-    });
+    selectedItemsNotifier.addListener(_selectedItemsListener);
   }
 
   @override
@@ -570,11 +574,16 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   void dispose() {
     if (widget.controller == null) {
       selectedItemNotifier.dispose();
+    } else {
+      selectedItemNotifier.removeListener(_selectedItemListener);
     }
 
     if (widget.multiSelectController == null) {
       selectedItemsNotifier.dispose();
+    } else {
+      selectedItemsNotifier.removeListener(_selectedItemsListener);
     }
+
     super.dispose();
   }
 
