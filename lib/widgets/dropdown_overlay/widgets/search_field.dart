@@ -90,6 +90,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
       if (!mounted) return;
       widget.onFutureRequestLoading!(false);
     }
+    if (!mounted) return;
     widget.onSearchedItems(isFieldEmpty ? widget.items : result);
     widget.mayFoundResult!(result.isNotEmpty);
 
