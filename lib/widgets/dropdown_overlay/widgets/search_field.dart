@@ -84,8 +84,10 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
     List<T> result = [];
     try {
       result = await widget.futureRequest!(val);
+      if (!mounted) return;
       widget.onFutureRequestLoading!(false);
     } catch (_) {
+      if (!mounted) return;
       widget.onFutureRequestLoading!(false);
     }
     widget.onSearchedItems(isFieldEmpty ? widget.items : result);
