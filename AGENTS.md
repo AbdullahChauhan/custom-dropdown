@@ -2,7 +2,7 @@
 
 ## Project overview
 
-Flutter package: `animated_custom_dropdown` (v3.1.1). A highly customizable animated dropdown widget with single-select, multi-select, search, search-request, and form validation variants.
+Flutter package: `animated_custom_dropdown` (v3.1.2). A highly customizable animated dropdown widget with single-select, multi-select, search, search-request, and form validation variants.
 
 ## Structure
 
@@ -15,11 +15,11 @@ Flutter package: `animated_custom_dropdown` (v3.1.1). A highly customizable anim
 
 ```bash
 flutter analyze          # static analysis (uses flutter_lints + analysis_options.yaml)
-flutter test             # runs tests (no test/ directory exists yet at root)
+flutter test             # runs widget tests under test/
 cd example && flutter test  # run example app tests, if any
 ```
 
-There are no CI workflows and no test suite in the package root.
+There are no CI workflows. The root `test/` directory currently holds `keyboard_overlay_test.dart` (keyboard/overlay positioning regression tests).
 
 ## Lint config
 

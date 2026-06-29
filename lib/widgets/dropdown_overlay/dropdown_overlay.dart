@@ -20,6 +20,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final Function(T) onItemSelect;
   final Size size;
   final LayerLink layerLink;
+  final GlobalKey fieldKey;
   final VoidCallback hideOverlay;
   final String hintText, searchHintText, noResultFoundText;
   final bool excludeSelected, hideSelectedFieldWhenOpen, canCloseOutsideBounds;
@@ -45,6 +46,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.itemsScrollCtrl,
     required this.size,
     required this.layerLink,
+    required this.fieldKey,
     required this.hideOverlay,
     required this.hintText,
     required this.searchHintText,
@@ -81,7 +83,8 @@ class _DropdownOverlay<T> extends StatefulWidget {
   _DropdownOverlayState<T> createState() => _DropdownOverlayState<T>();
 }
 
-class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
+class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
+    with WidgetsBindingObserver {
   bool displayOverly = true, displayOverlayBottom = true;
   bool isSearchRequestLoading = false;
   bool? mayFoundSearchRequestResult;
@@ -194,15 +197,9 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   void initState() {
     super.initState();
     scrollController = widget.itemsScrollCtrl ?? ScrollController();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final render1 = key1.currentContext?.findRenderObject() as RenderBox;
-      final render2 = key2.currentContext?.findRenderObject() as RenderBox;
-      final screenHeight = MediaQuery.of(context).size.height;
-      double y = render1.localToGlobal(Offset.zero).dy;
-      if (screenHeight - y < render2.size.height) {
-        displayOverlayBottom = false;
-        setState(() {});
-      }
+      _updateOverlayPosition();
     });
 
     selectedItem = widget.selectedItemNotifier.value;
@@ -223,6 +220,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     widget.selectedItemNotifier.removeListener(singleSelectListener);
     widget.selectedItemsNotifier.removeListener(multiSelectListener);
 
@@ -230,6 +228,109 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
       scrollController.dispose();
     }
     super.dispose();
+  }
+
+  // Called by the framework whenever the view's metrics change, most notably
+  // when the on-screen keyboard opens or closes. Recalculating here keeps the
+  // overlay from being hidden behind the keyboard while searching (issue #116).
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    // Run synchronously (not in a post-frame callback): didChangeMetrics fires
+    // before the resized frame is laid out, so adjusting the scroll offset here
+    // means the frame is painted with the field already in view. Doing it after
+    // the frame would let one frame paint with the field off-screen, flickering
+    // the overlay out and back the first time the keyboard opens.
+    _ensureFieldVisible();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateOverlayPosition();
+    });
+  }
+
+  // Keep the dropdown field within the (now smaller) viewport when the keyboard
+  // is up. If the field belongs to a scrollable that shrank for the keyboard,
+  // scrolling it back into view keeps its leader layer painted so the overlay
+  // (a CompositedTransformFollower) stays visible instead of vanishing.
+  void _ensureFieldVisible() {
+    if (!mounted) return;
+
+    final view = View.of(context);
+    final devicePixelRatio = view.devicePixelRatio;
+    final keyboardHeight = view.viewInsets.bottom / devicePixelRatio;
+    if (keyboardHeight <= 0) return;
+    final screenHeight = view.physicalSize.height / devicePixelRatio;
+
+    final fieldContext = widget.fieldKey.currentContext;
+    final fieldBox = fieldContext?.findRenderObject() as RenderBox?;
+    if (fieldContext == null || fieldBox == null || !fieldBox.hasSize) return;
+
+    final position = Scrollable.maybeOf(fieldContext)?.position;
+    if (position == null || !position.hasPixels) return;
+
+    // How far the field's bottom extends past the area left above the keyboard.
+    const margin = 8.0;
+    final fieldBottom =
+        fieldBox.localToGlobal(Offset.zero).dy + fieldBox.size.height;
+    final overshoot = fieldBottom - (screenHeight - keyboardHeight - margin);
+    if (overshoot <= 0) return;
+
+    final target = (position.pixels + overshoot)
+        .clamp(position.minScrollExtent, position.maxScrollExtent);
+    if (target != position.pixels) {
+      position.jumpTo(target);
+    }
+  }
+
+  // Decides whether the overlay should be displayed below or above the dropdown
+  // field based on the space actually available, accounting for the keyboard
+  // height.
+  //
+  // The decision is anchored to the field's *live* position (read via
+  // [widget.fieldKey]) rather than the overlay's own box. The overlay box moves
+  // when it flips and the field moves when the Scaffold resizes for the
+  // keyboard; measuring the field directly keeps the inputs stable and prevents
+  // the overlay from flip-flopping between top and bottom.
+  void _updateOverlayPosition() {
+    if (!mounted) return;
+
+    final fieldBox =
+        widget.fieldKey.currentContext?.findRenderObject() as RenderBox?;
+    final contentBox = key2.currentContext?.findRenderObject() as RenderBox?;
+    if (fieldBox == null || !fieldBox.hasSize || contentBox == null) return;
+
+    // Read the keyboard height straight from the platform view rather than from
+    // MediaQuery: the overlay is hosted in an Overlay whose MediaQuery can have
+    // its bottom viewInsets stripped (by Scaffold/Overlay), which would report a
+    // keyboard height of 0 and leave the overlay stuck behind the keyboard.
+    final view = View.of(context);
+    final devicePixelRatio = view.devicePixelRatio;
+    final screenHeight = view.physicalSize.height / devicePixelRatio;
+    final keyboardHeight = view.viewInsets.bottom / devicePixelRatio;
+    final topInset = view.padding.top / devicePixelRatio;
+
+    // The overlay overlaps the field: when shown below it starts at the field's
+    // top edge, when shown above it ends near the field's top edge.
+    final fieldTop = fieldBox.localToGlobal(Offset.zero).dy;
+    final contentHeight = contentBox.size.height;
+
+    final roomBelow = (screenHeight - keyboardHeight) - fieldTop;
+    final roomAbove = fieldTop - topInset;
+
+    final bool shouldDisplayBottom;
+    if (roomBelow >= contentHeight) {
+      // Fits below (keyboard excluded) — keep the default downward direction.
+      shouldDisplayBottom = true;
+    } else if (roomAbove >= contentHeight) {
+      // Doesn't fit below but fits above — flip up, clear of the keyboard.
+      shouldDisplayBottom = false;
+    } else {
+      // Fits neither way; pick the side with more room.
+      shouldDisplayBottom = roomBelow >= roomAbove;
+    }
+
+    if (shouldDisplayBottom != displayOverlayBottom) {
+      setState(() => displayOverlayBottom = shouldDisplayBottom);
+    }
   }
 
   void singleSelectListener() {

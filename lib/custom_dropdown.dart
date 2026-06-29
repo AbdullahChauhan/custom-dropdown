@@ -504,11 +504,34 @@ class CustomDropdown<T> extends StatefulWidget {
   State<CustomDropdown<T>> createState() => _CustomDropdownState<T>();
 }
 
-class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
+class _CustomDropdownState<T> extends State<CustomDropdown<T>>
+    with AutomaticKeepAliveClientMixin {
   final layerLink = LayerLink();
+
+  /// Key on the dropdown field, used by the overlay to read the field's live
+  /// position so it can flip above/below the field reliably (e.g. to stay
+  /// clear of the on-screen keyboard).
+  final fieldKey = GlobalKey();
   late SingleSelectController<T?> selectedItemNotifier;
   late MultiSelectController<T> selectedItemsNotifier;
   FormFieldState<(T?, List<T>)>? _formFieldState;
+
+  /// Whether the overlay is currently open. While open we keep this widget
+  /// alive so that a scrollable parent (e.g. a ListView) can't dispose it —
+  /// and tear down the open overlay — when the keyboard pushes the field out
+  /// of the viewport.
+  bool _overlayOpen = false;
+
+  @override
+  bool get wantKeepAlive => _overlayOpen;
+
+  void _onVisibilityChanged(bool visible) {
+    if (_overlayOpen != visible) {
+      _overlayOpen = visible;
+      updateKeepAlive();
+    }
+    widget.visibility?.call(visible);
+  }
 
   void _selectedItemListener() {
     widget.onChanged?.call(selectedItemNotifier.value);
@@ -589,6 +612,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // AutomaticKeepAliveClientMixin
+
     final enabled = widget.enabled;
     final decoration = widget.decoration;
     final disabledDecoration = widget.disabledDecoration;
@@ -620,7 +645,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
             ),
             child: _OverlayBuilder(
               overlayPortalController: widget.overlayController,
-              visibility: widget.visibility,
+              visibility: _onVisibilityChanged,
               overlay: (size, hideCallback) {
                 return _DropdownOverlay<T>(
                   onItemSelect: (T value) {
@@ -647,6 +672,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   size: size,
                   listItemBuilder: widget.listItemBuilder,
                   layerLink: layerLink,
+                  fieldKey: fieldKey,
                   hideOverlay: hideCallback,
                   hintStyle: decoration?.hintStyle,
                   headerStyle: decoration?.headerStyle,
@@ -677,6 +703,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
               },
               child: (showCallback) {
                 return CompositedTransformTarget(
+                  key: fieldKey,
                   link: layerLink,
                   child: _DropDownField<T>(
                     onTap: showCallback,

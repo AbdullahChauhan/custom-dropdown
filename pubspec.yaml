@@ -1,6 +1,6 @@
 name: animated_custom_dropdown
 description: Custom dropdown widget allows to add highly customizable dropdown widget in your projects. Features includes Search on list data, Network search, Multi-selection and many more.
-version: 3.1.1
+version: 3.1.2
 homepage: https://github.com/AbdullahChauhan/custom-dropdown
 
 environment:

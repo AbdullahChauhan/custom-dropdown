@@ -34,7 +34,7 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 
 ```dart
 dependencies:
-  animated_custom_dropdown: 3.1.1
+  animated_custom_dropdown: 3.1.2
 ```
 
 2. Import the package and use it in your Flutter App.
@@ -437,6 +437,17 @@ class MultiSelectValidationDropdown extends StatelessWidget {
   }
 }
 ```
+
+## Keyboard handling
+
+For the search constructors (`CustomDropdown.search()`, `CustomDropdown.searchRequest()` and their multi-select variants), the open overlay automatically stays clear of the on-screen keyboard: it flips above the field when the keyboard would cover it and repositions whenever the keyboard shows or hides. If the field lives inside a scrollable (e.g. a `ListView`), it is also scrolled back into view so the overlay never disappears.
+
+For this to work the field must be able to move above the keyboard. This is handled automatically when you keep the `Scaffold` default `resizeToAvoidBottomInset: true` and either:
+
+- place the dropdown inside a scrollable (`ListView` / `SingleChildScrollView`), or
+- use a layout that can reflow (e.g. a `Column` with a `Spacer` / `MainAxisAlignment.end`).
+
+If you set `resizeToAvoidBottomInset: false` or use a non-reflowable layout, a field pinned to the bottom can't be moved out of the keyboard's area, so part of the overlay may remain covered.
 
 ## Customization
 For a complete customization of the package, go to the [example](https://github.com/AbdullahChauhan/custom-dropdown/blob/master/example).

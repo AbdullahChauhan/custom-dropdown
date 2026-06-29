@@ -1,3 +1,10 @@
+# 3.1.2
+
+- Fix: Dropdown overlay hidden behind the on-screen keyboard while searching (Thanks [@ashiq-kodali for the issue](https://github.com/AbdullahChauhan/custom-dropdown/issues/116))
+  - The overlay now flips above the field when the keyboard would cover it, using the live keyboard inset instead of the full screen height.
+  - Position is recalculated whenever the keyboard shows/hides (via `WidgetsBindingObserver.didChangeMetrics`).
+  - The dropdown is kept alive while open (`AutomaticKeepAliveClientMixin`) and its field is scrolled back into view, so the overlay no longer disappears when the field sits in a scrollable that resizes for the keyboard.
+
 # 3.1.1
 
 - Fix: onChanged not invoked after first invocation (Thanks [@ravindrabarthwal for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/76))
