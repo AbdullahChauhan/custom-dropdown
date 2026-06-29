@@ -6,6 +6,8 @@
   - The dropdown is kept alive while open (`AutomaticKeepAliveClientMixin`) and its field is scrolled back into view, so the overlay no longer disappears when the field sits in a scrollable that resizes for the keyboard.
 - Fix: Double border, opaque background and extra side padding when an `inputDecorationTheme` is set (Flutter 3.35+) ([#115](https://github.com/AbdullahChauhan/custom-dropdown/issues/115), [#117](https://github.com/AbdullahChauhan/custom-dropdown/issues/117), [#110](https://github.com/AbdullahChauhan/custom-dropdown/issues/110))
   - The field's internal `InputDecorator` no longer inherits the ambient `inputDecorationTheme`; it only surfaces the form validation error text.
+- Fix: `overlayController` ignored when a different controller instance is supplied on rebuild ([#114](https://github.com/AbdullahChauhan/custom-dropdown/issues/114))
+  - The overlay now re-binds to the latest `overlayController`, so external `show()`/`hide()` keep working and tapping the field still opens the dropdown.
 
 # 3.1.1
 

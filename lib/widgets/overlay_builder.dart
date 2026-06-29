@@ -28,6 +28,18 @@ class _OverlayBuilderState extends State<_OverlayBuilder> {
         widget.overlayPortalController ?? OverlayPortalController();
   }
 
+  @override
+  void didUpdateWidget(covariant _OverlayBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Keep in sync if the caller passes a different controller instance (e.g.
+    // one recreated on rebuild). Without this the OverlayPortal stays bound to
+    // the original controller and the caller's show()/hide() calls do nothing.
+    if (widget.overlayPortalController != oldWidget.overlayPortalController) {
+      overlayController =
+          widget.overlayPortalController ?? OverlayPortalController();
+    }
+  }
+
   void showOverlay() {
     overlayController.show();
 
