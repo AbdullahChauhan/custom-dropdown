@@ -53,6 +53,20 @@ class CustomDropdownDecoration {
   /// The style to use for the [CustomDropdown] header hint.
   final TextStyle? hintStyle;
 
+  /// The style of the floating label in its resting (placeholder) position.
+  /// Only applies when `labelText` is provided.
+  final TextStyle? labelStyle;
+
+  /// The style of the floating label once it has floated up.
+  /// Only applies when `labelText` is provided.
+  final TextStyle? floatingLabelStyle;
+
+  /// Controls when the floating label floats up.
+  /// Only applies when `labelText` is provided. Defaults to
+  /// [FloatingLabelBehavior.auto] (floats when the dropdown has a value or is
+  /// open).
+  final FloatingLabelBehavior floatingLabelBehavior;
+
   /// The style to use for the [CustomDropdown] header text.
   final TextStyle? headerStyle;
 
@@ -90,6 +104,9 @@ class CustomDropdownDecoration {
     this.expandedBorder,
     this.expandedBorderRadius,
     this.hintStyle,
+    this.labelStyle,
+    this.floatingLabelStyle,
+    this.floatingLabelBehavior = FloatingLabelBehavior.auto,
     this.headerStyle,
     this.noResultFoundStyle,
     this.errorStyle,

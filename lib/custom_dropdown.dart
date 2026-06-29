@@ -58,6 +58,12 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Default to "Select value".
   final String? hintText;
 
+  /// Optional Material-style floating label shown above/inside the closed
+  /// field. When provided it acts as the field's placeholder while resting and
+  /// floats up once the dropdown has a value or is open (see
+  /// [CustomDropdownDecoration.floatingLabelBehavior]).
+  final String? labelText;
+
   /// Text that suggests what to search in the search field.
   ///
   /// Default to "Search".
@@ -197,6 +203,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsScrollController,
     this.initialItem,
     this.hintText,
+    this.labelText,
     this.decoration,
     this.validator,
     this.validateOnChange = true,
@@ -255,6 +262,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsScrollController,
     this.initialItem,
     this.hintText,
+    this.labelText,
     this.decoration,
     this.visibility,
     this.overlayController,
@@ -316,6 +324,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.controller,
     this.itemsScrollController,
     this.hintText,
+    this.labelText,
     this.decoration,
     this.visibility,
     this.overlayController,
@@ -366,6 +375,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.visibility,
     this.headerListBuilder,
     this.hintText,
+    this.labelText,
     this.decoration,
     this.validateOnChange = true,
     this.listItemBuilder,
@@ -431,6 +441,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.noResultFoundText,
     this.noResultFoundBuilder,
     this.hintText,
+    this.labelText,
     this.searchHintText,
     this.validateOnChange = true,
     this.canCloseOutsideBounds = true,
@@ -487,6 +498,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.overlayController,
     this.visibility,
     this.hintText,
+    this.labelText,
     this.decoration,
     this.searchHintText,
     this.noResultFoundText,
@@ -550,6 +562,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
     if (_overlayOpen != visible) {
       _overlayOpen = visible;
       updateKeepAlive();
+      // Rebuild so a floating label can react to the open/closed state.
+      if (mounted) setState(() {});
     }
     widget.visibility?.call(visible);
   }
@@ -797,6 +811,13 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                     enabled: widget.enabled,
                     canClearSelection: widget.canClearSelection,
                     onClear: _clearSelection,
+                    labelText: widget.labelText,
+                    labelStyle: decoration?.labelStyle,
+                    floatingLabelStyle: decoration?.floatingLabelStyle,
+                    floatingLabelBehavior:
+                        decoration?.floatingLabelBehavior ??
+                            FloatingLabelBehavior.auto,
+                    isOpen: _overlayOpen,
                   ),
                 );
               },

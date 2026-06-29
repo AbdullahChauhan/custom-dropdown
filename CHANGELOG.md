@@ -14,6 +14,8 @@
   - Shows a clear button on the closed field while there is a selection. Single-select resets to `null`; multi-select clears all items. Defaults to `false`.
 - Add: `CustomDropdownDecoration.closedHeaderHeight` to set a fixed closed-field height (content centered) ([#105](https://github.com/AbdullahChauhan/custom-dropdown/issues/105)).
 - Improve: the default closed error border now follows `errorStyle.color`, so the error border and error text match without setting `closedErrorBorder` explicitly ([#105](https://github.com/AbdullahChauhan/custom-dropdown/issues/105)).
+- Add: optional Material-style floating `labelText` ([#111](https://github.com/AbdullahChauhan/custom-dropdown/issues/111))
+  - Rests as the placeholder and floats up when the dropdown has a value or is open. Configurable via `CustomDropdownDecoration.labelStyle`, `floatingLabelStyle` and `floatingLabelBehavior`.
 
 # 3.1.1
 
