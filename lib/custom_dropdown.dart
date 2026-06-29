@@ -637,10 +637,23 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
         builder: (formFieldState) {
           _formFieldState = formFieldState;
           return InputDecorator(
+            // Fully neutralize the ambient `inputDecorationTheme`. Since Flutter
+            // 3.35 `InputDecorator` merges the theme's decoration, which would
+            // otherwise re-introduce a border, an opaque fill and horizontal
+            // padding around the dropdown (issues #115, #117, #110). We only
+            // want this decorator to surface the FormField's error text.
             decoration: InputDecoration(
               errorStyle: decoration?.errorStyle ?? _defaultErrorStyle,
               errorText: formFieldState.errorText,
               border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              focusedErrorBorder: InputBorder.none,
+              filled: false,
+              fillColor: Colors.transparent,
+              isCollapsed: true,
               contentPadding: EdgeInsets.zero,
             ),
             child: _OverlayBuilder(

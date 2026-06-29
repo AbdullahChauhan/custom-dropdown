@@ -1,9 +1,11 @@
-# 3.1.2
+# 4.0.0
 
-- Fix: Dropdown overlay hidden behind the on-screen keyboard while searching (Thanks [@ashiq-kodali for the issue](https://github.com/AbdullahChauhan/custom-dropdown/issues/116))
+- Fix: Dropdown overlay hidden behind the on-screen keyboard while searching ([#116](https://github.com/AbdullahChauhan/custom-dropdown/issues/116), [#113](https://github.com/AbdullahChauhan/custom-dropdown/issues/113))
   - The overlay now flips above the field when the keyboard would cover it, using the live keyboard inset instead of the full screen height.
   - Position is recalculated whenever the keyboard shows/hides (via `WidgetsBindingObserver.didChangeMetrics`).
   - The dropdown is kept alive while open (`AutomaticKeepAliveClientMixin`) and its field is scrolled back into view, so the overlay no longer disappears when the field sits in a scrollable that resizes for the keyboard.
+- Fix: Double border, opaque background and extra side padding when an `inputDecorationTheme` is set (Flutter 3.35+) ([#115](https://github.com/AbdullahChauhan/custom-dropdown/issues/115), [#117](https://github.com/AbdullahChauhan/custom-dropdown/issues/117), [#110](https://github.com/AbdullahChauhan/custom-dropdown/issues/110))
+  - The field's internal `InputDecorator` no longer inherits the ambient `inputDecorationTheme`; it only surfaces the form validation error text.
 
 # 3.1.1
 
