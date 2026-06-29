@@ -194,6 +194,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
         padding: const EdgeInsets.symmetric(vertical: 12.0),
         child: Text(
           text,
+          textAlign: widget.textAlign,
           style: widget.noResultFoundStyle ?? const TextStyle(fontSize: 16),
         ),
       ),
@@ -508,6 +509,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                     },
                                     decoration:
                                         decoration?.searchFieldDecoration,
+                                    textAlign: widget.textAlign,
                                   )
                                 else
                                   GestureDetector(
@@ -537,6 +539,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                               },
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
+                                              textAlign: widget.textAlign,
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
@@ -569,6 +572,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                         mayFoundSearchRequestResult = val,
                                     decoration:
                                         decoration?.searchFieldDecoration,
+                                    textAlign: widget.textAlign,
                                   )
                                 else
                                   GestureDetector(
@@ -613,6 +617,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                                       val,
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
+                                              textAlign: widget.textAlign,
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??

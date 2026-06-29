@@ -105,14 +105,20 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
         const TextStyle(fontSize: 12, color: Color(0xFF6B6B6B));
     final start = (widget.headerPadding ?? _defaultHeaderPadding).left;
 
+    // Honor textAlign for the label's horizontal position, so it lines up with
+    // the (centered/end-aligned) header and hint.
+    final x = switch (widget.textAlign) {
+      TextAlign.center => 0.0,
+      TextAlign.end || TextAlign.right => 1.0,
+      _ => -1.0,
+    };
+
     return Positioned.fill(
       child: IgnorePointer(
         child: AnimatedAlign(
           duration: _labelAnimDuration,
           curve: Curves.easeOut,
-          alignment: floated
-              ? AlignmentDirectional.topStart
-              : AlignmentDirectional.centerStart,
+          alignment: AlignmentDirectional(x, floated ? -1.0 : 0.0),
           child: Padding(
             padding: EdgeInsetsDirectional.only(start: start, end: start),
             child: AnimatedDefaultTextStyle(
@@ -122,6 +128,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
               child: Text(
                 widget.labelText!,
                 maxLines: 1,
+                textAlign: widget.textAlign,
                 overflow: TextOverflow.ellipsis,
               ),
             ),

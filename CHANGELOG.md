@@ -16,6 +16,8 @@
 - Improve: the default closed error border now follows `errorStyle.color`, so the error border and error text match without setting `closedErrorBorder` explicitly ([#105](https://github.com/AbdullahChauhan/custom-dropdown/issues/105)).
 - Add: optional Material-style floating `labelText` ([#111](https://github.com/AbdullahChauhan/custom-dropdown/issues/111))
   - Rests as the placeholder and floats up when the dropdown has a value or is open. Configurable via `CustomDropdownDecoration.labelStyle`, `floatingLabelStyle` and `floatingLabelBehavior`.
+- Add: `textAlign` to align the dropdown's text ([#71](https://github.com/AbdullahChauhan/custom-dropdown/issues/71), Thanks [@hamhoney for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/90))
+  - Applies to the header, hint, list items, search field input, "no result found" text and the floating label. Defaults to `TextAlign.start`.
 
 # 3.1.1
 
