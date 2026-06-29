@@ -8,6 +8,8 @@
   - The field's internal `InputDecorator` no longer inherits the ambient `inputDecorationTheme`; it only surfaces the form validation error text.
 - Fix: `overlayController` ignored when a different controller instance is supplied on rebuild ([#114](https://github.com/AbdullahChauhan/custom-dropdown/issues/114))
   - The overlay now re-binds to the latest `overlayController`, so external `show()`/`hide()` keep working and tapping the field still opens the dropdown.
+- Add: `searchRequestMinChars` for the search-request constructors ([#107](https://github.com/AbdullahChauhan/custom-dropdown/issues/107))
+  - The `futureRequest` is not triggered until at least this many characters are typed; the base items are shown below the threshold. Defaults to `0`.
 
 # 3.1.1
 

@@ -27,6 +27,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final _SearchType? searchType;
   final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
+  final int searchRequestMinChars;
   final int maxLines;
   final double? overlayHeight;
   final TextStyle? hintStyle, headerStyle, noResultFoundStyle, listItemStyle;
@@ -74,6 +75,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.searchType,
     required this.futureRequest,
     required this.futureRequestDelay,
+    required this.searchRequestMinChars,
     required this.listItemBuilder,
     required this.headerListBuilder,
     required this.noResultFoundBuilder,
@@ -554,6 +556,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                     futureRequest: widget.futureRequest,
                                     futureRequestDelay:
                                         widget.futureRequestDelay,
+                                    minChars: widget.searchRequestMinChars,
                                     onSearchedItems: (val) {
                                       setState(() => items = val);
                                     },
@@ -595,6 +598,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                                   widget.futureRequest,
                                               futureRequestDelay:
                                                   widget.futureRequestDelay,
+                                              minChars:
+                                                  widget.searchRequestMinChars,
                                               onSearchedItems: (val) {
                                                 setState(() => items = val);
                                               },

@@ -107,6 +107,13 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Duration after which the [futureRequest] is to be executed.
   final Duration? futureRequestDelay;
 
+  /// Minimum number of characters that must be typed before [futureRequest]
+  /// is triggered. Below this length the request is not made and the base
+  /// [items] are shown. Only applies to the search-request constructors.
+  ///
+  /// Defaults to `0` (request on every change).
+  final int searchRequestMinChars;
+
   /// Text maxlines for header and list item text.
   final int maxlines;
 
@@ -225,6 +232,7 @@ class CustomDropdown<T> extends StatefulWidget {
         _dropdownType = _DropdownType.singleSelect,
         futureRequest = null,
         futureRequestDelay = null,
+        searchRequestMinChars = 0,
         noResultFoundBuilder = null,
         noResultFoundText = null,
         searchHintText = null,
@@ -285,6 +293,7 @@ class CustomDropdown<T> extends StatefulWidget {
         _dropdownType = _DropdownType.singleSelect,
         futureRequest = null,
         futureRequestDelay = null,
+        searchRequestMinChars = 0,
         initialItems = null,
         onListChanged = null,
         listValidator = null,
@@ -297,6 +306,7 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.futureRequest,
     required this.onChanged,
     this.futureRequestDelay,
+    this.searchRequestMinChars = 0,
     this.initialItem,
     this.items,
     this.controller,
@@ -391,6 +401,7 @@ class CustomDropdown<T> extends StatefulWidget {
         excludeSelected = false,
         futureRequest = null,
         futureRequestDelay = null,
+        searchRequestMinChars = 0,
         noResultFoundBuilder = null,
         searchHintText = null,
         searchRequestLoadingIndicator = null,
@@ -452,6 +463,7 @@ class CustomDropdown<T> extends StatefulWidget {
         headerBuilder = null,
         futureRequest = null,
         futureRequestDelay = null,
+        searchRequestMinChars = 0,
         searchRequestLoadingIndicator = null;
 
   const CustomDropdown.multiSelectSearchRequest({
@@ -460,6 +472,7 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.onListChanged,
     this.multiSelectController,
     this.futureRequestDelay,
+    this.searchRequestMinChars = 0,
     this.initialItems,
     this.items,
     this.controller,
@@ -703,6 +716,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                   searchType: widget._searchType,
                   futureRequest: widget.futureRequest,
                   futureRequestDelay: widget.futureRequestDelay,
+                  searchRequestMinChars: widget.searchRequestMinChars,
                   hideSelectedFieldWhenOpen:
                       widget.hideSelectedFieldWhenExpanded,
                   maxLines: widget.maxlines,

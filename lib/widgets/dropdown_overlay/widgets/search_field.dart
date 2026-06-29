@@ -9,6 +9,7 @@ class _SearchField<T> extends StatefulWidget {
   final Duration? futureRequestDelay;
   final ValueChanged<bool>? onFutureRequestLoading, mayFoundResult;
   final SearchFieldDecoration? decoration;
+  final int minChars;
 
   const _SearchField.forListData({
     super.key,
@@ -19,6 +20,7 @@ class _SearchField<T> extends StatefulWidget {
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
+        minChars = 0,
         onFutureRequestLoading = null,
         mayFoundResult = null;
 
@@ -32,6 +34,7 @@ class _SearchField<T> extends StatefulWidget {
     required this.onFutureRequestLoading,
     required this.mayFoundResult,
     required this.decoration,
+    this.minChars = 0,
   }) : searchType = _SearchType.onRequestData;
 
   @override
@@ -113,6 +116,15 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
           if (widget.searchType != null &&
               widget.searchType == _SearchType.onRequestData &&
               val.isNotEmpty) {
+            // Don't fire the request until the minimum number of characters is
+            // reached; show the base items in the meantime.
+            if (val.length < widget.minChars) {
+              _delayTimer?.cancel();
+              widget.onFutureRequestLoading!(false);
+              widget.onSearchedItems(widget.items);
+              return;
+            }
+
             widget.onFutureRequestLoading!(true);
 
             if (widget.futureRequestDelay != null) {
