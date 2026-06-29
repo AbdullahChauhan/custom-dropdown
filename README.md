@@ -34,7 +34,7 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 
 ```dart
 dependencies:
-  animated_custom_dropdown: 3.1.2
+  animated_custom_dropdown: 4.0.0
 ```
 
 2. Import the package and use it in your Flutter App.
@@ -170,7 +170,7 @@ class Job with CustomDropdownListFilter {
   }
 }
 ```
-If the filter on the object is more complex, you can add the `CustomDropdownListFilter` mixin to it, which gives you access to the `filter(query)` method, and by this the items of the list will be filtered.
+By default the search matches against each item's `toString()` value, so custom model classes are searchable out of the box as long as `toString()` returns the text you want to match. If the filter on the object is more complex (e.g. matching multiple fields), add the `CustomDropdownListFilter` mixin to it, which gives you access to the `filter(query)` method, and by this the items of the list will be filtered.
 
 Now the widgets:
 

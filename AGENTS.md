@@ -2,7 +2,7 @@
 
 ## Project overview
 
-Flutter package: `animated_custom_dropdown` (v3.1.2). A highly customizable animated dropdown widget with single-select, multi-select, search, search-request, and form validation variants.
+Flutter package: `animated_custom_dropdown` (v4.0.0). A highly customizable animated dropdown widget with single-select, multi-select, search, search-request, and form validation variants.
 
 ## Structure
 
