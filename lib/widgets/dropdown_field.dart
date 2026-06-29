@@ -17,6 +17,7 @@ class _DropDownField<T> extends StatefulWidget {
   final Widget? prefixIcon, suffixIcon;
   final List<BoxShadow>? shadow;
   final EdgeInsets? headerPadding;
+  final double? headerHeight;
   final int maxLines;
   final _HeaderBuilder<T>? headerBuilder;
   final _HeaderListBuilder<T>? headerListBuilder;
@@ -49,6 +50,7 @@ class _DropDownField<T> extends StatefulWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.headerPadding,
+    this.headerHeight,
     this.enabled = true,
   });
 
@@ -133,6 +135,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
+        height: widget.headerHeight,
         padding: widget.headerPadding ?? _defaultHeaderPadding,
         decoration: BoxDecoration(
           color: widget.fillColor ??

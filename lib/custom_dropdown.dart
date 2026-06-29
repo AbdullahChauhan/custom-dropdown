@@ -34,11 +34,6 @@ const _defaultBorderRadius = BorderRadius.all(
   Radius.circular(12),
 );
 
-final Border _defaultErrorBorder = Border.all(
-  color: _defaultErrorColor,
-  width: 1.5,
-);
-
 const _defaultErrorStyle = TextStyle(
   color: _defaultErrorColor,
   fontSize: 14,
@@ -758,7 +753,12 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                     onTap: showCallback,
                     selectedItemNotifier: selectedItemNotifier,
                     border: formFieldState.hasError
-                        ? (decoration?.closedErrorBorder ?? _defaultErrorBorder)
+                        ? (decoration?.closedErrorBorder ??
+                            Border.all(
+                              color: decoration?.errorStyle?.color ??
+                                  _defaultErrorColor,
+                              width: 1.5,
+                            ))
                         : enabled
                             ? decoration?.closedBorder
                             : disabledDecoration?.border,
@@ -791,6 +791,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                         : disabledDecoration?.fillColor,
                     maxLines: widget.maxlines,
                     headerPadding: widget.closedHeaderPadding,
+                    headerHeight: decoration?.closedHeaderHeight,
                     dropdownType: widget._dropdownType,
                     selectedItemsNotifier: selectedItemsNotifier,
                     enabled: widget.enabled,

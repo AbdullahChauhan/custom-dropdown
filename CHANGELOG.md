@@ -12,6 +12,8 @@
   - The `futureRequest` is not triggered until at least this many characters are typed; the base items are shown below the threshold. Defaults to `0`.
 - Add: `canClearSelection` to reset the dropdown back to the empty/hint state ([#106](https://github.com/AbdullahChauhan/custom-dropdown/issues/106))
   - Shows a clear button on the closed field while there is a selection. Single-select resets to `null`; multi-select clears all items. Defaults to `false`.
+- Add: `CustomDropdownDecoration.closedHeaderHeight` to set a fixed closed-field height (content centered) ([#105](https://github.com/AbdullahChauhan/custom-dropdown/issues/105)).
+- Improve: the default closed error border now follows `errorStyle.color`, so the error border and error text match without setting `closedErrorBorder` explicitly ([#105](https://github.com/AbdullahChauhan/custom-dropdown/issues/105)).
 
 # 3.1.1
 

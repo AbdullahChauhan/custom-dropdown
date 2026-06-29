@@ -32,6 +32,12 @@ class CustomDropdownDecoration {
   /// Border radius for closed state of [CustomDropdown].
   final BorderRadius? closedBorderRadius;
 
+  /// Fixed height for the closed [CustomDropdown] header.
+  ///
+  /// When set, the closed field uses this height and its content is centered
+  /// vertically. When null, the height is driven by the header padding.
+  final double? closedHeaderHeight;
+
   /// Error border for closed state of [CustomDropdown].
   final BoxBorder? closedErrorBorder;
 
@@ -78,6 +84,7 @@ class CustomDropdownDecoration {
     this.prefixIcon,
     this.closedBorder,
     this.closedBorderRadius,
+    this.closedHeaderHeight,
     this.closedErrorBorder,
     this.closedErrorBorderRadius,
     this.expandedBorder,
