@@ -24,6 +24,8 @@ class _DropDownField<T> extends StatefulWidget {
   final _DropdownType dropdownType;
   final bool enabled;
   final MultiSelectController<T> selectedItemsNotifier;
+  final bool canClearSelection;
+  final VoidCallback? onClear;
 
   const _DropDownField({
     super.key,
@@ -32,6 +34,8 @@ class _DropDownField<T> extends StatefulWidget {
     required this.maxLines,
     required this.dropdownType,
     required this.selectedItemsNotifier,
+    this.canClearSelection = false,
+    this.onClear,
     this.hintText = 'Select value',
     this.fillColor,
     this.border,
@@ -55,6 +59,11 @@ class _DropDownField<T> extends StatefulWidget {
 class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   T? selectedItem;
   late List<T> selectedItems;
+
+  bool get _hasSelection => switch (widget.dropdownType) {
+        _DropdownType.singleSelect => selectedItem != null,
+        _DropdownType.multipleSelect => selectedItems.isNotEmpty,
+      };
 
   @override
   void initState() {
@@ -151,14 +160,21 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
               },
             ),
             const SizedBox(width: 12),
-            widget.suffixIcon ??
-                (widget.enabled
-                    ? _defaultOverlayIconDown
-                    : Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: Colors.black.withOpacity(.5),
-                        size: 20,
-                      )),
+            if (widget.canClearSelection && widget.enabled && _hasSelection)
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: widget.onClear,
+                child: const Icon(Icons.clear_rounded, size: 20),
+              )
+            else
+              widget.suffixIcon ??
+                  (widget.enabled
+                      ? _defaultOverlayIconDown
+                      : Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: Colors.black.withOpacity(.5),
+                          size: 20,
+                        )),
           ],
         ),
       ),

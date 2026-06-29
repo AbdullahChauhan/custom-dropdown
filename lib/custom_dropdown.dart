@@ -159,6 +159,13 @@ class CustomDropdown<T> extends StatefulWidget {
   /// If disabled, you can not open the dropdown.
   final bool enabled;
 
+  /// When `true`, a clear button is shown on the closed field while there is a
+  /// selection, allowing the user to reset it back to the empty/hint state.
+  ///
+  /// For single-select this sets the value back to `null`; for multi-select it
+  /// clears all selected items. Defaults to `false`.
+  final bool canClearSelection;
+
   /// [CustomDropdown] disabled decoration.
   ///
   /// Note: Only applicable if dropdown is disabled.
@@ -213,6 +220,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hideSelectedFieldWhenExpanded = false,
     this.excludeSelected = true,
     this.enabled = true,
+    this.canClearSelection = false,
     this.disabledDecoration,
   })  : assert(
           initialItem == null || controller == null,
@@ -273,6 +281,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.enabled = true,
+    this.canClearSelection = false,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -334,6 +343,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.enabled = true,
+    this.canClearSelection = false,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -374,6 +384,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsListPadding,
     this.listItemPadding,
     this.enabled = true,
+    this.canClearSelection = false,
     this.disabledDecoration,
   })  : assert(
           initialItems == null || multiSelectController == null,
@@ -436,6 +447,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsListPadding,
     this.listItemPadding,
     this.enabled = true,
+    this.canClearSelection = false,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -499,6 +511,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.enabled = true,
+    this.canClearSelection = false,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -544,6 +557,15 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
       updateKeepAlive();
     }
     widget.visibility?.call(visible);
+  }
+
+  void _clearSelection() {
+    switch (widget._dropdownType) {
+      case _DropdownType.singleSelect:
+        selectedItemNotifier.value = null;
+      case _DropdownType.multipleSelect:
+        selectedItemsNotifier.value = [];
+    }
   }
 
   void _selectedItemListener() {
@@ -772,6 +794,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                     dropdownType: widget._dropdownType,
                     selectedItemsNotifier: selectedItemsNotifier,
                     enabled: widget.enabled,
+                    canClearSelection: widget.canClearSelection,
+                    onClear: _clearSelection,
                   ),
                 );
               },
