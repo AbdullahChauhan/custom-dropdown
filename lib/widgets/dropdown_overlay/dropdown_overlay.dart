@@ -30,6 +30,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final int searchRequestMinChars;
   final int maxLines;
   final double? overlayHeight;
+  final TextAlign? textAlign;
   final TextStyle? hintStyle, headerStyle, noResultFoundStyle, listItemStyle;
   final EdgeInsets? headerPadding, listItemPadding, itemsListPadding;
   final Widget? searchRequestLoadingIndicator;
@@ -59,6 +60,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.canCloseOutsideBounds,
     required this.maxLines,
     required this.overlayHeight,
+    required this.textAlign,
     required this.dropdownType,
     required this.decoration,
     required this.hintStyle,
@@ -132,6 +134,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
           child: Text(
             result.toString(),
             maxLines: widget.maxLines,
+            textAlign: widget.textAlign,
             overflow: TextOverflow.ellipsis,
             style: widget.listItemStyle ?? const TextStyle(fontSize: 16),
           ),
@@ -161,6 +164,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
     return Text(
       items != null ? items.join(', ') : item.toString(),
       maxLines: widget.maxLines,
+      textAlign: widget.textAlign,
       overflow: TextOverflow.ellipsis,
       style: widget.headerStyle ??
           const TextStyle(
@@ -174,6 +178,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
     return Text(
       hint,
       maxLines: 1,
+      textAlign: widget.textAlign,
       overflow: TextOverflow.ellipsis,
       style: widget.hintStyle ??
           const TextStyle(

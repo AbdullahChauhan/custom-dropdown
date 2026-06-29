@@ -118,6 +118,10 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Text maxlines for header and list item text.
   final int maxlines;
 
+  /// Text align for head, hint and list item and so on.
+  /// Default [TextAlign.start]
+  final TextAlign textAlign;
+
   /// Padding for [CustomDropdown] header (closed state).
   final EdgeInsets? closedHeaderPadding;
 
@@ -213,6 +217,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.headerBuilder,
     this.hintBuilder,
     this.maxlines = 1,
+    this.textAlign = TextAlign.start,
     this.overlayHeight,
     this.closedHeaderPadding,
     this.expandedHeaderPadding,
@@ -275,6 +280,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.validator,
     this.validateOnChange = true,
     this.maxlines = 1,
+    this.textAlign = TextAlign.start,
     this.overlayHeight,
     this.closedHeaderPadding,
     this.expandedHeaderPadding,
@@ -337,6 +343,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.validator,
     this.validateOnChange = true,
     this.maxlines = 1,
+    this.textAlign = TextAlign.start,
     this.overlayHeight,
     this.closedHeaderPadding,
     this.expandedHeaderPadding,
@@ -383,6 +390,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.maxlines = 1,
+    this.textAlign = TextAlign.start,
     this.overlayHeight,
     this.closedHeaderPadding,
     this.expandedHeaderPadding,
@@ -447,6 +455,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canCloseOutsideBounds = true,
     this.hideSelectedFieldWhenExpanded = false,
     this.maxlines = 1,
+    this.textAlign = TextAlign.start,
     this.overlayHeight,
     this.closedHeaderPadding,
     this.expandedHeaderPadding,
@@ -509,6 +518,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listValidator,
     this.validateOnChange = true,
     this.maxlines = 1,
+    this.textAlign = TextAlign.start,
     this.overlayHeight,
     this.searchRequestLoadingIndicator,
     this.closedHeaderPadding,
@@ -731,6 +741,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                   layerLink: layerLink,
                   fieldKey: fieldKey,
                   hideOverlay: hideCallback,
+                  textAlign: widget.textAlign,
                   hintStyle: decoration?.hintStyle,
                   headerStyle: decoration?.headerStyle,
                   noResultFoundStyle: decoration?.noResultFoundStyle,
@@ -781,6 +792,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                         : enabled
                             ? decoration?.closedBorderRadius
                             : disabledDecoration?.borderRadius,
+                    textAlign: widget.textAlign,
                     shadow: enabled
                         ? decoration?.closedShadow
                         : disabledDecoration?.shadow,
