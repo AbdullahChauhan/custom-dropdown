@@ -91,7 +91,8 @@ The next page is appended automatically when the user scrolls near the bottom, a
 ```dart
 CustomDropdown<String>(
   items: _list,
-  labelText: 'Job role',                 // Material floating label
+  labelText: 'Job role',                 // Material floating label (String)
+  // label: Row(children: [...]),        // ...or a fully custom label Widget
   canClearSelection: true,               // clear button to reset selection
   textAlign: TextAlign.center,           // align header / hint / items
   overlayDirection: DropdownOverlayDirection.above, // auto | below | above

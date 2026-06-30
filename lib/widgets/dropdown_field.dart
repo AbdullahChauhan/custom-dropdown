@@ -29,6 +29,7 @@ class _DropDownField<T> extends StatefulWidget {
   final bool canClearSelection;
   final VoidCallback? onClear;
   final String? labelText;
+  final Widget? label;
   final TextStyle? labelStyle, floatingLabelStyle;
   final FloatingLabelBehavior floatingLabelBehavior;
   final bool isOpen;
@@ -43,6 +44,7 @@ class _DropDownField<T> extends StatefulWidget {
     this.canClearSelection = false,
     this.onClear,
     this.labelText,
+    this.label,
     this.labelStyle,
     this.floatingLabelStyle,
     this.floatingLabelBehavior = FloatingLabelBehavior.auto,
@@ -83,7 +85,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   /// Vertical room reserved above the field for the floated label.
   static const _floatGap = 16.0;
 
-  bool get _hasLabel => widget.labelText != null;
+  bool get _hasLabel => widget.labelText != null || widget.label != null;
 
   bool get _labelFloated => switch (widget.floatingLabelBehavior) {
         FloatingLabelBehavior.always => true,
@@ -125,12 +127,13 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
               duration: _labelAnimDuration,
               curve: Curves.easeOut,
               style: floated ? floatingStyle : restingStyle,
-              child: Text(
-                widget.labelText!,
-                maxLines: 1,
-                textAlign: widget.textAlign,
-                overflow: TextOverflow.ellipsis,
-              ),
+              child: widget.label ??
+                  Text(
+                    widget.labelText!,
+                    maxLines: 1,
+                    textAlign: widget.textAlign,
+                    overflow: TextOverflow.ellipsis,
+                  ),
             ),
           ),
         ),

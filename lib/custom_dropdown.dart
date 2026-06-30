@@ -77,6 +77,12 @@ class CustomDropdown<T> extends StatefulWidget {
   /// [CustomDropdownDecoration.floatingLabelBehavior]).
   final String? labelText;
 
+  /// A custom widget for the floating label, used instead of [labelText] for
+  /// full control (e.g. an icon + text). It is positioned and floated the same
+  /// way; plain [Text] descendants still pick up [CustomDropdownDecoration]'s
+  /// `labelStyle` / `floatingLabelStyle` unless you style them explicitly.
+  final Widget? label;
+
   /// Text that suggests what to search in the search field.
   ///
   /// Default to "Search".
@@ -266,6 +272,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.initialItem,
     this.hintText,
     this.labelText,
+    this.label,
     this.decoration,
     this.validator,
     this.validateOnChange = true,
@@ -334,6 +341,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.initialItem,
     this.hintText,
     this.labelText,
+    this.label,
     this.decoration,
     this.visibility,
     this.overlayController,
@@ -408,6 +416,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.itemsScrollController,
     this.hintText,
     this.labelText,
+    this.label,
     this.decoration,
     this.visibility,
     this.overlayController,
@@ -469,6 +478,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.headerListBuilder,
     this.hintText,
     this.labelText,
+    this.label,
     this.decoration,
     this.validateOnChange = true,
     this.listItemBuilder,
@@ -544,6 +554,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.noResultFoundBuilder,
     this.hintText,
     this.labelText,
+    this.label,
     this.searchHintText,
     this.validateOnChange = true,
     this.canCloseOutsideBounds = true,
@@ -613,6 +624,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.visibility,
     this.hintText,
     this.labelText,
+    this.label,
     this.decoration,
     this.searchHintText,
     this.noResultFoundText,
@@ -946,6 +958,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                     canClearSelection: widget.canClearSelection,
                     onClear: _clearSelection,
                     labelText: widget.labelText,
+                    label: widget.label,
                     labelStyle: decoration?.labelStyle,
                     floatingLabelStyle: decoration?.floatingLabelStyle,
                     floatingLabelBehavior: decoration?.floatingLabelBehavior ??

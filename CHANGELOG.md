@@ -13,7 +13,7 @@ A big release: a new overlay **animation system**, **infinite-scroll pagination*
 - **Infinite scroll / pagination** for the search-request constructors — new `paginatedRequest: (query, page) => …`:
   - Loads page 1 on open/search and appends the next page as you scroll near the bottom, stopping once a page returns fewer than `pageSize` items (default `20`).
   - Optional `loadMoreIndicator` footer. Provide exactly one of `futureRequest` / `paginatedRequest`.
-- Material-style floating `labelText`, with `CustomDropdownDecoration.labelStyle` / `floatingLabelStyle` / `floatingLabelBehavior` ([#111](https://github.com/AbdullahChauhan/custom-dropdown/issues/111)).
+- Material-style floating label — `labelText` (String) or a fully custom `label` (Widget), with `CustomDropdownDecoration.labelStyle` / `floatingLabelStyle` / `floatingLabelBehavior` ([#111](https://github.com/AbdullahChauhan/custom-dropdown/issues/111)).
 - `textAlign` for the header, hint, list items, search input, "no result found" text and the floating label ([#71](https://github.com/AbdullahChauhan/custom-dropdown/issues/71); thanks [@hamhoney](https://github.com/hamhoney) for [PR #90](https://github.com/AbdullahChauhan/custom-dropdown/pull/90)).
 - `canClearSelection` — a clear button to reset back to the empty/hint state ([#106](https://github.com/AbdullahChauhan/custom-dropdown/issues/106), [#83](https://github.com/AbdullahChauhan/custom-dropdown/issues/83)).
 - `searchRequestMinChars` — don't fire the request until at least N characters are typed ([#107](https://github.com/AbdullahChauhan/custom-dropdown/issues/107)).
