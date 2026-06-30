@@ -1,10 +1,5 @@
 part of '../../custom_dropdown.dart';
 
-const _defaultOverlayIconUp = Icon(
-  Icons.keyboard_arrow_up_rounded,
-  size: 20,
-);
-
 const _defaultHeaderPadding = EdgeInsets.all(16.0);
 const _overlayOuterPadding =
     EdgeInsetsDirectional.only(bottom: 12, start: 12, end: 12);
@@ -101,6 +96,16 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
   late List<T> selectedItems;
   late ScrollController scrollController;
   final key1 = GlobalKey(), key2 = GlobalKey();
+
+  Duration get _iconDuration =>
+      widget.animation.enabled ? widget.animation.duration : Duration.zero;
+
+  // The expanded-state arrow that rotates down→up on open and up→down on close.
+  Widget get _overlayArrow => _OverlayArrow(
+        expanded: displayOverly,
+        duration: _iconDuration,
+        curve: widget.animation.curve,
+      );
 
   Widget hintBuilder(BuildContext context) {
     return widget.hintBuilder != null
@@ -500,7 +505,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                         ),
                                         const SizedBox(width: 12),
                                         decoration?.expandedSuffixIcon ??
-                                            _defaultOverlayIconUp,
+                                            _overlayArrow,
                                       ],
                                     ),
                                   ),
@@ -550,7 +555,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
-                                              _defaultOverlayIconUp,
+                                              _overlayArrow,
                                           const SizedBox(width: 14),
                                         ],
                                       ),
@@ -628,7 +633,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
-                                              _defaultOverlayIconUp,
+                                              _overlayArrow,
                                           const SizedBox(width: 14),
                                         ],
                                       ),
@@ -683,5 +688,55 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
     }
 
     return child;
+  }
+}
+
+/// The overlay's expanded-state arrow. It mounts pointing down and rotates up
+/// once shown (open), then rotates back down when [expanded] becomes false
+/// (close) — so it reads as one continuous flip alongside the closed field's
+/// static arrow at the same position.
+class _OverlayArrow extends StatefulWidget {
+  final bool expanded;
+  final Duration duration;
+  final Curve curve;
+
+  const _OverlayArrow({
+    required this.expanded,
+    required this.duration,
+    required this.curve,
+  });
+
+  @override
+  State<_OverlayArrow> createState() => _OverlayArrowState();
+}
+
+class _OverlayArrowState extends State<_OverlayArrow> {
+  bool _up = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Animate from down to the target on the first frame after mount.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() => _up = widget.expanded);
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant _OverlayArrow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.expanded != widget.expanded) {
+      setState(() => _up = widget.expanded);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedRotation(
+      turns: _up ? 0.5 : 0.0,
+      duration: widget.duration,
+      curve: widget.curve,
+      child: const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
+    );
   }
 }

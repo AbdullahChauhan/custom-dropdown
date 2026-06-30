@@ -5,6 +5,7 @@
   - Tune `duration`, `reverseDuration`, `curve` and `reverseCurve`; smoother defaults (`easeOutCubic` open / `easeInCubic` close).
   - `CustomDropdownAnimation.none` disables animation, and a `builder` escape hatch lets you supply any custom transition.
   - Optional **staggered list-item entrance**: set `staggerItems: true` for a cascading fade + slide-in of items when the overlay opens (tune via `itemStagger` / `itemDuration`).
+  - The dropdown arrow now **rotates** (down ↔ up) in sync with open/close, using the same duration/curve.
 - Fix: Dropdown overlay hidden behind the on-screen keyboard while searching ([#116](https://github.com/AbdullahChauhan/custom-dropdown/issues/116), [#113](https://github.com/AbdullahChauhan/custom-dropdown/issues/113))
   - The overlay now flips above the field when the keyboard would cover it, using the live keyboard inset instead of the full screen height.
   - Position is recalculated whenever the keyboard shows/hides (via `WidgetsBindingObserver.didChangeMetrics`).
