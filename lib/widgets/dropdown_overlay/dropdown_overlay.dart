@@ -24,6 +24,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final VoidCallback hideOverlay;
   final String hintText, searchHintText, noResultFoundText;
   final bool excludeSelected, hideSelectedFieldWhenOpen, canCloseOutsideBounds;
+  final bool selectOnItemTap;
   final _SearchType? searchType;
   final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
@@ -55,6 +56,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.selectedItemNotifier,
     required this.selectedItemsNotifier,
     required this.excludeSelected,
+    required this.selectOnItemTap,
     required this.onItemSelect,
     required this.noResultFoundText,
     required this.canCloseOutsideBounds,
@@ -387,6 +389,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
             itemsListPadding: widget.itemsListPadding ?? listPadding,
             listItemPadding: widget.listItemPadding ?? _defaultListItemPadding,
             onItemSelect: onItemSelect,
+            selectOnItemTap: widget.selectOnItemTap,
             decoration: decoration?.listItemDecoration,
             dropdownType: widget.dropdownType,
           )

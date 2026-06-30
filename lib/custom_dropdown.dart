@@ -90,6 +90,14 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Hide the selected item from the [items] list.
   final bool excludeSelected;
 
+  /// Whether tapping a list item selects it.
+  ///
+  /// Defaults to `true` (tapping the row selects the item). Set to `false` to
+  /// take full control of selection from inside [listItemBuilder] — the row no
+  /// longer auto-selects, and your builder decides when to call the
+  /// `onItemSelect` callback it receives.
+  final bool selectOnItemTap;
+
   /// Can close [CustomDropdown] overlay by tapping outside.
   /// Here "outside" covers the entire screen.
   final bool canCloseOutsideBounds;
@@ -228,6 +236,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.excludeSelected = true,
     this.enabled = true,
     this.canClearSelection = false,
+    this.selectOnItemTap = true,
     this.disabledDecoration,
   })  : assert(
           initialItem == null || controller == null,
@@ -291,6 +300,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hideSelectedFieldWhenExpanded = false,
     this.enabled = true,
     this.canClearSelection = false,
+    this.selectOnItemTap = true,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -355,6 +365,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hideSelectedFieldWhenExpanded = false,
     this.enabled = true,
     this.canClearSelection = false,
+    this.selectOnItemTap = true,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -398,6 +409,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listItemPadding,
     this.enabled = true,
     this.canClearSelection = false,
+    this.selectOnItemTap = true,
     this.disabledDecoration,
   })  : assert(
           initialItems == null || multiSelectController == null,
@@ -463,6 +475,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.listItemPadding,
     this.enabled = true,
     this.canClearSelection = false,
+    this.selectOnItemTap = true,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -529,6 +542,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.hideSelectedFieldWhenExpanded = false,
     this.enabled = true,
     this.canClearSelection = false,
+    this.selectOnItemTap = true,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -754,6 +768,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                   decoration: decoration,
                   overlayHeight: widget.overlayHeight,
                   excludeSelected: widget.excludeSelected,
+                  selectOnItemTap: widget.selectOnItemTap,
                   canCloseOutsideBounds: widget.canCloseOutsideBounds,
                   searchType: widget._searchType,
                   futureRequest: widget.futureRequest,

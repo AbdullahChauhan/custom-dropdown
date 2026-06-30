@@ -10,6 +10,7 @@ class _ItemsList<T> extends StatelessWidget {
   final _ListItemBuilder<T> listItemBuilder;
   final ListItemDecoration? decoration;
   final _DropdownType dropdownType;
+  final bool selectOnItemTap;
 
   const _ItemsList({
     super.key,
@@ -24,6 +25,7 @@ class _ItemsList<T> extends StatelessWidget {
     required this.selectedItems,
     required this.decoration,
     required this.dropdownType,
+    required this.selectOnItemTap,
   });
 
   @override
@@ -48,7 +50,7 @@ class _ItemsList<T> extends StatelessWidget {
                   ListItemDecoration._defaultSplashColor,
               highlightColor: decoration?.highlightColor ??
                   ListItemDecoration._defaultHighlightColor,
-              onTap: () => onItemSelect(items[index]),
+              onTap: selectOnItemTap ? () => onItemSelect(items[index]) : null,
               child: Ink(
                 color: selected
                     ? (decoration?.selectedColor ??
