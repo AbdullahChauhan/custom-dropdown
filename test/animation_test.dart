@@ -101,4 +101,67 @@ void main() {
     final settled = tester.widget<SizeTransition>(find.byType(SizeTransition));
     expect(settled.sizeFactor.value, 1.0);
   });
+
+  testWidgets('staggerItems wraps items in an entrance and settles visible',
+      (tester) async {
+    await tester.pumpWidget(host(
+      // sizeFade overlay (no SlideTransition of its own) so any SlideTransition
+      // comes from the staggered item entrance.
+      const CustomDropdownAnimation(staggerItems: true),
+      key: const ValueKey('stagger'),
+    ));
+
+    // Scope to the items ListView (the page route also uses SlideTransition).
+    final itemSlides = find.descendant(
+      of: find.byType(ListView),
+      matching: find.byType(SlideTransition),
+    );
+
+    await tester.tap(find.text('Select'));
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(itemSlides, findsWidgets,
+        reason: 'items get a slide entrance when staggered');
+
+    await tester.pumpAndSettle();
+    expect(find.text('A'), findsOneWidget);
+    await tester.tap(find.text('A').last); // still selectable
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('no staggered entrance by default', (tester) async {
+    await tester.pumpWidget(host(
+      const CustomDropdownAnimation(), // sizeFade, staggerItems false
+      key: const ValueKey('nostagger'),
+    ));
+
+    await tester.tap(find.text('Select'));
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(
+      find.descendant(
+        of: find.byType(ListView),
+        matching: find.byType(SlideTransition),
+      ),
+      findsNothing,
+    );
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('disabled animation ignores staggerItems', (tester) async {
+    await tester.pumpWidget(host(
+      const CustomDropdownAnimation(enabled: false, staggerItems: true),
+      key: const ValueKey('none-stagger'),
+    ));
+
+    await tester.tap(find.text('Select'));
+    await tester.pump(); // instant
+    expect(
+      find.descendant(
+        of: find.byType(ListView),
+        matching: find.byType(SlideTransition),
+      ),
+      findsNothing,
+    );
+    expect(find.text('A'), findsOneWidget);
+  });
 }

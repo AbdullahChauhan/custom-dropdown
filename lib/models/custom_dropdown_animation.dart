@@ -60,6 +60,18 @@ class CustomDropdownAnimation {
   /// [type], receiving the curved animation, the open direction and the child.
   final DropdownTransitionBuilder? builder;
 
+  /// When `true`, list items fade + slide in with a cascading stagger each time
+  /// the overlay opens. Ignored when [enabled] is `false`.
+  final bool staggerItems;
+
+  /// Delay added per list item for the staggered entrance (capped for long
+  /// lists). Only used when [staggerItems] is `true`.
+  final Duration itemStagger;
+
+  /// Duration of each list item's entrance animation. Only used when
+  /// [staggerItems] is `true`.
+  final Duration itemDuration;
+
   const CustomDropdownAnimation({
     this.type = DropdownAnimationType.sizeFade,
     this.duration = const Duration(milliseconds: 300),
@@ -68,6 +80,9 @@ class CustomDropdownAnimation {
     this.reverseCurve = Curves.easeInCubic,
     this.enabled = true,
     this.builder,
+    this.staggerItems = false,
+    this.itemStagger = const Duration(milliseconds: 40),
+    this.itemDuration = const Duration(milliseconds: 250),
   });
 
   /// No animation — the overlay appears/disappears instantly.

@@ -392,6 +392,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
             listItemPadding: widget.listItemPadding ?? _defaultListItemPadding,
             onItemSelect: onItemSelect,
             selectOnItemTap: widget.selectOnItemTap,
+            animation: widget.animation,
             decoration: decoration?.listItemDecoration,
             dropdownType: widget.dropdownType,
           )
