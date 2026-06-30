@@ -7,7 +7,7 @@ issue_tracker: https://github.com/AbdullahChauhan/custom-dropdown/issues
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
