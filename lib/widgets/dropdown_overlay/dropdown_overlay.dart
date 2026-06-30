@@ -523,31 +523,31 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                 displayOverlayBottom ? Alignment.topLeft : Alignment.bottomLeft,
             showWhenUnlinked: false,
             offset: overlayOffset,
-            child: Container(
-              key: key1,
-              margin: _overlayOuterPadding,
-              decoration: BoxDecoration(
-                color: decoration?.expandedFillColor ??
-                    CustomDropdownDecoration._defaultFillColor,
-                border: decoration?.expandedBorder,
-                borderRadius:
-                    decoration?.expandedBorderRadius ?? _defaultBorderRadius,
-                boxShadow: decoration?.expandedShadow ??
-                    [
-                      BoxShadow(
-                        blurRadius: 24.0,
-                        color: Colors.black.withOpacity(.08),
-                        offset: _defaultOverlayShadowOffset,
-                      ),
-                    ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: _AnimatedSection(
-                  animationDismissed: widget.hideOverlay,
-                  expand: displayOverly,
-                  axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
-                  animation: widget.animation,
+            child: _AnimatedSection(
+              animationDismissed: widget.hideOverlay,
+              expand: displayOverly,
+              axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
+              animation: widget.animation,
+              child: Container(
+                key: key1,
+                margin: _overlayOuterPadding,
+                decoration: BoxDecoration(
+                  color: decoration?.expandedFillColor ??
+                      CustomDropdownDecoration._defaultFillColor,
+                  border: decoration?.expandedBorder,
+                  borderRadius:
+                      decoration?.expandedBorderRadius ?? _defaultBorderRadius,
+                  boxShadow: decoration?.expandedShadow ??
+                      [
+                        BoxShadow(
+                          blurRadius: 24.0,
+                          color: Colors.black.withOpacity(.08),
+                          offset: _defaultOverlayShadowOffset,
+                        ),
+                      ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
                   child: SizedBox(
                     key: key2,
                     height: items.length > 4
