@@ -191,6 +191,15 @@ class CustomDropdown<T> extends StatefulWidget {
   /// transition.
   final CustomDropdownAnimation animation;
 
+  /// Open the dropdown overlay automatically on first build.
+  ///
+  /// Defaults to `false`.
+  final bool initiallyOpen;
+
+  /// Autofocus the search field (raising the keyboard) when the overlay opens.
+  /// Only applies to the search constructors. Defaults to `false`.
+  final bool autofocusOnSearch;
+
   /// [CustomDropdown] enabled/disabled state.
   /// If disabled, you can not open the dropdown.
   final bool enabled;
@@ -261,6 +270,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canClearSelection = false,
     this.selectOnItemTap = true,
     this.animation = const CustomDropdownAnimation(),
+    this.initiallyOpen = false,
+    this.autofocusOnSearch = false,
     this.disabledDecoration,
   })  : assert(
           initialItem == null || controller == null,
@@ -329,6 +340,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canClearSelection = false,
     this.selectOnItemTap = true,
     this.animation = const CustomDropdownAnimation(),
+    this.initiallyOpen = false,
+    this.autofocusOnSearch = false,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -401,6 +414,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canClearSelection = false,
     this.selectOnItemTap = true,
     this.animation = const CustomDropdownAnimation(),
+    this.initiallyOpen = false,
+    this.autofocusOnSearch = false,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -450,6 +465,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canClearSelection = false,
     this.selectOnItemTap = true,
     this.animation = const CustomDropdownAnimation(),
+    this.initiallyOpen = false,
+    this.autofocusOnSearch = false,
     this.disabledDecoration,
   })  : assert(
           initialItems == null || multiSelectController == null,
@@ -520,6 +537,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canClearSelection = false,
     this.selectOnItemTap = true,
     this.animation = const CustomDropdownAnimation(),
+    this.initiallyOpen = false,
+    this.autofocusOnSearch = false,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -594,6 +613,8 @@ class CustomDropdown<T> extends StatefulWidget {
     this.canClearSelection = false,
     this.selectOnItemTap = true,
     this.animation = const CustomDropdownAnimation(),
+    this.initiallyOpen = false,
+    this.autofocusOnSearch = false,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -781,6 +802,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
             ),
             child: _OverlayBuilder(
               overlayPortalController: widget.overlayController,
+              initiallyOpen: widget.initiallyOpen,
               visibility: _onVisibilityChanged,
               overlay: (size, hideCallback) {
                 return _DropdownOverlay<T>(
@@ -827,6 +849,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                   animation: widget.animation,
                   canCloseOutsideBounds: widget.canCloseOutsideBounds,
                   searchType: widget._searchType,
+                  autofocusOnSearch: widget.autofocusOnSearch,
                   futureRequest: widget.futureRequest,
                   futureRequestDelay: widget.futureRequestDelay,
                   searchRequestMinChars: widget.searchRequestMinChars,

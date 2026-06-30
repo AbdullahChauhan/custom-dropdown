@@ -1,5 +1,7 @@
 # 4.0.0
 
+- Add: `initiallyOpen` to open the dropdown automatically on first build ([#87](https://github.com/AbdullahChauhan/custom-dropdown/issues/87)).
+- Add: `autofocusOnSearch` to focus the search field (raising the keyboard) when the overlay opens ([#70](https://github.com/AbdullahChauhan/custom-dropdown/issues/70)).
 - Add: **infinite scroll / pagination** for the search-request constructors via a new `paginatedRequest` callback.
   - `paginatedRequest: (query, page) => …` loads the first page on open/search and appends the next page as the user scrolls near the bottom, stopping once a page returns fewer than `pageSize` items (default `20`).
   - Optional `loadMoreIndicator` footer while the next page loads. Fully backward-compatible — the existing one-shot `futureRequest` keeps working unchanged (provide exactly one of the two).

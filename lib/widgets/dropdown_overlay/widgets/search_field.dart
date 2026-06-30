@@ -16,6 +16,7 @@ class _SearchField<T> extends StatefulWidget {
   /// owns the page loading) instead of the one-shot [futureRequest] path.
   final bool paginated;
   final ValueChanged<String>? onPaginatedQuery;
+  final bool autofocus;
 
   const _SearchField.forListData({
     super.key,
@@ -24,6 +25,7 @@ class _SearchField<T> extends StatefulWidget {
     required this.searchHintText,
     required this.decoration,
     this.textAlign,
+    this.autofocus = false,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
@@ -47,6 +49,7 @@ class _SearchField<T> extends StatefulWidget {
     this.textAlign,
     this.paginated = false,
     this.onPaginatedQuery,
+    this.autofocus = false,
   }) : searchType = _SearchType.onRequestData;
 
   @override
@@ -62,8 +65,9 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
   @override
   void initState() {
     super.initState();
-    if (widget.searchType == _SearchType.onRequestData &&
-        widget.items.isEmpty) {
+    if (widget.autofocus ||
+        (widget.searchType == _SearchType.onRequestData &&
+            widget.items.isEmpty)) {
       focusNode.requestFocus();
     }
   }

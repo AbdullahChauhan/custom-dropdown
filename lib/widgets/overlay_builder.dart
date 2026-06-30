@@ -5,6 +5,7 @@ class _OverlayBuilder extends StatefulWidget {
   final Widget Function(VoidCallback show) child;
   final OverlayPortalController? overlayPortalController;
   final Function(bool)? visibility;
+  final bool initiallyOpen;
 
   const _OverlayBuilder({
     super.key,
@@ -12,6 +13,7 @@ class _OverlayBuilder extends StatefulWidget {
     required this.child,
     this.overlayPortalController,
     this.visibility,
+    this.initiallyOpen = false,
   });
 
   @override
@@ -26,6 +28,12 @@ class _OverlayBuilderState extends State<_OverlayBuilder> {
     super.initState();
     overlayController =
         widget.overlayPortalController ?? OverlayPortalController();
+    if (widget.initiallyOpen) {
+      // Show after the first frame so the OverlayPortal is mounted.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !overlayController.isShowing) showOverlay();
+      });
+    }
   }
 
   @override

@@ -22,6 +22,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final bool selectOnItemTap;
   final CustomDropdownAnimation animation;
   final _SearchType? searchType;
+  final bool autofocusOnSearch;
   final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
   final int searchRequestMinChars;
@@ -77,6 +78,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.headerBuilder,
     required this.hintBuilder,
     required this.searchType,
+    required this.autofocusOnSearch,
     required this.futureRequest,
     required this.futureRequestDelay,
     required this.searchRequestMinChars,
@@ -604,6 +606,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                     decoration:
                                         decoration?.searchFieldDecoration,
                                     textAlign: widget.textAlign,
+                                    autofocus: widget.autofocusOnSearch,
                                   )
                                 else
                                   GestureDetector(
@@ -634,6 +637,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
                                               textAlign: widget.textAlign,
+                                              autofocus: widget.autofocusOnSearch,
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
@@ -669,6 +673,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                     textAlign: widget.textAlign,
                                     paginated: _isPaginated,
                                     onPaginatedQuery: _loadFirstPage,
+                                    autofocus: widget.autofocusOnSearch,
                                   )
                                 else
                                   GestureDetector(
@@ -716,6 +721,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                               textAlign: widget.textAlign,
                                               paginated: _isPaginated,
                                               onPaginatedQuery: _loadFirstPage,
+                                              autofocus: widget.autofocusOnSearch,
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
