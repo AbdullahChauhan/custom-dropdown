@@ -541,7 +541,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                       [
                         BoxShadow(
                           blurRadius: 24.0,
-                          color: Colors.black.withOpacity(.08),
+                          color: Colors.black.withAlpha(20),
                           offset: _defaultOverlayShadowOffset,
                         ),
                       ],
@@ -564,18 +564,18 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                         },
                         child: Theme(
                           data: Theme.of(context).copyWith(
-                            scrollbarTheme: decoration
-                                    ?.overlayScrollbarDecoration ??
-                                ScrollbarThemeData(
-                                  thumbVisibility: MaterialStateProperty.all(
-                                    true,
-                                  ),
-                                  thickness: MaterialStateProperty.all(5),
-                                  radius: const Radius.circular(4),
-                                  thumbColor: MaterialStateProperty.all(
-                                    Colors.grey[300],
-                                  ),
-                                ),
+                            scrollbarTheme:
+                                decoration?.overlayScrollbarDecoration ??
+                                    ScrollbarThemeData(
+                                      thumbVisibility: WidgetStateProperty.all(
+                                        true,
+                                      ),
+                                      thickness: WidgetStateProperty.all(5),
+                                      radius: const Radius.circular(4),
+                                      thumbColor: WidgetStateProperty.all(
+                                        Colors.grey[300],
+                                      ),
+                                    ),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

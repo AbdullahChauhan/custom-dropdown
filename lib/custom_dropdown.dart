@@ -1,4 +1,4 @@
-library animated_custom_dropdown;
+library;
 
 import 'dart:async';
 
