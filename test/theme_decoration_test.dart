@@ -51,4 +51,47 @@ void main() {
       expect(decoration.contentPadding, EdgeInsets.zero);
     },
   );
+
+  testWidgets(
+    'no gray fill / error background when a validation error is shown (#94)',
+    (tester) async {
+      final formKey = GlobalKey<FormState>();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          // A theme that would otherwise paint a filled error background.
+          theme: ThemeData(
+            inputDecorationTheme: const InputDecorationTheme(
+              filled: true,
+              fillColor: Colors.grey,
+            ),
+          ),
+          home: Scaffold(
+            body: Form(
+              key: formKey,
+              child: CustomDropdown<String>(
+                items: const ['A', 'B', 'C'],
+                hintText: 'Select',
+                validateOnChange: false,
+                validator: (v) => v == null ? 'Required' : null,
+                onChanged: (_) {},
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // Force the error state.
+      formKey.currentState!.validate();
+      await tester.pumpAndSettle();
+
+      final decoration =
+          tester.widget<InputDecorator>(find.byType(InputDecorator)).decoration;
+
+      expect(decoration.filled, isFalse,
+          reason: 'no filled background even while showing an error');
+      expect(decoration.fillColor, Colors.transparent);
+      expect(decoration.errorBorder, InputBorder.none);
+    },
+  );
 }
