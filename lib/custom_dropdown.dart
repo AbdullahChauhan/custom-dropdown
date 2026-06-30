@@ -109,6 +109,20 @@ class CustomDropdown<T> extends StatefulWidget {
   /// The asynchronous computation from which the items list returns.
   final Future<List<T>> Function(String)? futureRequest;
 
+  /// Page-aware async request enabling infinite scroll (lazy loading).
+  ///
+  /// When provided (instead of [futureRequest]) the dropdown loads the first
+  /// page on open/search and appends the next page as the user scrolls near the
+  /// bottom, stopping once a page returns fewer than [pageSize] items.
+  final PaginatedSearchRequest<T>? paginatedRequest;
+
+  /// Number of items per page for [paginatedRequest]. A page with fewer than
+  /// this many items is treated as the last page. Defaults to `20`.
+  final int pageSize;
+
+  /// Widget shown at the bottom of the list while the next page loads.
+  final Widget? loadMoreIndicator;
+
   /// Text that notify there's no search results match.
   ///
   /// Default to "No result found.".
@@ -267,6 +281,9 @@ class CustomDropdown<T> extends StatefulWidget {
         futureRequest = null,
         futureRequestDelay = null,
         searchRequestMinChars = 0,
+        paginatedRequest = null,
+        pageSize = 20,
+        loadMoreIndicator = null,
         noResultFoundBuilder = null,
         noResultFoundText = null,
         searchHintText = null,
@@ -333,6 +350,9 @@ class CustomDropdown<T> extends StatefulWidget {
         futureRequest = null,
         futureRequestDelay = null,
         searchRequestMinChars = 0,
+        paginatedRequest = null,
+        pageSize = 20,
+        loadMoreIndicator = null,
         initialItems = null,
         onListChanged = null,
         listValidator = null,
@@ -342,8 +362,11 @@ class CustomDropdown<T> extends StatefulWidget {
 
   const CustomDropdown.searchRequest({
     super.key,
-    required this.futureRequest,
+    this.futureRequest,
     required this.onChanged,
+    this.paginatedRequest,
+    this.pageSize = 20,
+    this.loadMoreIndicator,
     this.futureRequestDelay,
     this.searchRequestMinChars = 0,
     this.initialItem,
@@ -383,6 +406,10 @@ class CustomDropdown<T> extends StatefulWidget {
   })  : assert(
           initialItem == null || controller == null,
           'Only one of initialItem or controller can be specified at a time',
+        ),
+        assert(
+          (futureRequest == null) != (paginatedRequest == null),
+          'Provide exactly one of futureRequest or paginatedRequest',
         ),
         _searchType = _SearchType.onRequestData,
         _dropdownType = _DropdownType.singleSelect,
@@ -451,6 +478,9 @@ class CustomDropdown<T> extends StatefulWidget {
         futureRequest = null,
         futureRequestDelay = null,
         searchRequestMinChars = 0,
+        paginatedRequest = null,
+        pageSize = 20,
+        loadMoreIndicator = null,
         noResultFoundBuilder = null,
         searchHintText = null,
         searchRequestLoadingIndicator = null,
@@ -518,12 +548,18 @@ class CustomDropdown<T> extends StatefulWidget {
         futureRequest = null,
         futureRequestDelay = null,
         searchRequestMinChars = 0,
+        paginatedRequest = null,
+        pageSize = 20,
+        loadMoreIndicator = null,
         searchRequestLoadingIndicator = null;
 
   const CustomDropdown.multiSelectSearchRequest({
     super.key,
-    required this.futureRequest,
+    this.futureRequest,
     required this.onListChanged,
+    this.paginatedRequest,
+    this.pageSize = 20,
+    this.loadMoreIndicator,
     this.multiSelectController,
     this.futureRequestDelay,
     this.searchRequestMinChars = 0,
@@ -563,6 +599,10 @@ class CustomDropdown<T> extends StatefulWidget {
   })  : assert(
           initialItems == null || multiSelectController == null,
           'Only one of initialItems or controller can be specified at a time',
+        ),
+        assert(
+          (futureRequest == null) != (paginatedRequest == null),
+          'Provide exactly one of futureRequest or paginatedRequest',
         ),
         _searchType = _SearchType.onRequestData,
         _dropdownType = _DropdownType.multipleSelect,
@@ -790,6 +830,9 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                   futureRequest: widget.futureRequest,
                   futureRequestDelay: widget.futureRequestDelay,
                   searchRequestMinChars: widget.searchRequestMinChars,
+                  paginatedRequest: widget.paginatedRequest,
+                  pageSize: widget.pageSize,
+                  loadMoreIndicator: widget.loadMoreIndicator,
                   hideSelectedFieldWhenOpen:
                       widget.hideSelectedFieldWhenExpanded,
                   maxLines: widget.maxlines,

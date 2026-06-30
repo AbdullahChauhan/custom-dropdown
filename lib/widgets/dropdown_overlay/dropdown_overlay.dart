@@ -25,6 +25,9 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
   final int searchRequestMinChars;
+  final PaginatedSearchRequest<T>? paginatedRequest;
+  final int pageSize;
+  final Widget? loadMoreIndicator;
   final int maxLines;
   final double? overlayHeight;
   final TextAlign? textAlign;
@@ -77,6 +80,9 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.futureRequest,
     required this.futureRequestDelay,
     required this.searchRequestMinChars,
+    required this.paginatedRequest,
+    required this.pageSize,
+    required this.loadMoreIndicator,
     required this.listItemBuilder,
     required this.headerListBuilder,
     required this.noResultFoundBuilder,
@@ -96,6 +102,13 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
   late List<T> selectedItems;
   late ScrollController scrollController;
   final key1 = GlobalKey(), key2 = GlobalKey();
+
+  // Pagination (infinite scroll) state for [paginatedRequest].
+  bool get _isPaginated => widget.paginatedRequest != null;
+  int _page = 1;
+  bool _hasMore = false;
+  bool _loadingMore = false;
+  String _query = '';
 
   Duration get _iconDuration {
     if (!widget.animation.enabled) return Duration.zero;
@@ -240,6 +253,15 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
     } else {
       items = widget.items;
     }
+
+    if (_isPaginated) {
+      scrollController.addListener(_onScroll);
+      // Load the first page on open.
+      isSearchRequestLoading = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _loadFirstPage('');
+      });
+    }
   }
 
   @override
@@ -248,10 +270,61 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
     widget.selectedItemNotifier.removeListener(singleSelectListener);
     widget.selectedItemsNotifier.removeListener(multiSelectListener);
 
+    if (_isPaginated) {
+      scrollController.removeListener(_onScroll);
+    }
     if (widget.itemsScrollCtrl == null) {
       scrollController.dispose();
     }
     super.dispose();
+  }
+
+  // Loads page 1 for [query], replacing the current items (new search/open).
+  Future<void> _loadFirstPage(String query) async {
+    _query = query;
+    _page = 1;
+    if (mounted) setState(() => isSearchRequestLoading = true);
+    List<T> result = [];
+    try {
+      result = await widget.paginatedRequest!(query, 1);
+    } catch (_) {
+      result = [];
+    }
+    if (!mounted) return;
+    setState(() {
+      items = result;
+      _hasMore = result.length >= widget.pageSize;
+      mayFoundSearchRequestResult = result.isNotEmpty;
+      isSearchRequestLoading = false;
+    });
+  }
+
+  void _onScroll() {
+    if (!_isPaginated || _loadingMore || !_hasMore) return;
+    final pos = scrollController.position;
+    if (pos.pixels >= pos.maxScrollExtent - 120) {
+      _loadMore();
+    }
+  }
+
+  // Appends the next page as the user scrolls near the bottom.
+  Future<void> _loadMore() async {
+    if (_loadingMore || !_hasMore) return;
+    setState(() => _loadingMore = true);
+    final next = _page + 1;
+    List<T> result = [];
+    try {
+      result = await widget.paginatedRequest!(_query, next);
+    } catch (_) {
+      result = [];
+    }
+    if (!mounted) return;
+    setState(() {
+      _page = next;
+      items = [...items, ...result];
+      _hasMore = result.length >= widget.pageSize;
+      _loadingMore = false;
+    });
   }
 
   // Called by the framework whenever the view's metrics change, most notably
@@ -405,6 +478,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
             onItemSelect: onItemSelect,
             selectOnItemTap: widget.selectOnItemTap,
             animation: widget.animation,
+            loadingMore: _loadingMore,
+            loadMoreIndicator: widget.loadMoreIndicator,
             decoration: decoration?.listItemDecoration,
             dropdownType: widget.dropdownType,
           )
@@ -592,6 +667,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                     decoration:
                                         decoration?.searchFieldDecoration,
                                     textAlign: widget.textAlign,
+                                    paginated: _isPaginated,
+                                    onPaginatedQuery: _loadFirstPage,
                                   )
                                 else
                                   GestureDetector(
@@ -637,6 +714,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
                                               textAlign: widget.textAlign,
+                                              paginated: _isPaginated,
+                                              onPaginatedQuery: _loadFirstPage,
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??

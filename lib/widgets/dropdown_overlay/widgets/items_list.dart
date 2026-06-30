@@ -12,6 +12,8 @@ class _ItemsList<T> extends StatelessWidget {
   final _DropdownType dropdownType;
   final bool selectOnItemTap;
   final CustomDropdownAnimation animation;
+  final bool loadingMore;
+  final Widget? loadMoreIndicator;
 
   const _ItemsList({
     super.key,
@@ -28,6 +30,8 @@ class _ItemsList<T> extends StatelessWidget {
     required this.dropdownType,
     required this.selectOnItemTap,
     required this.animation,
+    this.loadingMore = false,
+    this.loadMoreIndicator,
   });
 
   @override
@@ -38,8 +42,23 @@ class _ItemsList<T> extends StatelessWidget {
         controller: scrollController,
         shrinkWrap: true,
         padding: itemsListPadding,
-        itemCount: items.length,
+        itemCount: items.length + (loadingMore ? 1 : 0),
         itemBuilder: (_, index) {
+          // Trailing load-more indicator for paginated lists.
+          if (index >= items.length) {
+            return loadMoreIndicator ??
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    ),
+                  ),
+                );
+          }
+
           final selected = switch (dropdownType) {
             _DropdownType.singleSelect =>
               !excludeSelected && selectedItem == items[index],

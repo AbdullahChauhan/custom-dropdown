@@ -1,5 +1,8 @@
 # 4.0.0
 
+- Add: **infinite scroll / pagination** for the search-request constructors via a new `paginatedRequest` callback.
+  - `paginatedRequest: (query, page) => …` loads the first page on open/search and appends the next page as the user scrolls near the bottom, stopping once a page returns fewer than `pageSize` items (default `20`).
+  - Optional `loadMoreIndicator` footer while the next page loads. Fully backward-compatible — the existing one-shot `futureRequest` keeps working unchanged (provide exactly one of the two).
 - Add: configurable open/close **overlay animations** via the new `animation` parameter (`CustomDropdownAnimation`).
   - Built-in transitions: `size`, `fade`, `sizeFade` (default), `scale`, `scaleFade`, `slide` — all anchored to the field edge and direction-aware (opening up or down).
   - Tune `duration`, `reverseDuration`, `curve` and `reverseCurve`; smoother defaults (`easeOutCubic` open / `easeInCubic` close).
