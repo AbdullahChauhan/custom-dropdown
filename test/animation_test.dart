@@ -44,6 +44,13 @@ void main() {
     await tester.tap(find.text('Select'));
     await tester.pump(const Duration(milliseconds: 50));
     expect(find.byType(ScaleTransition), findsWidgets);
+    // Opening below the field: scale must anchor at the top edge (grow down,
+    // away from the field), not the bottom.
+    final scale = tester.widgetList<ScaleTransition>(
+      find.byType(ScaleTransition),
+    );
+    expect(scale.any((s) => s.alignment == const Alignment(0, -1)), isTrue,
+        reason: 'scale anchored at the field (top) edge when opening below');
     await tester.pumpAndSettle();
     await tester.tap(find.text('A').last); // close
     await tester.pumpAndSettle();

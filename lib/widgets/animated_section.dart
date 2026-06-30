@@ -85,9 +85,10 @@ class _AnimatedSectionState extends State<_AnimatedSection>
     super.dispose();
   }
 
-  // Alignment matching the size animation's anchor edge: 1.0 -> bottom edge,
-  // -1.0 -> top edge.
-  Alignment get _anchor => Alignment(0, widget.axisAlignment);
+  // Anchor scale/zoom at the field edge so the overlay grows away from the
+  // field: opening below (axisAlignment 1.0) scales from the top edge, opening
+  // above (axisAlignment -1.0) scales from the bottom edge.
+  Alignment get _anchor => Alignment(0, -widget.axisAlignment);
 
   Widget _sizeTransition(Widget child) => SizeTransition(
         axisAlignment: widget.axisAlignment,
