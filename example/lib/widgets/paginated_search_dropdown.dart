@@ -3,12 +3,24 @@ import 'dart:developer';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 
-/// Fake paginated backend: 5 pages of 20 items, then "no more".
+const _pageSize = 20;
+
+/// A fixed dataset the fake backend searches over.
+final List<String> _allItems = List.generate(100, (i) => 'Item ${i + 1}');
+
+/// Fake paginated backend: filters [_allItems] by [query] and returns the
+/// requested [page] (1-based) of the matches.
 Future<List<String>> _fetchPage(String query, int page) async {
-  await Future.delayed(const Duration(milliseconds: 600));
-  if (page > 5) return const [];
-  final suffix = query.isEmpty ? '' : ' · "$query"';
-  return List.generate(20, (i) => 'Item ${(page - 1) * 20 + i + 1}$suffix');
+  await Future.delayed(const Duration(milliseconds: 500));
+
+  final matches = _allItems
+      .where((e) => e.toLowerCase().contains(query.toLowerCase()))
+      .toList();
+
+  final start = (page - 1) * _pageSize;
+  if (start >= matches.length) return const [];
+  final end = (start + _pageSize).clamp(0, matches.length);
+  return matches.sublist(start, end);
 }
 
 /// Showcases infinite scroll: the first page loads on open, and the next page
@@ -19,9 +31,9 @@ class PaginatedSearchDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomDropdown<String>.searchRequest(
-      hintText: 'Infinite scroll — open & scroll down',
+      hintText: 'Infinite scroll — open, search & scroll',
       paginatedRequest: _fetchPage,
-      pageSize: 20,
+      pageSize: _pageSize,
       onChanged: (value) {
         log('PaginatedSearchDropdown onChanged value: $value');
       },
