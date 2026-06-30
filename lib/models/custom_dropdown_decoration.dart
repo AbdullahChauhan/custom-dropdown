@@ -79,7 +79,7 @@ class CustomDropdownDecoration {
   /// The style to use for the [CustomDropdown] no result found area.
   final TextStyle? noResultFoundStyle;
 
-  /// The style to use for the string returning from [validator].
+  /// The style to use for the string returning from [CustomDropdown.validator].
   final TextStyle? errorStyle;
 
   /// The style to use for the [CustomDropdown] list item text.

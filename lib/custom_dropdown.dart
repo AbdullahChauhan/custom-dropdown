@@ -256,7 +256,7 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Callback for dropdown [visibility].
   ///
   /// If both [visibility] and [overlayController] are provided, this callback never listens the changes of [overlayController].
-  /// You have to explicitly check for [overlayController] visibility states using [overlayController.isShowing] property.
+  /// You have to explicitly check for [overlayController] visibility states using its `isShowing` property.
   final Function(bool)? visibility;
 
   final _SearchType? _searchType;

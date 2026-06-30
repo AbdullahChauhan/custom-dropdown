@@ -17,15 +17,15 @@ class ListItemDecoration {
   final Color? selectedColor;
 
   /// Selected icon color for [CustomDropdown] list item area.
-  /// Useless if [listItemBuilder] provided.
+  /// Useless if [CustomDropdown.listItemBuilder] provided.
   final Color? selectedIconColor;
 
   /// Selected icon border for [CustomDropdown] list item area.
-  /// Useless if [listItemBuilder] provided.
+  /// Useless if [CustomDropdown.listItemBuilder] provided.
   final BorderSide? selectedIconBorder;
 
   /// Selected icon shape for [CustomDropdown] list item area.
-  /// Useless if [listItemBuilder] provided.
+  /// Useless if [CustomDropdown.listItemBuilder] provided.
   final OutlinedBorder? selectedIconShape;
 
   const ListItemDecoration({
