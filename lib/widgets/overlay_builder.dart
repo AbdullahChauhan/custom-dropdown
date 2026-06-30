@@ -8,7 +8,6 @@ class _OverlayBuilder extends StatefulWidget {
   final bool initiallyOpen;
 
   const _OverlayBuilder({
-    super.key,
     required this.overlay,
     required this.child,
     this.overlayPortalController,

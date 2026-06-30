@@ -8,7 +8,6 @@ class _AnimatedSection extends StatefulWidget {
   final CustomDropdownAnimation animation;
 
   const _AnimatedSection({
-    super.key,
     this.expand = false,
     required this.animationDismissed,
     required this.child,
