@@ -58,6 +58,7 @@ class _HomeState extends State<Home> {
           ),
           bottom: const TabBar(
             isScrollable: true,
+            tabAlignment: TabAlignment.start,
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             labelStyle: TextStyle(fontSize: 18),
