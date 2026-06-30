@@ -32,6 +32,10 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 
 <img src="https://raw.githubusercontent.com/AbdullahChauhan/custom-dropdown/master/readme_assets/preview.gif" width="300"/>
 
+<br/>
+
+<img src="https://raw.githubusercontent.com/AbdullahChauhan/custom-dropdown/master/screenshots/search_dropdown.jpg" width="250"/>&nbsp;&nbsp;<img src="https://raw.githubusercontent.com/AbdullahChauhan/custom-dropdown/master/screenshots/multi_select_search.jpg" width="250"/>
+
 <hr>
 
 ## Getting started
