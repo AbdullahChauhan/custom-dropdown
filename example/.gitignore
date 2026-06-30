@@ -45,8 +45,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Generated desktop/web platform folders (this example only tracks android/ios)
+# Generated desktop platform folders (this example tracks android/ios/web)
 /linux/
 /macos/
 /windows/
-/web/
