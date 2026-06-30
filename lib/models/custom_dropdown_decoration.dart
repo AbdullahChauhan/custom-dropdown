@@ -67,6 +67,12 @@ class CustomDropdownDecoration {
   /// open).
   final FloatingLabelBehavior floatingLabelBehavior;
 
+  /// Vertical gap reserved above the field for the floated label (the space
+  /// between the floated label and the field below it).
+  ///
+  /// Only applies when `labelText`/`label` is provided. Defaults to `16`.
+  final double floatingLabelGap;
+
   /// The style to use for the [CustomDropdown] header text.
   final TextStyle? headerStyle;
 
@@ -107,6 +113,7 @@ class CustomDropdownDecoration {
     this.labelStyle,
     this.floatingLabelStyle,
     this.floatingLabelBehavior = FloatingLabelBehavior.auto,
+    this.floatingLabelGap = 16,
     this.headerStyle,
     this.noResultFoundStyle,
     this.errorStyle,

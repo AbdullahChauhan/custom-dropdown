@@ -32,6 +32,7 @@ class _DropDownField<T> extends StatefulWidget {
   final Widget? label;
   final TextStyle? labelStyle, floatingLabelStyle;
   final FloatingLabelBehavior floatingLabelBehavior;
+  final double floatingLabelGap;
   final bool isOpen;
 
   const _DropDownField({
@@ -48,6 +49,7 @@ class _DropDownField<T> extends StatefulWidget {
     this.labelStyle,
     this.floatingLabelStyle,
     this.floatingLabelBehavior = FloatingLabelBehavior.auto,
+    this.floatingLabelGap = 16,
     this.isOpen = false,
     this.hintText = 'Select value',
     this.fillColor,
@@ -81,9 +83,6 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
       };
 
   static const _labelAnimDuration = Duration(milliseconds: 200);
-
-  /// Vertical room reserved above the field for the floated label.
-  static const _floatGap = 16.0;
 
   bool get _hasLabel => widget.labelText != null || widget.label != null;
 
@@ -223,7 +222,8 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
           AnimatedPadding(
             duration: _labelAnimDuration,
             curve: Curves.easeOut,
-            padding: EdgeInsets.only(top: floated ? _floatGap : 0),
+            padding:
+                EdgeInsets.only(top: floated ? widget.floatingLabelGap : 0),
             child: field,
           ),
           if (_labelVisible) _floatingLabel(floated),

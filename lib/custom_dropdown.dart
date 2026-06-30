@@ -963,6 +963,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                     floatingLabelStyle: decoration?.floatingLabelStyle,
                     floatingLabelBehavior: decoration?.floatingLabelBehavior ??
                         FloatingLabelBehavior.auto,
+                    floatingLabelGap: decoration?.floatingLabelGap ?? 16,
                     isOpen: _overlayOpen,
                   ),
                 );
