@@ -20,6 +20,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final String hintText, searchHintText, noResultFoundText;
   final bool excludeSelected, hideSelectedFieldWhenOpen, canCloseOutsideBounds;
   final bool selectOnItemTap;
+  final DropdownOverlayDirection overlayDirection;
   final CustomDropdownAnimation animation;
   final _SearchType? searchType;
   final bool autofocusOnSearch;
@@ -57,6 +58,7 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.selectedItemsNotifier,
     required this.excludeSelected,
     required this.selectOnItemTap,
+    required this.overlayDirection,
     required this.animation,
     required this.onItemSelect,
     required this.noResultFoundText,
@@ -235,6 +237,10 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
   @override
   void initState() {
     super.initState();
+    // Start on the forced side to avoid a first-frame flip.
+    if (widget.overlayDirection == DropdownOverlayDirection.above) {
+      displayOverlayBottom = false;
+    }
     scrollController = widget.itemsScrollCtrl ?? ScrollController();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -391,6 +397,22 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
   // the overlay from flip-flopping between top and bottom.
   void _updateOverlayPosition() {
     if (!mounted) return;
+
+    // Forced direction: skip the auto room-based calculation entirely.
+    switch (widget.overlayDirection) {
+      case DropdownOverlayDirection.below:
+        if (!displayOverlayBottom) {
+          setState(() => displayOverlayBottom = true);
+        }
+        return;
+      case DropdownOverlayDirection.above:
+        if (displayOverlayBottom) {
+          setState(() => displayOverlayBottom = false);
+        }
+        return;
+      case DropdownOverlayDirection.auto:
+        break;
+    }
 
     final fieldBox =
         widget.fieldKey.currentContext?.findRenderObject() as RenderBox?;

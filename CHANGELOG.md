@@ -3,6 +3,7 @@
 - Add: explicit selection methods on the controllers ([#100](https://github.com/AbdullahChauhan/custom-dropdown/issues/100)) — `SingleSelectController.select(value)`, `MultiSelectController.select(values)` and `MultiSelectController.toggle(value)`.
 - Add: `initiallyOpen` to open the dropdown automatically on first build ([#87](https://github.com/AbdullahChauhan/custom-dropdown/issues/87)).
 - Add: `autofocusOnSearch` to focus the search field (raising the keyboard) when the overlay opens ([#70](https://github.com/AbdullahChauhan/custom-dropdown/issues/70)).
+- Add: `overlayDirection` (`auto` / `below` / `above`) to force the side the overlay opens towards ([#92](https://github.com/AbdullahChauhan/custom-dropdown/issues/92)). Defaults to `auto` (keyboard-aware).
 - Add: **infinite scroll / pagination** for the search-request constructors via a new `paginatedRequest` callback.
   - `paginatedRequest: (query, page) => …` loads the first page on open/search and appends the next page as the user scrolls near the bottom, stopping once a page returns fewer than `pageSize` items (default `20`).
   - Optional `loadMoreIndicator` footer while the next page loads. Fully backward-compatible — the existing one-shot `futureRequest` keeps working unchanged (provide exactly one of the two).

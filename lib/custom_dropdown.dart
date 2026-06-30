@@ -29,6 +29,18 @@ enum _DropdownType { singleSelect, multipleSelect }
 
 enum _SearchType { onListData, onRequestData }
 
+/// Controls the side the overlay opens towards.
+enum DropdownOverlayDirection {
+  /// Open below if there is room, otherwise above (keyboard-aware). Default.
+  auto,
+
+  /// Always open below the field.
+  below,
+
+  /// Always open above the field.
+  above,
+}
+
 const _defaultErrorColor = Colors.red;
 
 const _defaultBorderRadius = BorderRadius.all(
@@ -196,6 +208,12 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Defaults to `false`.
   final bool initiallyOpen;
 
+  /// The side the overlay opens towards.
+  ///
+  /// Defaults to [DropdownOverlayDirection.auto] (open below if there is room,
+  /// otherwise above). Use `below`/`above` to force a direction.
+  final DropdownOverlayDirection overlayDirection;
+
   /// Autofocus the search field (raising the keyboard) when the overlay opens.
   /// Only applies to the search constructors. Defaults to `false`.
   final bool autofocusOnSearch;
@@ -272,6 +290,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.animation = const CustomDropdownAnimation(),
     this.initiallyOpen = false,
     this.autofocusOnSearch = false,
+    this.overlayDirection = DropdownOverlayDirection.auto,
     this.disabledDecoration,
   })  : assert(
           initialItem == null || controller == null,
@@ -342,6 +361,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.animation = const CustomDropdownAnimation(),
     this.initiallyOpen = false,
     this.autofocusOnSearch = false,
+    this.overlayDirection = DropdownOverlayDirection.auto,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -416,6 +436,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.animation = const CustomDropdownAnimation(),
     this.initiallyOpen = false,
     this.autofocusOnSearch = false,
+    this.overlayDirection = DropdownOverlayDirection.auto,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -467,6 +488,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.animation = const CustomDropdownAnimation(),
     this.initiallyOpen = false,
     this.autofocusOnSearch = false,
+    this.overlayDirection = DropdownOverlayDirection.auto,
     this.disabledDecoration,
   })  : assert(
           initialItems == null || multiSelectController == null,
@@ -539,6 +561,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.animation = const CustomDropdownAnimation(),
     this.initiallyOpen = false,
     this.autofocusOnSearch = false,
+    this.overlayDirection = DropdownOverlayDirection.auto,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -615,6 +638,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.animation = const CustomDropdownAnimation(),
     this.initiallyOpen = false,
     this.autofocusOnSearch = false,
+    this.overlayDirection = DropdownOverlayDirection.auto,
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -846,6 +870,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                   overlayHeight: widget.overlayHeight,
                   excludeSelected: widget.excludeSelected,
                   selectOnItemTap: widget.selectOnItemTap,
+                  overlayDirection: widget.overlayDirection,
                   animation: widget.animation,
                   canCloseOutsideBounds: widget.canCloseOutsideBounds,
                   searchType: widget._searchType,
