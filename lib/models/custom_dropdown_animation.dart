@@ -62,6 +62,11 @@ class CustomDropdownAnimation {
 
   /// When `true`, list items fade + slide in with a cascading stagger each time
   /// the overlay opens. Ignored when [enabled] is `false`.
+  ///
+  /// The cascade is most visible with non-clipping transitions (`scale`,
+  /// `scaleFade`, `fade` or `none`); the `size`/`sizeFade` transitions clip the
+  /// list as they reveal it, which can mask the per-item entrance. Pairing it
+  /// with a short overlay [duration] also helps the cascade stand out.
   final bool staggerItems;
 
   /// Delay added per list item for the staggered entrance (capped for long
@@ -81,8 +86,8 @@ class CustomDropdownAnimation {
     this.enabled = true,
     this.builder,
     this.staggerItems = false,
-    this.itemStagger = const Duration(milliseconds: 40),
-    this.itemDuration = const Duration(milliseconds: 250),
+    this.itemStagger = const Duration(milliseconds: 60),
+    this.itemDuration = const Duration(milliseconds: 300),
   });
 
   /// No animation — the overlay appears/disappears instantly.

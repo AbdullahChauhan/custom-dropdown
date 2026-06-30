@@ -10,6 +10,10 @@ const List<String> _list = [
   'Student',
   'Engineer',
   'Analyst',
+  'Architect',
+  'Manager',
+  'Intern',
+  'Researcher',
 ];
 
 /// Showcases the configurable overlay animation system: pick a transition,
@@ -50,10 +54,15 @@ class _AnimatedDropdownState extends State<AnimatedDropdown> {
           key: ValueKey('$_type-$_stagger'),
           hintText: 'Open me to preview',
           items: _list,
+          // Make the list tall enough that several items animate in at once.
+          overlayHeight: 342,
           animation: CustomDropdownAnimation(
             type: _type,
+            // A quick overlay reveal so the per-item cascade is the star.
+            duration: const Duration(milliseconds: 200),
             staggerItems: _stagger,
-            duration: const Duration(milliseconds: 350),
+            itemStagger: const Duration(milliseconds: 90),
+            itemDuration: const Duration(milliseconds: 350),
           ),
           onChanged: (value) {
             log('AnimatedDropdown onChanged value: $value');
