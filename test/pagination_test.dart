@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('paginated: loads page 1 on open, next page on scroll, then stops',
+  testWidgets(
+      'paginated: loads page 1 on open, next page on scroll, then stops',
       (tester) async {
     final requestedPages = <int>[];
 

@@ -1,7 +1,10 @@
+import 'package:animated_custom_dropdown_example/widgets/animated_dropdown.dart';
 import 'package:animated_custom_dropdown_example/widgets/controller_validation_dropdown.dart';
+import 'package:animated_custom_dropdown_example/widgets/feature_dropdowns.dart';
 import 'package:animated_custom_dropdown_example/widgets/multi_select_controller_dropdown.dart';
 import 'package:animated_custom_dropdown_example/widgets/decorated_dropdown.dart';
 import 'package:animated_custom_dropdown_example/widgets/multi_select_dropdown.dart';
+import 'package:animated_custom_dropdown_example/widgets/paginated_search_dropdown.dart';
 import 'package:animated_custom_dropdown_example/widgets/search_dropdown.dart';
 import 'package:animated_custom_dropdown_example/widgets/search_request_dropdown.dart';
 import 'package:animated_custom_dropdown_example/widgets/simple_dropdown.dart';
@@ -44,7 +47,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
@@ -54,6 +57,7 @@ class _HomeState extends State<Home> {
             style: TextStyle(color: Colors.white),
           ),
           bottom: const TabBar(
+            isScrollable: true,
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             labelStyle: TextStyle(fontSize: 18),
@@ -69,6 +73,10 @@ class _HomeState extends State<Home> {
               Padding(
                 padding: EdgeInsets.only(bottom: 8.0),
                 child: Text('Multi selection'),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
+                child: Text("What's new (4.0.0)"),
               ),
             ],
           ),
@@ -107,8 +115,44 @@ class _HomeState extends State<Home> {
                 const MultiSelectControllerDropdown()
               ],
             ),
+            ListView(
+              padding: const EdgeInsets.all(16.0),
+              children: const [
+                _SectionLabel('Overlay animations'),
+                AnimatedDropdown(),
+                SizedBox(height: 16),
+                _SectionLabel('Infinite scroll (pagination)'),
+                PaginatedSearchDropdown(),
+                SizedBox(height: 16),
+                _SectionLabel('Floating label + clear'),
+                LabelClearDropdown(),
+                SizedBox(height: 16),
+                _SectionLabel('Forced overlay direction'),
+                DirectionDropdown(),
+                SizedBox(height: 16),
+                _SectionLabel('Text align'),
+                AlignedDropdown(),
+                SizedBox(height: 400),
+              ],
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  final String text;
+  const _SectionLabel(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
       ),
     );
   }

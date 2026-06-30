@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('searchRequest waits for searchRequestMinChars before firing (#107)',
+  testWidgets(
+      'searchRequest waits for searchRequestMinChars before firing (#107)',
       (tester) async {
     final queries = <String>[];
 

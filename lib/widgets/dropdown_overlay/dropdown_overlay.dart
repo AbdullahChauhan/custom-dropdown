@@ -659,7 +659,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
                                               textAlign: widget.textAlign,
-                                              autofocus: widget.autofocusOnSearch,
+                                              autofocus:
+                                                  widget.autofocusOnSearch,
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
@@ -743,7 +744,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
                                               textAlign: widget.textAlign,
                                               paginated: _isPaginated,
                                               onPaginatedQuery: _loadFirstPage,
-                                              autofocus: widget.autofocusOnSearch,
+                                              autofocus:
+                                                  widget.autofocusOnSearch,
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??

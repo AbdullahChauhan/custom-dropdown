@@ -29,7 +29,8 @@ void main() {
 
       await tester.tap(find.text('B').last);
       await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull, reason: 'closed cleanly for $type');
+      expect(tester.takeException(), isNull,
+          reason: 'closed cleanly for $type');
       expect(find.text('A'), findsNothing, reason: 'overlay gone for $type');
     }
   });

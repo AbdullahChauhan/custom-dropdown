@@ -25,7 +25,8 @@ void main() {
     expect(selected, 'B');
   });
 
-  testWidgets('selectOnItemTap:false — row tap does not select; builder owns it',
+  testWidgets(
+      'selectOnItemTap:false — row tap does not select; builder owns it',
       (tester) async {
     final selections = <String>[];
 

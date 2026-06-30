@@ -35,7 +35,8 @@ void main() {
         reason: 'clear button hidden once there is no selection');
   });
 
-  testWidgets('no clear button when canClearSelection is false', (tester) async {
+  testWidgets('no clear button when canClearSelection is false',
+      (tester) async {
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: Center(

@@ -21,6 +21,10 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 - Multi select custom dropdown using named constructor CustomDropdown<T>.multiSelect().
 - Multi select custom dropdown with search field using named constructor CustomDropdown<T>.multiSelectSearch().
 - Multi select custom dropdown with search request field using named constructor CustomDropdown<T>.multiSelectSearchRequest().
+- Configurable open/close **overlay animations** (`animation`) with built-in transitions, a custom-transition builder, and an optional staggered list-item entrance.
+- **Infinite scroll / pagination** for async search (`paginatedRequest`).
+- Material-style floating **label** (`labelText`), **clear** button (`canClearSelection`), **text alignment** (`textAlign`) and **forced overlay direction** (`overlayDirection`).
+- Keyboard-aware overlay positioning, `initiallyOpen`, `autofocusOnSearch`, and `searchRequestMinChars`.
 
 ## Preview
 
@@ -41,6 +45,70 @@ dependencies:
 
 ```dart
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+```
+
+<hr>
+
+## What's new in 4.0.0
+
+### Overlay animations
+Configure the open/close transition with `CustomDropdownAnimation`.
+
+```dart
+CustomDropdown<String>(
+  hintText: 'Select job role',
+  items: _list,
+  animation: const CustomDropdownAnimation(
+    type: DropdownAnimationType.scaleFade, // size, fade, sizeFade, scale, scaleFade, slide
+    duration: Duration(milliseconds: 350),
+    curve: Curves.easeOutCubic,
+    staggerItems: true, // cascading list-item entrance
+  ),
+  onChanged: (value) {},
+)
+```
+
+- `CustomDropdownAnimation.none` disables animation.
+- Provide a `builder: (context, animation, axisAlignment, child) => ...` for a fully custom transition.
+
+### Infinite scroll (pagination)
+Use `paginatedRequest` instead of `futureRequest` to lazy-load pages as the user scrolls.
+
+```dart
+CustomDropdown<User>.searchRequest(
+  hintText: 'Search users',
+  pageSize: 20,
+  paginatedRequest: (query, page) => api.fetchUsers(query, page), // 1-based page
+  loadMoreIndicator: const Center(child: CircularProgressIndicator()),
+  onChanged: (value) {},
+)
+```
+
+The next page is appended automatically when the user scrolls near the bottom, and loading stops once a page returns fewer than `pageSize` items.
+
+### Other new options
+
+```dart
+CustomDropdown<String>(
+  items: _list,
+  labelText: 'Job role',                 // Material floating label
+  canClearSelection: true,               // clear button to reset selection
+  textAlign: TextAlign.center,           // align header / hint / items
+  overlayDirection: DropdownOverlayDirection.above, // auto | below | above
+  initiallyOpen: true,                   // open on first build
+  onChanged: (value) {},
+)
+
+CustomDropdown<String>.search(
+  items: _list,
+  autofocusOnSearch: true,               // focus the search field on open
+  onChanged: (value) {},
+)
+
+// Drive selection programmatically:
+final controller = SingleSelectController<String>(null);
+controller.select('Developer');
+controller.clear();
 ```
 
 <hr>

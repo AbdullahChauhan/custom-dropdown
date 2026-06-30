@@ -21,10 +21,12 @@ void main() {
     final size = tester.getSize(find.text('Select'));
     // The header (and thus the hint it lays out) should occupy the given height.
     final headerHeight = tester
-        .getSize(find.ancestor(
-          of: find.text('Select'),
-          matching: find.byType(Container),
-        ).first)
+        .getSize(find
+            .ancestor(
+              of: find.text('Select'),
+              matching: find.byType(Container),
+            )
+            .first)
         .height;
     expect(headerHeight, 72);
     expect(size.height, lessThanOrEqualTo(72));
@@ -57,7 +59,8 @@ void main() {
     await tester.pumpAndSettle();
 
     // Find the closed field container and read its border color.
-    final container = tester.widgetList<Container>(find.byType(Container)).firstWhere(
+    final container =
+        tester.widgetList<Container>(find.byType(Container)).firstWhere(
       (c) {
         final d = c.decoration;
         return d is BoxDecoration && d.border != null;
@@ -65,6 +68,7 @@ void main() {
     );
     final border = (container.decoration as BoxDecoration).border as Border;
     expect(border.top.color, Colors.orange,
-        reason: 'default error border should match the custom error text color');
+        reason:
+            'default error border should match the custom error text color');
   });
 }

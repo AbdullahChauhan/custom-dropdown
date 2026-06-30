@@ -1,40 +1,48 @@
 # 4.0.0
 
-- Add: explicit selection methods on the controllers ([#100](https://github.com/AbdullahChauhan/custom-dropdown/issues/100)) — `SingleSelectController.select(value)`, `MultiSelectController.select(values)` and `MultiSelectController.toggle(value)`.
-- Add: `initiallyOpen` to open the dropdown automatically on first build ([#87](https://github.com/AbdullahChauhan/custom-dropdown/issues/87)).
-- Add: `autofocusOnSearch` to focus the search field (raising the keyboard) when the overlay opens ([#70](https://github.com/AbdullahChauhan/custom-dropdown/issues/70)).
-- Add: `overlayDirection` (`auto` / `below` / `above`) to force the side the overlay opens towards ([#92](https://github.com/AbdullahChauhan/custom-dropdown/issues/92)). Defaults to `auto` (keyboard-aware).
-- Add: **infinite scroll / pagination** for the search-request constructors via a new `paginatedRequest` callback.
-  - `paginatedRequest: (query, page) => …` loads the first page on open/search and appends the next page as the user scrolls near the bottom, stopping once a page returns fewer than `pageSize` items (default `20`).
-  - Optional `loadMoreIndicator` footer while the next page loads. Fully backward-compatible — the existing one-shot `futureRequest` keeps working unchanged (provide exactly one of the two).
-- Add: configurable open/close **overlay animations** via the new `animation` parameter (`CustomDropdownAnimation`).
-  - Built-in transitions: `size`, `fade`, `sizeFade` (default), `scale`, `scaleFade`, `slide` — all anchored to the field edge and direction-aware (opening up or down).
-  - Tune `duration`, `reverseDuration`, `curve` and `reverseCurve`; smoother defaults (`easeOutCubic` open / `easeInCubic` close).
-  - `CustomDropdownAnimation.none` disables animation, and a `builder` escape hatch lets you supply any custom transition.
-  - Optional **staggered list-item entrance**: set `staggerItems: true` for a cascading fade + slide-in of items when the overlay opens (tune via `itemStagger` / `itemDuration`).
-  - The dropdown arrow now **rotates** (down ↔ up) in sync with open/close, using the same duration/curve.
-- Fix: Dropdown overlay hidden behind the on-screen keyboard while searching ([#116](https://github.com/AbdullahChauhan/custom-dropdown/issues/116), [#113](https://github.com/AbdullahChauhan/custom-dropdown/issues/113))
-  - The overlay now flips above the field when the keyboard would cover it, using the live keyboard inset instead of the full screen height.
-  - Position is recalculated whenever the keyboard shows/hides (via `WidgetsBindingObserver.didChangeMetrics`).
-  - The dropdown is kept alive while open (`AutomaticKeepAliveClientMixin`) and its field is scrolled back into view, so the overlay no longer disappears when the field sits in a scrollable that resizes for the keyboard.
-- Fix: Double border, opaque/gray background and extra side padding when an `inputDecorationTheme` is set, including the gray background shown on validation error (Flutter 3.35+) ([#115](https://github.com/AbdullahChauhan/custom-dropdown/issues/115), [#117](https://github.com/AbdullahChauhan/custom-dropdown/issues/117), [#110](https://github.com/AbdullahChauhan/custom-dropdown/issues/110); gray-on-error also reported in [PR #94](https://github.com/AbdullahChauhan/custom-dropdown/pull/94) by @mreslamgeek)
+A big release: a new overlay **animation system**, **infinite-scroll pagination**, a stack of new customization options, and fixes that sweep most of the open-issue backlog. All additions are backward-compatible.
+
+## ✨ New features
+
+- **Overlay animations** — configure the open/close transition via the new `animation` parameter (`CustomDropdownAnimation`):
+  - Built-in transitions: `size`, `fade`, `sizeFade` (default), `scale`, `scaleFade`, `slide` — direction-aware (open up/down).
+  - Tune `duration`, `reverseDuration`, `curve`, `reverseCurve`; smoother defaults (`easeOutCubic` open / `easeInCubic` close).
+  - `CustomDropdownAnimation.none` to disable, or a `builder` escape hatch for any custom transition.
+  - Optional **staggered list-item entrance** via `staggerItems` (tune with `itemStagger` / `itemDuration`).
+  - The dropdown arrow now rotates (down ↔ up) in sync with open/close.
+- **Infinite scroll / pagination** for the search-request constructors — new `paginatedRequest: (query, page) => …`:
+  - Loads page 1 on open/search and appends the next page as you scroll near the bottom, stopping once a page returns fewer than `pageSize` items (default `20`).
+  - Optional `loadMoreIndicator` footer. Provide exactly one of `futureRequest` / `paginatedRequest`.
+- Material-style floating `labelText`, with `CustomDropdownDecoration.labelStyle` / `floatingLabelStyle` / `floatingLabelBehavior` ([#111](https://github.com/AbdullahChauhan/custom-dropdown/issues/111)).
+- `textAlign` for the header, hint, list items, search input, "no result found" text and the floating label ([#71](https://github.com/AbdullahChauhan/custom-dropdown/issues/71); thanks [@hamhoney](https://github.com/hamhoney) for [PR #90](https://github.com/AbdullahChauhan/custom-dropdown/pull/90)).
+- `canClearSelection` — a clear button to reset back to the empty/hint state ([#106](https://github.com/AbdullahChauhan/custom-dropdown/issues/106), [#83](https://github.com/AbdullahChauhan/custom-dropdown/issues/83)).
+- `searchRequestMinChars` — don't fire the request until at least N characters are typed ([#107](https://github.com/AbdullahChauhan/custom-dropdown/issues/107)).
+- `selectOnItemTap` — let a custom `listItemBuilder` own item selection ([#80](https://github.com/AbdullahChauhan/custom-dropdown/issues/80); inspired by [PR #108](https://github.com/AbdullahChauhan/custom-dropdown/pull/108) from [@Giovanny-DS](https://github.com/Giovanny-DS)).
+- `overlayDirection` (`auto` / `below` / `above`) to force the side the overlay opens towards ([#92](https://github.com/AbdullahChauhan/custom-dropdown/issues/92)).
+- `initiallyOpen` to open the overlay automatically on first build ([#87](https://github.com/AbdullahChauhan/custom-dropdown/issues/87)).
+- `autofocusOnSearch` to focus the search field (raising the keyboard) when the overlay opens ([#70](https://github.com/AbdullahChauhan/custom-dropdown/issues/70)).
+- Controller selection helpers: `SingleSelectController.select()`, `MultiSelectController.select()` and `MultiSelectController.toggle()` ([#100](https://github.com/AbdullahChauhan/custom-dropdown/issues/100)).
+- `CustomDropdownDecoration.closedHeaderHeight` for a fixed, vertically-centered closed-field height ([#105](https://github.com/AbdullahChauhan/custom-dropdown/issues/105)).
+
+## 💅 Improvements
+
+- The default closed error border now follows `errorStyle.color`, so the border and error text match without setting `closedErrorBorder` explicitly ([#105](https://github.com/AbdullahChauhan/custom-dropdown/issues/105)).
+- Search a list of custom class instances out of the box — search matches each item's `toString()`; use the `CustomDropdownListFilter` mixin for complex filtering ([#103](https://github.com/AbdullahChauhan/custom-dropdown/issues/103)).
+
+## 🐛 Fixes
+
+- Overlay hidden behind the on-screen keyboard while searching ([#116](https://github.com/AbdullahChauhan/custom-dropdown/issues/116), [#113](https://github.com/AbdullahChauhan/custom-dropdown/issues/113), [#51](https://github.com/AbdullahChauhan/custom-dropdown/issues/51)):
+  - Flips above the field using the live keyboard inset, recalculates on keyboard show/hide (`didChangeMetrics`), keeps the dropdown alive (`AutomaticKeepAliveClientMixin`) and scrolls its field back into view — so the overlay no longer disappears when the field sits in a scrollable that resizes for the keyboard.
+- Double border, opaque/gray background, extra side padding and bottom underline when an `inputDecorationTheme` is set (Flutter 3.35+), including the gray background shown on validation error ([#115](https://github.com/AbdullahChauhan/custom-dropdown/issues/115), [#117](https://github.com/AbdullahChauhan/custom-dropdown/issues/117), [#110](https://github.com/AbdullahChauhan/custom-dropdown/issues/110), [#68](https://github.com/AbdullahChauhan/custom-dropdown/issues/68), [#86](https://github.com/AbdullahChauhan/custom-dropdown/issues/86), [#84](https://github.com/AbdullahChauhan/custom-dropdown/issues/84), [#97](https://github.com/AbdullahChauhan/custom-dropdown/issues/97); also raised in [PR #94](https://github.com/AbdullahChauhan/custom-dropdown/pull/94) by [@mreslamgeek](https://github.com/mreslamgeek)):
   - The field's internal `InputDecorator` no longer inherits the ambient `inputDecorationTheme`; it only surfaces the form validation error text.
-- Fix: `overlayController` ignored when a different controller instance is supplied on rebuild ([#114](https://github.com/AbdullahChauhan/custom-dropdown/issues/114))
-  - The overlay now re-binds to the latest `overlayController`, so external `show()`/`hide()` keep working and tapping the field still opens the dropdown.
-- Add: `searchRequestMinChars` for the search-request constructors ([#107](https://github.com/AbdullahChauhan/custom-dropdown/issues/107))
-  - The `futureRequest` is not triggered until at least this many characters are typed; the base items are shown below the threshold. Defaults to `0`.
-- Add: `canClearSelection` to reset the dropdown back to the empty/hint state ([#106](https://github.com/AbdullahChauhan/custom-dropdown/issues/106))
-  - Shows a clear button on the closed field while there is a selection. Single-select resets to `null`; multi-select clears all items. Defaults to `false`.
-- Add: `CustomDropdownDecoration.closedHeaderHeight` to set a fixed closed-field height (content centered) ([#105](https://github.com/AbdullahChauhan/custom-dropdown/issues/105)).
-- Improve: the default closed error border now follows `errorStyle.color`, so the error border and error text match without setting `closedErrorBorder` explicitly ([#105](https://github.com/AbdullahChauhan/custom-dropdown/issues/105)).
-- Add: optional Material-style floating `labelText` ([#111](https://github.com/AbdullahChauhan/custom-dropdown/issues/111))
-  - Rests as the placeholder and floats up when the dropdown has a value or is open. Configurable via `CustomDropdownDecoration.labelStyle`, `floatingLabelStyle` and `floatingLabelBehavior`.
-- Add: `textAlign` to align the dropdown's text ([#71](https://github.com/AbdullahChauhan/custom-dropdown/issues/71), Thanks [@hamhoney for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/90))
-  - Applies to the header, hint, list items, search field input, "no result found" text and the floating label. Defaults to `TextAlign.start`.
-- Add: `selectOnItemTap` to control whether tapping a list item selects it ([#80](https://github.com/AbdullahChauhan/custom-dropdown/issues/80), inspired by [PR #108](https://github.com/AbdullahChauhan/custom-dropdown/pull/108) from @Giovanny-DS)
-  - Defaults to `true` (unchanged). Set to `false` to let `listItemBuilder` own selection via the `onItemSelect` callback it already receives.
-- Fix: `SchedulerPhase` assertion when the overlay is dismissed, and a stale-callback crash when a search request completes after the field is disposed (Thanks [@antoniomtnez for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/109))
-  - The overlay's dismiss callback is deferred to a post-frame callback, and the async search request now bails out if the field is no longer mounted.
+- `overlayController` ignored when a different controller instance is supplied on rebuild ([#114](https://github.com/AbdullahChauhan/custom-dropdown/issues/114)) — the overlay now re-binds to the latest controller.
+- `SchedulerPhase` assertion on dismiss, and a stale-callback crash when a search request completes after the field is disposed ([#96](https://github.com/AbdullahChauhan/custom-dropdown/issues/96), [#101](https://github.com/AbdullahChauhan/custom-dropdown/issues/101); thanks [@antoniomtnez](https://github.com/antoniomtnez) for [PR #109](https://github.com/AbdullahChauhan/custom-dropdown/pull/109)).
+- `multiSelectSearchRequest` reliably shows "No result found" after an empty search result ([#112](https://github.com/AbdullahChauhan/custom-dropdown/issues/112)).
+- Selecting/deselecting no longer mutates a caller's unmodifiable `items`/`initialItems` list ([#62](https://github.com/AbdullahChauhan/custom-dropdown/issues/62)).
+
+## 🙌 Thanks
+
+Thanks to [@hamhoney](https://github.com/hamhoney) ([#90](https://github.com/AbdullahChauhan/custom-dropdown/pull/90)), [@antoniomtnez](https://github.com/antoniomtnez) ([#109](https://github.com/AbdullahChauhan/custom-dropdown/pull/109)), [@Giovanny-DS](https://github.com/Giovanny-DS) ([#108](https://github.com/AbdullahChauhan/custom-dropdown/pull/108)) and [@mreslamgeek](https://github.com/mreslamgeek) ([#94](https://github.com/AbdullahChauhan/custom-dropdown/pull/94)) for PRs and reports.
 
 # 3.1.1
 
@@ -169,3 +177,5 @@
 # 1.0.0
 
 - Customizable animated dropdown widget.
+</content>
+</invoke>

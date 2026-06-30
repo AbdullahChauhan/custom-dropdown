@@ -948,9 +948,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                     labelText: widget.labelText,
                     labelStyle: decoration?.labelStyle,
                     floatingLabelStyle: decoration?.floatingLabelStyle,
-                    floatingLabelBehavior:
-                        decoration?.floatingLabelBehavior ??
-                            FloatingLabelBehavior.auto,
+                    floatingLabelBehavior: decoration?.floatingLabelBehavior ??
+                        FloatingLabelBehavior.auto,
                     isOpen: _overlayOpen,
                   ),
                 );

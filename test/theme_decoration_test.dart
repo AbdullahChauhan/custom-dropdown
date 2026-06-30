@@ -41,7 +41,8 @@ void main() {
       );
       final decoration = decorator.decoration;
 
-      expect(decoration.filled, isFalse, reason: 'theme fill must be suppressed');
+      expect(decoration.filled, isFalse,
+          reason: 'theme fill must be suppressed');
       expect(decoration.border, InputBorder.none);
       expect(decoration.enabledBorder, InputBorder.none);
       expect(decoration.focusedBorder, InputBorder.none);

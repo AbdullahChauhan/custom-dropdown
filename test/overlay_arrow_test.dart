@@ -33,8 +33,7 @@ void main() {
     await tester.pump(); // post-frame flip scheduled
     await tester.pumpAndSettle();
 
-    expect(overlayArrowTurns(tester), 0.5,
-        reason: 'arrow points up when open');
+    expect(overlayArrowTurns(tester), 0.5, reason: 'arrow points up when open');
 
     // Close by selecting an item; capture the arrow heading back down.
     await tester.tap(find.text('B').last);
