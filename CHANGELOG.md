@@ -1,5 +1,6 @@
 # 4.0.0
 
+- Add: explicit selection methods on the controllers ([#100](https://github.com/AbdullahChauhan/custom-dropdown/issues/100)) — `SingleSelectController.select(value)`, `MultiSelectController.select(values)` and `MultiSelectController.toggle(value)`.
 - Add: `initiallyOpen` to open the dropdown automatically on first build ([#87](https://github.com/AbdullahChauhan/custom-dropdown/issues/87)).
 - Add: `autofocusOnSearch` to focus the search field (raising the keyboard) when the overlay opens ([#70](https://github.com/AbdullahChauhan/custom-dropdown/issues/70)).
 - Add: **infinite scroll / pagination** for the search-request constructors via a new `paginatedRequest` callback.
