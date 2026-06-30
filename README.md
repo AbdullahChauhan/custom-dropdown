@@ -1,11 +1,13 @@
 # Custom Dropdown
 
-**Custom Dropdown** package lets you add customizable animated dropdown widget.
+A highly customizable, **animated** dropdown widget for Flutter — with search, network search + infinite scroll, multi-selection, a floating label, configurable open/close animations, and form validation.
 
-[![pub.dev](https://img.shields.io/pub/v/animated_custom_dropdown.svg?style=flat?logo=dart)](https://pub.dev/packages/animated_custom_dropdown)
+[![pub.dev](https://img.shields.io/pub/v/animated_custom_dropdown.svg?logo=dart&color=blue)](https://pub.dev/packages/animated_custom_dropdown)
 [![likes](https://img.shields.io/pub/likes/animated_custom_dropdown)](https://pub.dev/packages/animated_custom_dropdown/score)
-[![popularity](https://img.shields.io/pub/popularity/animated_custom_dropdown)](https://pub.dev/packages/animated_custom_dropdown/score)
 [![pub points](https://img.shields.io/pub/points/animated_custom_dropdown)](https://pub.dev/packages/animated_custom_dropdown/score)
+[![popularity](https://img.shields.io/pub/popularity/animated_custom_dropdown)](https://pub.dev/packages/animated_custom_dropdown/score)
+[![GitHub stars](https://img.shields.io/github/stars/AbdullahChauhan/custom-dropdown?logo=github)](https://github.com/AbdullahChauhan/custom-dropdown)
+[![license](https://img.shields.io/github/license/AbdullahChauhan/custom-dropdown)](https://github.com/AbdullahChauhan/custom-dropdown/blob/master/LICENSE)
 
 [![buy me a coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20pizza&emoji=🍕&slug=abdullahchauhan&button_colour=FF8838&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=ffffff')](https://www.buymeacoffee.com/abdullahchauhan)
 
