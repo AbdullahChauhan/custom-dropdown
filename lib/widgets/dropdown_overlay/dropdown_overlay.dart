@@ -97,14 +97,21 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
   late ScrollController scrollController;
   final key1 = GlobalKey(), key2 = GlobalKey();
 
-  Duration get _iconDuration =>
-      widget.animation.enabled ? widget.animation.duration : Duration.zero;
+  Duration get _iconDuration {
+    if (!widget.animation.enabled) return Duration.zero;
+    // Keep the arrow rotation perceptible: the overlay's reveal can mask a very
+    // quick spin, so give it an evenly-paced minimum even for snappy overlays.
+    final ms = widget.animation.duration.inMilliseconds;
+    return Duration(milliseconds: ms < 300 ? 300 : ms);
+  }
 
   // The expanded-state arrow that rotates down→up on open and up→down on close.
+  // Uses an even (easeInOut) pace so the spin is clearly visible rather than
+  // front-loaded behind the opening overlay.
   Widget get _overlayArrow => _OverlayArrow(
         expanded: displayOverly,
         duration: _iconDuration,
-        curve: widget.animation.curve,
+        curve: Curves.easeInOut,
       );
 
   Widget hintBuilder(BuildContext context) {
