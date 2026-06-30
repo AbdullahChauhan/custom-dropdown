@@ -14,6 +14,7 @@ part 'models/disabled_decoration.dart';
 part 'models/list_item_decoration.dart';
 part 'models/controllers.dart';
 part 'models/search_field_decoration.dart';
+part 'models/custom_dropdown_animation.dart';
 // utils
 part 'utils/signatures.dart';
 // widgets
@@ -168,6 +169,14 @@ class CustomDropdown<T> extends StatefulWidget {
   /// Contain sub-decorations [SearchFieldDecoration], [ListItemDecoration] and [ScrollbarThemeData].
   final CustomDropdownDecoration? decoration;
 
+  /// Controls how the overlay animates open and closed.
+  ///
+  /// Defaults to a height + fade reveal. Provide a [CustomDropdownAnimation] to
+  /// pick a different built-in transition, tune the duration/curves, disable
+  /// animation ([CustomDropdownAnimation.none]) or supply a fully custom
+  /// transition.
+  final CustomDropdownAnimation animation;
+
   /// [CustomDropdown] enabled/disabled state.
   /// If disabled, you can not open the dropdown.
   final bool enabled;
@@ -237,6 +246,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.enabled = true,
     this.canClearSelection = false,
     this.selectOnItemTap = true,
+    this.animation = const CustomDropdownAnimation(),
     this.disabledDecoration,
   })  : assert(
           initialItem == null || controller == null,
@@ -301,6 +311,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.enabled = true,
     this.canClearSelection = false,
     this.selectOnItemTap = true,
+    this.animation = const CustomDropdownAnimation(),
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -366,6 +377,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.enabled = true,
     this.canClearSelection = false,
     this.selectOnItemTap = true,
+    this.animation = const CustomDropdownAnimation(),
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -410,6 +422,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.enabled = true,
     this.canClearSelection = false,
     this.selectOnItemTap = true,
+    this.animation = const CustomDropdownAnimation(),
     this.disabledDecoration,
   })  : assert(
           initialItems == null || multiSelectController == null,
@@ -476,6 +489,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.enabled = true,
     this.canClearSelection = false,
     this.selectOnItemTap = true,
+    this.animation = const CustomDropdownAnimation(),
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -543,6 +557,7 @@ class CustomDropdown<T> extends StatefulWidget {
     this.enabled = true,
     this.canClearSelection = false,
     this.selectOnItemTap = true,
+    this.animation = const CustomDropdownAnimation(),
     this.disabledDecoration,
     this.closeDropDownOnClearFilterSearch = false,
   })  : assert(
@@ -769,6 +784,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                   overlayHeight: widget.overlayHeight,
                   excludeSelected: widget.excludeSelected,
                   selectOnItemTap: widget.selectOnItemTap,
+                  animation: widget.animation,
                   canCloseOutsideBounds: widget.canCloseOutsideBounds,
                   searchType: widget._searchType,
                   futureRequest: widget.futureRequest,
