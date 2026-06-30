@@ -18,6 +18,8 @@
   - Rests as the placeholder and floats up when the dropdown has a value or is open. Configurable via `CustomDropdownDecoration.labelStyle`, `floatingLabelStyle` and `floatingLabelBehavior`.
 - Add: `textAlign` to align the dropdown's text ([#71](https://github.com/AbdullahChauhan/custom-dropdown/issues/71), Thanks [@hamhoney for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/90))
   - Applies to the header, hint, list items, search field input, "no result found" text and the floating label. Defaults to `TextAlign.start`.
+- Fix: `SchedulerPhase` assertion when the overlay is dismissed, and a stale-callback crash when a search request completes after the field is disposed (Thanks [@antoniomtnez for PR](https://github.com/AbdullahChauhan/custom-dropdown/pull/109))
+  - The overlay's dismiss callback is deferred to a post-frame callback, and the async search request now bails out if the field is no longer mounted.
 
 # 3.1.1
 

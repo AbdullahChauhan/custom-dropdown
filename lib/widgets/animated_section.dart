@@ -36,8 +36,11 @@ class _AnimatedSectionState extends State<_AnimatedSection>
       duration: const Duration(milliseconds: 300),
     )..addStatusListener((status) {
         if (status == AnimationStatus.dismissed) {
+          // Defer to after the current frame: the listener can fire mid-build/
+          // layout, and animationDismissed() hides the overlay (marking the
+          // tree dirty), which would trip a SchedulerPhase assertion.
           SchedulerBinding.instance.addPostFrameCallback((_) {
-            widget.animationDismissed();
+            if (mounted) widget.animationDismissed();
           });
         }
       });
