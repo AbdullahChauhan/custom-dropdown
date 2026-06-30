@@ -1,10 +1,5 @@
 part of '../../custom_dropdown.dart';
 
-const _defaultOverlayIconUp = Icon(
-  Icons.keyboard_arrow_up_rounded,
-  size: 20,
-);
-
 const _defaultHeaderPadding = EdgeInsets.all(16.0);
 const _overlayOuterPadding =
     EdgeInsetsDirectional.only(bottom: 12, start: 12, end: 12);
@@ -20,12 +15,21 @@ class _DropdownOverlay<T> extends StatefulWidget {
   final Function(T) onItemSelect;
   final Size size;
   final LayerLink layerLink;
+  final GlobalKey fieldKey;
   final VoidCallback hideOverlay;
   final String hintText, searchHintText, noResultFoundText;
   final bool excludeSelected, hideSelectedFieldWhenOpen, canCloseOutsideBounds;
+  final bool selectOnItemTap;
+  final DropdownOverlayDirection overlayDirection;
+  final CustomDropdownAnimation animation;
   final _SearchType? searchType;
+  final bool autofocusOnSearch;
   final Future<List<T>> Function(String)? futureRequest;
   final Duration? futureRequestDelay;
+  final int searchRequestMinChars;
+  final PaginatedSearchRequest<T>? paginatedRequest;
+  final int pageSize;
+  final Widget? loadMoreIndicator;
   final int maxLines;
   final double? overlayHeight;
   final TextAlign? textAlign;
@@ -46,12 +50,16 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.itemsScrollCtrl,
     required this.size,
     required this.layerLink,
+    required this.fieldKey,
     required this.hideOverlay,
     required this.hintText,
     required this.searchHintText,
     required this.selectedItemNotifier,
     required this.selectedItemsNotifier,
     required this.excludeSelected,
+    required this.selectOnItemTap,
+    required this.overlayDirection,
+    required this.animation,
     required this.onItemSelect,
     required this.noResultFoundText,
     required this.canCloseOutsideBounds,
@@ -72,8 +80,13 @@ class _DropdownOverlay<T> extends StatefulWidget {
     required this.headerBuilder,
     required this.hintBuilder,
     required this.searchType,
+    required this.autofocusOnSearch,
     required this.futureRequest,
     required this.futureRequestDelay,
+    required this.searchRequestMinChars,
+    required this.paginatedRequest,
+    required this.pageSize,
+    required this.loadMoreIndicator,
     required this.listItemBuilder,
     required this.headerListBuilder,
     required this.noResultFoundBuilder,
@@ -83,7 +96,8 @@ class _DropdownOverlay<T> extends StatefulWidget {
   _DropdownOverlayState<T> createState() => _DropdownOverlayState<T>();
 }
 
-class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
+class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
+    with WidgetsBindingObserver {
   bool displayOverly = true, displayOverlayBottom = true;
   bool isSearchRequestLoading = false;
   bool? mayFoundSearchRequestResult;
@@ -92,6 +106,30 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   late List<T> selectedItems;
   late ScrollController scrollController;
   final key1 = GlobalKey(), key2 = GlobalKey();
+
+  // Pagination (infinite scroll) state for [paginatedRequest].
+  bool get _isPaginated => widget.paginatedRequest != null;
+  int _page = 1;
+  bool _hasMore = false;
+  bool _loadingMore = false;
+  String _query = '';
+
+  Duration get _iconDuration {
+    if (!widget.animation.enabled) return Duration.zero;
+    // Keep the arrow rotation perceptible: the overlay's reveal can mask a very
+    // quick spin, so give it an evenly-paced minimum even for snappy overlays.
+    final ms = widget.animation.duration.inMilliseconds;
+    return Duration(milliseconds: ms < 300 ? 300 : ms);
+  }
+
+  // The expanded-state arrow that rotates down→up on open and up→down on close.
+  // Uses an even (easeInOut) pace so the spin is clearly visible rather than
+  // front-loaded behind the opening overlay.
+  Widget get _overlayArrow => _OverlayArrow(
+        expanded: displayOverly,
+        duration: _iconDuration,
+        curve: Curves.easeInOut,
+      );
 
   Widget hintBuilder(BuildContext context) {
     return widget.hintBuilder != null
@@ -189,6 +227,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
         padding: const EdgeInsets.symmetric(vertical: 12.0),
         child: Text(
           text,
+          textAlign: widget.textAlign,
           style: widget.noResultFoundStyle ?? const TextStyle(fontSize: 16),
         ),
       ),
@@ -198,16 +237,14 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
   @override
   void initState() {
     super.initState();
+    // Start on the forced side to avoid a first-frame flip.
+    if (widget.overlayDirection == DropdownOverlayDirection.above) {
+      displayOverlayBottom = false;
+    }
     scrollController = widget.itemsScrollCtrl ?? ScrollController();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final render1 = key1.currentContext?.findRenderObject() as RenderBox;
-      final render2 = key2.currentContext?.findRenderObject() as RenderBox;
-      final screenHeight = MediaQuery.of(context).size.height;
-      double y = render1.localToGlobal(Offset.zero).dy;
-      if (screenHeight - y < render2.size.height) {
-        displayOverlayBottom = false;
-        setState(() {});
-      }
+      _updateOverlayPosition();
     });
 
     selectedItem = widget.selectedItemNotifier.value;
@@ -224,17 +261,197 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     } else {
       items = widget.items;
     }
+
+    if (_isPaginated) {
+      scrollController.addListener(_onScroll);
+      // Load the first page on open.
+      isSearchRequestLoading = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _loadFirstPage('');
+      });
+    }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     widget.selectedItemNotifier.removeListener(singleSelectListener);
     widget.selectedItemsNotifier.removeListener(multiSelectListener);
 
+    if (_isPaginated) {
+      scrollController.removeListener(_onScroll);
+    }
     if (widget.itemsScrollCtrl == null) {
       scrollController.dispose();
     }
     super.dispose();
+  }
+
+  // Loads page 1 for [query], replacing the current items (new search/open).
+  Future<void> _loadFirstPage(String query) async {
+    _query = query;
+    _page = 1;
+    if (mounted) setState(() => isSearchRequestLoading = true);
+    List<T> result = [];
+    try {
+      result = await widget.paginatedRequest!(query, 1);
+    } catch (_) {
+      result = [];
+    }
+    if (!mounted) return;
+    setState(() {
+      items = result;
+      _hasMore = result.length >= widget.pageSize;
+      mayFoundSearchRequestResult = result.isNotEmpty;
+      isSearchRequestLoading = false;
+    });
+  }
+
+  void _onScroll() {
+    if (!_isPaginated || _loadingMore || !_hasMore) return;
+    final pos = scrollController.position;
+    if (pos.pixels >= pos.maxScrollExtent - 120) {
+      _loadMore();
+    }
+  }
+
+  // Appends the next page as the user scrolls near the bottom.
+  Future<void> _loadMore() async {
+    if (_loadingMore || !_hasMore) return;
+    setState(() => _loadingMore = true);
+    final next = _page + 1;
+    List<T> result = [];
+    try {
+      result = await widget.paginatedRequest!(_query, next);
+    } catch (_) {
+      result = [];
+    }
+    if (!mounted) return;
+    setState(() {
+      _page = next;
+      items = [...items, ...result];
+      _hasMore = result.length >= widget.pageSize;
+      _loadingMore = false;
+    });
+  }
+
+  // Called by the framework whenever the view's metrics change, most notably
+  // when the on-screen keyboard opens or closes. Recalculating here keeps the
+  // overlay from being hidden behind the keyboard while searching (issue #116).
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    // Run synchronously (not in a post-frame callback): didChangeMetrics fires
+    // before the resized frame is laid out, so adjusting the scroll offset here
+    // means the frame is painted with the field already in view. Doing it after
+    // the frame would let one frame paint with the field off-screen, flickering
+    // the overlay out and back the first time the keyboard opens.
+    _ensureFieldVisible();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateOverlayPosition();
+    });
+  }
+
+  // Keep the dropdown field within the (now smaller) viewport when the keyboard
+  // is up. If the field belongs to a scrollable that shrank for the keyboard,
+  // scrolling it back into view keeps its leader layer painted so the overlay
+  // (a CompositedTransformFollower) stays visible instead of vanishing.
+  void _ensureFieldVisible() {
+    if (!mounted) return;
+
+    final view = View.of(context);
+    final devicePixelRatio = view.devicePixelRatio;
+    final keyboardHeight = view.viewInsets.bottom / devicePixelRatio;
+    if (keyboardHeight <= 0) return;
+    final screenHeight = view.physicalSize.height / devicePixelRatio;
+
+    final fieldContext = widget.fieldKey.currentContext;
+    final fieldBox = fieldContext?.findRenderObject() as RenderBox?;
+    if (fieldContext == null || fieldBox == null || !fieldBox.hasSize) return;
+
+    final position = Scrollable.maybeOf(fieldContext)?.position;
+    if (position == null || !position.hasPixels) return;
+
+    // How far the field's bottom extends past the area left above the keyboard.
+    const margin = 8.0;
+    final fieldBottom =
+        fieldBox.localToGlobal(Offset.zero).dy + fieldBox.size.height;
+    final overshoot = fieldBottom - (screenHeight - keyboardHeight - margin);
+    if (overshoot <= 0) return;
+
+    final target = (position.pixels + overshoot)
+        .clamp(position.minScrollExtent, position.maxScrollExtent);
+    if (target != position.pixels) {
+      position.jumpTo(target);
+    }
+  }
+
+  // Decides whether the overlay should be displayed below or above the dropdown
+  // field based on the space actually available, accounting for the keyboard
+  // height.
+  //
+  // The decision is anchored to the field's *live* position (read via
+  // [widget.fieldKey]) rather than the overlay's own box. The overlay box moves
+  // when it flips and the field moves when the Scaffold resizes for the
+  // keyboard; measuring the field directly keeps the inputs stable and prevents
+  // the overlay from flip-flopping between top and bottom.
+  void _updateOverlayPosition() {
+    if (!mounted) return;
+
+    // Forced direction: skip the auto room-based calculation entirely.
+    switch (widget.overlayDirection) {
+      case DropdownOverlayDirection.below:
+        if (!displayOverlayBottom) {
+          setState(() => displayOverlayBottom = true);
+        }
+        return;
+      case DropdownOverlayDirection.above:
+        if (displayOverlayBottom) {
+          setState(() => displayOverlayBottom = false);
+        }
+        return;
+      case DropdownOverlayDirection.auto:
+        break;
+    }
+
+    final fieldBox =
+        widget.fieldKey.currentContext?.findRenderObject() as RenderBox?;
+    final contentBox = key2.currentContext?.findRenderObject() as RenderBox?;
+    if (fieldBox == null || !fieldBox.hasSize || contentBox == null) return;
+
+    // Read the keyboard height straight from the platform view rather than from
+    // MediaQuery: the overlay is hosted in an Overlay whose MediaQuery can have
+    // its bottom viewInsets stripped (by Scaffold/Overlay), which would report a
+    // keyboard height of 0 and leave the overlay stuck behind the keyboard.
+    final view = View.of(context);
+    final devicePixelRatio = view.devicePixelRatio;
+    final screenHeight = view.physicalSize.height / devicePixelRatio;
+    final keyboardHeight = view.viewInsets.bottom / devicePixelRatio;
+    final topInset = view.padding.top / devicePixelRatio;
+
+    // The overlay overlaps the field: when shown below it starts at the field's
+    // top edge, when shown above it ends near the field's top edge.
+    final fieldTop = fieldBox.localToGlobal(Offset.zero).dy;
+    final contentHeight = contentBox.size.height;
+
+    final roomBelow = (screenHeight - keyboardHeight) - fieldTop;
+    final roomAbove = fieldTop - topInset;
+
+    final bool shouldDisplayBottom;
+    if (roomBelow >= contentHeight) {
+      // Fits below (keyboard excluded) — keep the default downward direction.
+      shouldDisplayBottom = true;
+    } else if (roomAbove >= contentHeight) {
+      // Doesn't fit below but fits above — flip up, clear of the keyboard.
+      shouldDisplayBottom = false;
+    } else {
+      // Fits neither way; pick the side with more room.
+      shouldDisplayBottom = roomBelow >= roomAbove;
+    }
+
+    if (shouldDisplayBottom != displayOverlayBottom) {
+      setState(() => displayOverlayBottom = shouldDisplayBottom);
+    }
   }
 
   void singleSelectListener() {
@@ -283,6 +500,10 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
             itemsListPadding: widget.itemsListPadding ?? listPadding,
             listItemPadding: widget.listItemPadding ?? _defaultListItemPadding,
             onItemSelect: onItemSelect,
+            selectOnItemTap: widget.selectOnItemTap,
+            animation: widget.animation,
+            loadingMore: _loadingMore,
+            loadMoreIndicator: widget.loadMoreIndicator,
             decoration: decoration?.listItemDecoration,
             dropdownType: widget.dropdownType,
           )
@@ -302,30 +523,31 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                 displayOverlayBottom ? Alignment.topLeft : Alignment.bottomLeft,
             showWhenUnlinked: false,
             offset: overlayOffset,
-            child: Container(
-              key: key1,
-              margin: _overlayOuterPadding,
-              decoration: BoxDecoration(
-                color: decoration?.expandedFillColor ??
-                    CustomDropdownDecoration._defaultFillColor,
-                border: decoration?.expandedBorder,
-                borderRadius:
-                    decoration?.expandedBorderRadius ?? _defaultBorderRadius,
-                boxShadow: decoration?.expandedShadow ??
-                    [
-                      BoxShadow(
-                        blurRadius: 24.0,
-                        color: Colors.black.withOpacity(.08),
-                        offset: _defaultOverlayShadowOffset,
-                      ),
-                    ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: _AnimatedSection(
-                  animationDismissed: widget.hideOverlay,
-                  expand: displayOverly,
-                  axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
+            child: _AnimatedSection(
+              animationDismissed: widget.hideOverlay,
+              expand: displayOverly,
+              axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
+              animation: widget.animation,
+              child: Container(
+                key: key1,
+                margin: _overlayOuterPadding,
+                decoration: BoxDecoration(
+                  color: decoration?.expandedFillColor ??
+                      CustomDropdownDecoration._defaultFillColor,
+                  border: decoration?.expandedBorder,
+                  borderRadius:
+                      decoration?.expandedBorderRadius ?? _defaultBorderRadius,
+                  boxShadow: decoration?.expandedShadow ??
+                      [
+                        BoxShadow(
+                          blurRadius: 24.0,
+                          color: Colors.black.withAlpha(20),
+                          offset: _defaultOverlayShadowOffset,
+                        ),
+                      ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
                   child: SizedBox(
                     key: key2,
                     height: items.length > 4
@@ -342,18 +564,18 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                         },
                         child: Theme(
                           data: Theme.of(context).copyWith(
-                            scrollbarTheme: decoration
-                                    ?.overlayScrollbarDecoration ??
-                                ScrollbarThemeData(
-                                  thumbVisibility: MaterialStateProperty.all(
-                                    true,
-                                  ),
-                                  thickness: MaterialStateProperty.all(5),
-                                  radius: const Radius.circular(4),
-                                  thumbColor: MaterialStateProperty.all(
-                                    Colors.grey[300],
-                                  ),
-                                ),
+                            scrollbarTheme:
+                                decoration?.overlayScrollbarDecoration ??
+                                    ScrollbarThemeData(
+                                      thumbVisibility: WidgetStateProperty.all(
+                                        true,
+                                      ),
+                                      thickness: WidgetStateProperty.all(5),
+                                      radius: const Radius.circular(4),
+                                      thumbColor: WidgetStateProperty.all(
+                                        Colors.grey[300],
+                                      ),
+                                    ),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -389,7 +611,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         ),
                                         const SizedBox(width: 12),
                                         decoration?.expandedSuffixIcon ??
-                                            _defaultOverlayIconUp,
+                                            _overlayArrow,
                                       ],
                                     ),
                                   ),
@@ -405,6 +627,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     },
                                     decoration:
                                         decoration?.searchFieldDecoration,
+                                    textAlign: widget.textAlign,
+                                    autofocus: widget.autofocusOnSearch,
                                   )
                                 else
                                   GestureDetector(
@@ -434,10 +658,13 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                               },
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
+                                              textAlign: widget.textAlign,
+                                              autofocus:
+                                                  widget.autofocusOnSearch,
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
-                                              _defaultOverlayIconUp,
+                                              _overlayArrow,
                                           const SizedBox(width: 14),
                                         ],
                                       ),
@@ -458,6 +685,7 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                     futureRequest: widget.futureRequest,
                                     futureRequestDelay:
                                         widget.futureRequestDelay,
+                                    minChars: widget.searchRequestMinChars,
                                     onSearchedItems: (val) {
                                       setState(() => items = val);
                                     },
@@ -465,6 +693,10 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                         mayFoundSearchRequestResult = val,
                                     decoration:
                                         decoration?.searchFieldDecoration,
+                                    textAlign: widget.textAlign,
+                                    paginated: _isPaginated,
+                                    onPaginatedQuery: _loadFirstPage,
+                                    autofocus: widget.autofocusOnSearch,
                                   )
                                 else
                                   GestureDetector(
@@ -499,6 +731,8 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                                   widget.futureRequest,
                                               futureRequestDelay:
                                                   widget.futureRequestDelay,
+                                              minChars:
+                                                  widget.searchRequestMinChars,
                                               onSearchedItems: (val) {
                                                 setState(() => items = val);
                                               },
@@ -507,10 +741,15 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
                                                       val,
                                               decoration: decoration
                                                   ?.searchFieldDecoration,
+                                              textAlign: widget.textAlign,
+                                              paginated: _isPaginated,
+                                              onPaginatedQuery: _loadFirstPage,
+                                              autofocus:
+                                                  widget.autofocusOnSearch,
                                             ),
                                           ),
                                           decoration?.expandedSuffixIcon ??
-                                              _defaultOverlayIconUp,
+                                              _overlayArrow,
                                           const SizedBox(width: 14),
                                         ],
                                       ),
@@ -565,5 +804,55 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>> {
     }
 
     return child;
+  }
+}
+
+/// The overlay's expanded-state arrow. It mounts pointing down and rotates up
+/// once shown (open), then rotates back down when [expanded] becomes false
+/// (close) — so it reads as one continuous flip alongside the closed field's
+/// static arrow at the same position.
+class _OverlayArrow extends StatefulWidget {
+  final bool expanded;
+  final Duration duration;
+  final Curve curve;
+
+  const _OverlayArrow({
+    required this.expanded,
+    required this.duration,
+    required this.curve,
+  });
+
+  @override
+  State<_OverlayArrow> createState() => _OverlayArrowState();
+}
+
+class _OverlayArrowState extends State<_OverlayArrow> {
+  bool _up = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Animate from down to the target on the first frame after mount.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() => _up = widget.expanded);
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant _OverlayArrow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.expanded != widget.expanded) {
+      setState(() => _up = widget.expanded);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedRotation(
+      turns: _up ? 0.5 : 0.0,
+      duration: widget.duration,
+      curve: widget.curve,
+      child: const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
+    );
   }
 }

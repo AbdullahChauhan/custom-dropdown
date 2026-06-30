@@ -9,6 +9,14 @@ class _SearchField<T> extends StatefulWidget {
   final Duration? futureRequestDelay;
   final ValueChanged<bool>? onFutureRequestLoading, mayFoundResult;
   final SearchFieldDecoration? decoration;
+  final int minChars;
+  final TextAlign? textAlign;
+
+  /// When true, query changes are routed to [onPaginatedQuery] (the overlay
+  /// owns the page loading) instead of the one-shot [futureRequest] path.
+  final bool paginated;
+  final ValueChanged<String>? onPaginatedQuery;
+  final bool autofocus;
 
   const _SearchField.forListData({
     super.key,
@@ -16,9 +24,14 @@ class _SearchField<T> extends StatefulWidget {
     required this.onSearchedItems,
     required this.searchHintText,
     required this.decoration,
+    this.textAlign,
+    this.autofocus = false,
   })  : searchType = _SearchType.onListData,
         futureRequest = null,
         futureRequestDelay = null,
+        minChars = 0,
+        paginated = false,
+        onPaginatedQuery = null,
         onFutureRequestLoading = null,
         mayFoundResult = null;
 
@@ -32,6 +45,11 @@ class _SearchField<T> extends StatefulWidget {
     required this.onFutureRequestLoading,
     required this.mayFoundResult,
     required this.decoration,
+    this.minChars = 0,
+    this.textAlign,
+    this.paginated = false,
+    this.onPaginatedQuery,
+    this.autofocus = false,
   }) : searchType = _SearchType.onRequestData;
 
   @override
@@ -47,8 +65,9 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
   @override
   void initState() {
     super.initState();
-    if (widget.searchType == _SearchType.onRequestData &&
-        widget.items.isEmpty) {
+    if (widget.autofocus ||
+        (widget.searchType == _SearchType.onRequestData &&
+            widget.items.isEmpty)) {
       focusNode.requestFocus();
     }
   }
@@ -76,7 +95,11 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
   void onClear() {
     if (searchCtrl.text.isNotEmpty) {
       searchCtrl.clear();
-      widget.onSearchedItems(widget.items);
+      if (widget.paginated) {
+        widget.onPaginatedQuery?.call('');
+      } else {
+        widget.onSearchedItems(widget.items);
+      }
     }
   }
 
@@ -106,6 +129,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
       child: TextField(
         focusNode: focusNode,
         style: widget.decoration?.textStyle,
+        textAlign: widget.textAlign ?? TextAlign.start,
         onChanged: (val) async {
           if (val.isEmpty) {
             isFieldEmpty = true;
@@ -113,9 +137,32 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
             isFieldEmpty = false;
           }
 
+          if (widget.paginated) {
+            // Reset to page 1 for the new query (overlay loads the page).
+            final query = val.length >= widget.minChars ? val : '';
+            _delayTimer?.cancel();
+            if (widget.futureRequestDelay != null) {
+              _delayTimer = Timer(widget.futureRequestDelay!, () {
+                if (mounted) widget.onPaginatedQuery?.call(query);
+              });
+            } else {
+              widget.onPaginatedQuery?.call(query);
+            }
+            return;
+          }
+
           if (widget.searchType != null &&
               widget.searchType == _SearchType.onRequestData &&
               val.isNotEmpty) {
+            // Don't fire the request until the minimum number of characters is
+            // reached; show the base items in the meantime.
+            if (val.length < widget.minChars) {
+              _delayTimer?.cancel();
+              widget.onFutureRequestLoading!(false);
+              widget.onSearchedItems(widget.items);
+              return;
+            }
+
             widget.onFutureRequestLoading!(true);
 
             if (widget.futureRequestDelay != null) {
@@ -155,7 +202,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: Colors.grey.withOpacity(.25),
+                  color: Colors.grey.withAlpha(64),
                   width: 1,
                 ),
               ),
@@ -163,7 +210,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: Colors.grey.withOpacity(.25),
+                  color: Colors.grey.withAlpha(64),
                   width: 1,
                 ),
               ),
@@ -171,7 +218,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
-                  color: Colors.grey.withOpacity(.25),
+                  color: Colors.grey.withAlpha(64),
                   width: 1,
                 ),
               ),

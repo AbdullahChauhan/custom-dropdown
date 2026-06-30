@@ -32,6 +32,12 @@ class CustomDropdownDecoration {
   /// Border radius for closed state of [CustomDropdown].
   final BorderRadius? closedBorderRadius;
 
+  /// Fixed height for the closed [CustomDropdown] header.
+  ///
+  /// When set, the closed field uses this height and its content is centered
+  /// vertically. When null, the height is driven by the header padding.
+  final double? closedHeaderHeight;
+
   /// Error border for closed state of [CustomDropdown].
   final BoxBorder? closedErrorBorder;
 
@@ -46,6 +52,26 @@ class CustomDropdownDecoration {
 
   /// The style to use for the [CustomDropdown] header hint.
   final TextStyle? hintStyle;
+
+  /// The style of the floating label in its resting (placeholder) position.
+  /// Only applies when `labelText` is provided.
+  final TextStyle? labelStyle;
+
+  /// The style of the floating label once it has floated up.
+  /// Only applies when `labelText` is provided.
+  final TextStyle? floatingLabelStyle;
+
+  /// Controls when the floating label floats up.
+  /// Only applies when `labelText` is provided. Defaults to
+  /// [FloatingLabelBehavior.auto] (floats when the dropdown has a value or is
+  /// open).
+  final FloatingLabelBehavior floatingLabelBehavior;
+
+  /// Vertical gap reserved above the field for the floated label (the space
+  /// between the floated label and the field below it).
+  ///
+  /// Only applies when `labelText`/`label` is provided. Defaults to `16`.
+  final double floatingLabelGap;
 
   /// The style to use for the [CustomDropdown] header text.
   final TextStyle? headerStyle;
@@ -78,11 +104,16 @@ class CustomDropdownDecoration {
     this.prefixIcon,
     this.closedBorder,
     this.closedBorderRadius,
+    this.closedHeaderHeight,
     this.closedErrorBorder,
     this.closedErrorBorderRadius,
     this.expandedBorder,
     this.expandedBorderRadius,
     this.hintStyle,
+    this.labelStyle,
+    this.floatingLabelStyle,
+    this.floatingLabelBehavior = FloatingLabelBehavior.auto,
+    this.floatingLabelGap = 16,
     this.headerStyle,
     this.noResultFoundStyle,
     this.errorStyle,

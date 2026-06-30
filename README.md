@@ -1,11 +1,13 @@
 # Custom Dropdown
 
-**Custom Dropdown** package lets you add customizable animated dropdown widget.
+A highly customizable, **animated** dropdown widget for Flutter — with search, network search + infinite scroll, multi-selection, a floating label, configurable open/close animations, and form validation.
 
-[![pub.dev](https://img.shields.io/pub/v/animated_custom_dropdown.svg?style=flat?logo=dart)](https://pub.dev/packages/animated_custom_dropdown)
+[![pub.dev](https://img.shields.io/pub/v/animated_custom_dropdown.svg?logo=dart&color=blue)](https://pub.dev/packages/animated_custom_dropdown)
 [![likes](https://img.shields.io/pub/likes/animated_custom_dropdown)](https://pub.dev/packages/animated_custom_dropdown/score)
-[![popularity](https://img.shields.io/pub/popularity/animated_custom_dropdown)](https://pub.dev/packages/animated_custom_dropdown/score)
 [![pub points](https://img.shields.io/pub/points/animated_custom_dropdown)](https://pub.dev/packages/animated_custom_dropdown/score)
+[![popularity](https://img.shields.io/pub/popularity/animated_custom_dropdown)](https://pub.dev/packages/animated_custom_dropdown/score)
+[![GitHub stars](https://img.shields.io/github/stars/AbdullahChauhan/custom-dropdown?logo=github)](https://github.com/AbdullahChauhan/custom-dropdown)
+[![license](https://img.shields.io/github/license/AbdullahChauhan/custom-dropdown)](https://github.com/AbdullahChauhan/custom-dropdown/blob/master/LICENSE)
 
 [![buy me a coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20pizza&emoji=🍕&slug=abdullahchauhan&button_colour=FF8838&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=ffffff')](https://www.buymeacoffee.com/abdullahchauhan)
 
@@ -21,10 +23,18 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 - Multi select custom dropdown using named constructor CustomDropdown<T>.multiSelect().
 - Multi select custom dropdown with search field using named constructor CustomDropdown<T>.multiSelectSearch().
 - Multi select custom dropdown with search request field using named constructor CustomDropdown<T>.multiSelectSearchRequest().
+- Configurable open/close **overlay animations** (`animation`) with built-in transitions, a custom-transition builder, and an optional staggered list-item entrance.
+- **Infinite scroll / pagination** for async search (`paginatedRequest`).
+- Material-style floating **label** (`labelText`), **clear** button (`canClearSelection`), **text alignment** (`textAlign`) and **forced overlay direction** (`overlayDirection`).
+- Keyboard-aware overlay positioning, `initiallyOpen`, `autofocusOnSearch`, and `searchRequestMinChars`.
 
 ## Preview
 
 <img src="https://raw.githubusercontent.com/AbdullahChauhan/custom-dropdown/master/readme_assets/preview.gif" width="300"/>
+
+<br/>
+
+<img src="https://raw.githubusercontent.com/AbdullahChauhan/custom-dropdown/master/screenshots/search_dropdown.jpg" width="250"/>&nbsp;&nbsp;<img src="https://raw.githubusercontent.com/AbdullahChauhan/custom-dropdown/master/screenshots/multi_select_search.jpg" width="250"/>
 
 <hr>
 
@@ -34,13 +44,78 @@ Lots of properties to use and customize dropdown widget as per your need. Also u
 
 ```dart
 dependencies:
-  animated_custom_dropdown: 3.1.1
+  animated_custom_dropdown: 4.0.0
 ```
 
 2. Import the package and use it in your Flutter App.
 
 ```dart
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+```
+
+<hr>
+
+## What's new in 4.0.0
+
+### Overlay animations
+Configure the open/close transition with `CustomDropdownAnimation`.
+
+```dart
+CustomDropdown<String>(
+  hintText: 'Select job role',
+  items: _list,
+  animation: const CustomDropdownAnimation(
+    type: DropdownAnimationType.scaleFade, // size, fade, sizeFade, scale, scaleFade, slide
+    duration: Duration(milliseconds: 350),
+    curve: Curves.easeOutCubic,
+    staggerItems: true, // cascading list-item entrance
+  ),
+  onChanged: (value) {},
+)
+```
+
+- `CustomDropdownAnimation.none` disables animation.
+- Provide a `builder: (context, animation, axisAlignment, child) => ...` for a fully custom transition.
+
+### Infinite scroll (pagination)
+Use `paginatedRequest` instead of `futureRequest` to lazy-load pages as the user scrolls.
+
+```dart
+CustomDropdown<User>.searchRequest(
+  hintText: 'Search users',
+  pageSize: 20,
+  paginatedRequest: (query, page) => api.fetchUsers(query, page), // 1-based page
+  loadMoreIndicator: const Center(child: CircularProgressIndicator()),
+  onChanged: (value) {},
+)
+```
+
+The next page is appended automatically when the user scrolls near the bottom, and loading stops once a page returns fewer than `pageSize` items.
+
+### Other new options
+
+```dart
+CustomDropdown<String>(
+  items: _list,
+  labelText: 'Job role',                 // Material floating label (String)
+  // label: Row(children: [...]),        // ...or a fully custom label Widget
+  canClearSelection: true,               // clear button to reset selection
+  textAlign: TextAlign.center,           // align header / hint / items
+  overlayDirection: DropdownOverlayDirection.above, // auto | below | above
+  initiallyOpen: true,                   // open on first build
+  onChanged: (value) {},
+)
+
+CustomDropdown<String>.search(
+  items: _list,
+  autofocusOnSearch: true,               // focus the search field on open
+  onChanged: (value) {},
+)
+
+// Drive selection programmatically:
+final controller = SingleSelectController<String>(null);
+controller.select('Developer');
+controller.clear();
 ```
 
 <hr>
@@ -170,7 +245,7 @@ class Job with CustomDropdownListFilter {
   }
 }
 ```
-If the filter on the object is more complex, you can add the `CustomDropdownListFilter` mixin to it, which gives you access to the `filter(query)` method, and by this the items of the list will be filtered.
+By default the search matches against each item's `toString()` value, so custom model classes are searchable out of the box as long as `toString()` returns the text you want to match. If the filter on the object is more complex (e.g. matching multiple fields), add the `CustomDropdownListFilter` mixin to it, which gives you access to the `filter(query)` method, and by this the items of the list will be filtered.
 
 Now the widgets:
 
@@ -437,6 +512,17 @@ class MultiSelectValidationDropdown extends StatelessWidget {
   }
 }
 ```
+
+## Keyboard handling
+
+For the search constructors (`CustomDropdown.search()`, `CustomDropdown.searchRequest()` and their multi-select variants), the open overlay automatically stays clear of the on-screen keyboard: it flips above the field when the keyboard would cover it and repositions whenever the keyboard shows or hides. If the field lives inside a scrollable (e.g. a `ListView`), it is also scrolled back into view so the overlay never disappears.
+
+For this to work the field must be able to move above the keyboard. This is handled automatically when you keep the `Scaffold` default `resizeToAvoidBottomInset: true` and either:
+
+- place the dropdown inside a scrollable (`ListView` / `SingleChildScrollView`), or
+- use a layout that can reflow (e.g. a `Column` with a `Spacer` / `MainAxisAlignment.end`).
+
+If you set `resizeToAvoidBottomInset: false` or use a non-reflowable layout, a field pinned to the bottom can't be moved out of the keyboard's area, so part of the overlay may remain covered.
 
 ## Customization
 For a complete customization of the package, go to the [example](https://github.com/AbdullahChauhan/custom-dropdown/blob/master/example).

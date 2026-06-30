@@ -25,3 +25,10 @@ typedef _NoResultFoundBuilder = Widget Function(
   BuildContext context,
   String text,
 );
+
+/// Page-aware async request for the paginated search-request constructors.
+/// Receives the current [query] and the 1-based [page] to load.
+typedef PaginatedSearchRequest<T> = Future<List<T>> Function(
+  String query,
+  int page,
+);

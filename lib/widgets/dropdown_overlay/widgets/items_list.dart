@@ -10,6 +10,10 @@ class _ItemsList<T> extends StatelessWidget {
   final _ListItemBuilder<T> listItemBuilder;
   final ListItemDecoration? decoration;
   final _DropdownType dropdownType;
+  final bool selectOnItemTap;
+  final CustomDropdownAnimation animation;
+  final bool loadingMore;
+  final Widget? loadMoreIndicator;
 
   const _ItemsList({
     super.key,
@@ -24,6 +28,10 @@ class _ItemsList<T> extends StatelessWidget {
     required this.selectedItems,
     required this.decoration,
     required this.dropdownType,
+    required this.selectOnItemTap,
+    required this.animation,
+    this.loadingMore = false,
+    this.loadMoreIndicator,
   });
 
   @override
@@ -34,21 +42,36 @@ class _ItemsList<T> extends StatelessWidget {
         controller: scrollController,
         shrinkWrap: true,
         padding: itemsListPadding,
-        itemCount: items.length,
+        itemCount: items.length + (loadingMore ? 1 : 0),
         itemBuilder: (_, index) {
+          // Trailing load-more indicator for paginated lists.
+          if (index >= items.length) {
+            return loadMoreIndicator ??
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    ),
+                  ),
+                );
+          }
+
           final selected = switch (dropdownType) {
             _DropdownType.singleSelect =>
               !excludeSelected && selectedItem == items[index],
             _DropdownType.multipleSelect => selectedItems.contains(items[index])
           };
-          return Material(
+          final Widget item = Material(
             color: Colors.transparent,
             child: InkWell(
               splashColor: decoration?.splashColor ??
                   ListItemDecoration._defaultSplashColor,
               highlightColor: decoration?.highlightColor ??
                   ListItemDecoration._defaultHighlightColor,
-              onTap: () => onItemSelect(items[index]),
+              onTap: selectOnItemTap ? () => onItemSelect(items[index]) : null,
               child: Ink(
                 color: selected
                     ? (decoration?.selectedColor ??
@@ -64,7 +87,77 @@ class _ItemsList<T> extends StatelessWidget {
               ),
             ),
           );
+
+          if (!animation.enabled || !animation.staggerItems) return item;
+
+          return _StaggeredItem(
+            index: index,
+            duration: animation.itemDuration,
+            stagger: animation.itemStagger,
+            curve: animation.curve,
+            child: item,
+          );
         },
+      ),
+    );
+  }
+}
+
+/// Plays a one-shot fade + slide-up entrance for a list item, delayed by its
+/// position so the list cascades in when the overlay opens.
+class _StaggeredItem extends StatefulWidget {
+  final int index;
+  final Duration duration, stagger;
+  final Curve curve;
+  final Widget child;
+
+  const _StaggeredItem({
+    required this.index,
+    required this.duration,
+    required this.stagger,
+    required this.curve,
+    required this.child,
+  });
+
+  @override
+  State<_StaggeredItem> createState() => _StaggeredItemState();
+}
+
+class _StaggeredItemState extends State<_StaggeredItem>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller =
+      AnimationController(vsync: this, duration: widget.duration);
+  late final Animation<double> _animation =
+      CurvedAnimation(parent: _controller, curve: widget.curve);
+  Timer? _startTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Cap the per-item delay so long lists don't take forever to appear.
+    final steps = widget.index > 12 ? 12 : widget.index;
+    _startTimer = Timer(widget.stagger * steps, () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _startTimer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _animation,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.18),
+          end: Offset.zero,
+        ).animate(_animation),
+        child: widget.child,
       ),
     );
   }

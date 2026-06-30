@@ -5,13 +5,14 @@ class _OverlayBuilder extends StatefulWidget {
   final Widget Function(VoidCallback show) child;
   final OverlayPortalController? overlayPortalController;
   final Function(bool)? visibility;
+  final bool initiallyOpen;
 
   const _OverlayBuilder({
-    super.key,
     required this.overlay,
     required this.child,
     this.overlayPortalController,
     this.visibility,
+    this.initiallyOpen = false,
   });
 
   @override
@@ -26,6 +27,24 @@ class _OverlayBuilderState extends State<_OverlayBuilder> {
     super.initState();
     overlayController =
         widget.overlayPortalController ?? OverlayPortalController();
+    if (widget.initiallyOpen) {
+      // Show after the first frame so the OverlayPortal is mounted.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !overlayController.isShowing) showOverlay();
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _OverlayBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Keep in sync if the caller passes a different controller instance (e.g.
+    // one recreated on rebuild). Without this the OverlayPortal stays bound to
+    // the original controller and the caller's show()/hide() calls do nothing.
+    if (widget.overlayPortalController != oldWidget.overlayPortalController) {
+      overlayController =
+          widget.overlayPortalController ?? OverlayPortalController();
+    }
   }
 
   void showOverlay() {

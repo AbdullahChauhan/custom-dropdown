@@ -18,6 +18,7 @@ class _DropDownField<T> extends StatefulWidget {
   final Widget? prefixIcon, suffixIcon;
   final List<BoxShadow>? shadow;
   final EdgeInsets? headerPadding;
+  final double? headerHeight;
   final int maxLines;
   final _HeaderBuilder<T>? headerBuilder;
   final _HeaderListBuilder<T>? headerListBuilder;
@@ -25,6 +26,14 @@ class _DropDownField<T> extends StatefulWidget {
   final _DropdownType dropdownType;
   final bool enabled;
   final MultiSelectController<T> selectedItemsNotifier;
+  final bool canClearSelection;
+  final VoidCallback? onClear;
+  final String? labelText;
+  final Widget? label;
+  final TextStyle? labelStyle, floatingLabelStyle;
+  final FloatingLabelBehavior floatingLabelBehavior;
+  final double floatingLabelGap;
+  final bool isOpen;
 
   const _DropDownField({
     super.key,
@@ -33,6 +42,15 @@ class _DropDownField<T> extends StatefulWidget {
     required this.maxLines,
     required this.dropdownType,
     required this.selectedItemsNotifier,
+    this.canClearSelection = false,
+    this.onClear,
+    this.labelText,
+    this.label,
+    this.labelStyle,
+    this.floatingLabelStyle,
+    this.floatingLabelBehavior = FloatingLabelBehavior.auto,
+    this.floatingLabelGap = 16,
+    this.isOpen = false,
     this.hintText = 'Select value',
     this.fillColor,
     this.border,
@@ -47,6 +65,7 @@ class _DropDownField<T> extends StatefulWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.headerPadding,
+    this.headerHeight,
     this.enabled = true,
   });
 
@@ -57,6 +76,69 @@ class _DropDownField<T> extends StatefulWidget {
 class _DropDownFieldState<T> extends State<_DropDownField<T>> {
   T? selectedItem;
   late List<T> selectedItems;
+
+  bool get _hasSelection => switch (widget.dropdownType) {
+        _DropdownType.singleSelect => selectedItem != null,
+        _DropdownType.multipleSelect => selectedItems.isNotEmpty,
+      };
+
+  static const _labelAnimDuration = Duration(milliseconds: 200);
+
+  bool get _hasLabel => widget.labelText != null || widget.label != null;
+
+  bool get _labelFloated => switch (widget.floatingLabelBehavior) {
+        FloatingLabelBehavior.always => true,
+        FloatingLabelBehavior.never => false,
+        FloatingLabelBehavior.auto => _hasSelection || widget.isOpen,
+      };
+
+  /// With [FloatingLabelBehavior.never] the label only acts as a placeholder,
+  /// so it is hidden once there is a selection.
+  bool get _labelVisible =>
+      _hasLabel &&
+      !(widget.floatingLabelBehavior == FloatingLabelBehavior.never &&
+          _hasSelection);
+
+  Widget _floatingLabel(bool floated) {
+    final restingStyle = widget.labelStyle ??
+        const TextStyle(fontSize: 16, color: Color(0xFFA7A7A7));
+    final floatingStyle = widget.floatingLabelStyle ??
+        const TextStyle(fontSize: 12, color: Color(0xFF6B6B6B));
+    final start = (widget.headerPadding ?? _defaultHeaderPadding).left;
+
+    // Honor textAlign for the label's horizontal position, so it lines up with
+    // the (centered/end-aligned) header and hint.
+    final x = switch (widget.textAlign) {
+      TextAlign.center => 0.0,
+      TextAlign.end || TextAlign.right => 1.0,
+      _ => -1.0,
+    };
+
+    return Positioned.fill(
+      child: IgnorePointer(
+        child: AnimatedAlign(
+          duration: _labelAnimDuration,
+          curve: Curves.easeOut,
+          alignment: AlignmentDirectional(x, floated ? -1.0 : 0.0),
+          child: Padding(
+            padding: EdgeInsetsDirectional.only(start: start, end: start),
+            child: AnimatedDefaultTextStyle(
+              duration: _labelAnimDuration,
+              curve: Curves.easeOut,
+              style: floated ? floatingStyle : restingStyle,
+              child: widget.label ??
+                  Text(
+                    widget.labelText!,
+                    maxLines: 1,
+                    textAlign: widget.textAlign,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -93,7 +175,7 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
           TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
-            color: widget.enabled ? null : Colors.black.withOpacity(.5),
+            color: widget.enabled ? null : Colors.black.withAlpha(128),
           ),
     );
   }
@@ -125,46 +207,80 @@ class _DropDownFieldState<T> extends State<_DropDownField<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final field = _closedField(context);
+
+    if (!_hasLabel) {
+      return GestureDetector(onTap: widget.onTap, child: field);
+    }
+
+    final floated = _labelFloated;
     return GestureDetector(
       onTap: widget.onTap,
-      child: Container(
-        padding: widget.headerPadding ?? _defaultHeaderPadding,
-        decoration: BoxDecoration(
-          color: widget.fillColor ??
-              (widget.enabled
-                  ? CustomDropdownDecoration._defaultFillColor
-                  : CustomDropdownDecoration._defaultFillColor.withOpacity(.5)),
-          border: widget.border,
-          borderRadius: widget.borderRadius ?? _defaultBorderRadius,
-          boxShadow: widget.shadow,
-        ),
-        child: Row(
-          children: [
-            if (widget.prefixIcon != null) ...[
-              widget.prefixIcon!,
-              const SizedBox(width: 12),
-            ],
-            Expanded(
-              child: switch (widget.dropdownType) {
-                _DropdownType.singleSelect => selectedItem != null
-                    ? headerBuilder(context)
-                    : hintBuilder(context),
-                _DropdownType.multipleSelect => selectedItems.isNotEmpty
-                    ? headerListBuilder(context)
-                    : hintBuilder(context),
-              },
-            ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          AnimatedPadding(
+            duration: _labelAnimDuration,
+            curve: Curves.easeOut,
+            padding:
+                EdgeInsets.only(top: floated ? widget.floatingLabelGap : 0),
+            child: field,
+          ),
+          if (_labelVisible) _floatingLabel(floated),
+        ],
+      ),
+    );
+  }
+
+  Widget _closedField(BuildContext context) {
+    // The floating label, when present and resting, doubles as the placeholder,
+    // so the in-field hint is suppressed in that case.
+    Widget header() {
+      switch (widget.dropdownType) {
+        case _DropdownType.singleSelect:
+          if (selectedItem != null) return headerBuilder(context);
+        case _DropdownType.multipleSelect:
+          if (selectedItems.isNotEmpty) return headerListBuilder(context);
+      }
+      return _hasLabel ? const SizedBox.shrink() : hintBuilder(context);
+    }
+
+    return Container(
+      height: widget.headerHeight,
+      padding: widget.headerPadding ?? _defaultHeaderPadding,
+      decoration: BoxDecoration(
+        color: widget.fillColor ??
+            (widget.enabled
+                ? CustomDropdownDecoration._defaultFillColor
+                : CustomDropdownDecoration._defaultFillColor.withAlpha(128)),
+        border: widget.border,
+        borderRadius: widget.borderRadius ?? _defaultBorderRadius,
+        boxShadow: widget.shadow,
+      ),
+      child: Row(
+        children: [
+          if (widget.prefixIcon != null) ...[
+            widget.prefixIcon!,
             const SizedBox(width: 12),
+          ],
+          Expanded(child: header()),
+          const SizedBox(width: 12),
+          if (widget.canClearSelection && widget.enabled && _hasSelection)
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: widget.onClear,
+              child: const Icon(Icons.clear_rounded, size: 20),
+            )
+          else
             widget.suffixIcon ??
                 (widget.enabled
                     ? _defaultOverlayIconDown
                     : Icon(
                         Icons.keyboard_arrow_down_rounded,
-                        color: Colors.black.withOpacity(.5),
+                        color: Colors.black.withAlpha(128),
                         size: 20,
                       )),
-          ],
-        ),
+        ],
       ),
     );
   }
