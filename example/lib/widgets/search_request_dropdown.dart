@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:animated_custom_dropdown_example/models/job.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 Future<List<Job>> _getFakeRequestData(String query) async {
   return await Future.delayed(const Duration(seconds: 1), () {

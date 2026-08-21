@@ -9,7 +9,7 @@ import 'package:animated_custom_dropdown_example/widgets/search_dropdown.dart';
 import 'package:animated_custom_dropdown_example/widgets/search_request_dropdown.dart';
 import 'package:animated_custom_dropdown_example/widgets/simple_dropdown.dart';
 import 'package:animated_custom_dropdown_example/widgets/validation_dropdown.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   runApp(const App());
