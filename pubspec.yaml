@@ -1,6 +1,6 @@
 name: animated_custom_dropdown
 description: Highly customizable animated dropdown for Flutter — search, network search with infinite scroll, multi-selection, overlay animations and a floating label.
-version: 4.0.0
+version: 4.0.1
 homepage: https://github.com/AbdullahChauhan/custom-dropdown
 repository: https://github.com/AbdullahChauhan/custom-dropdown
 issue_tracker: https://github.com/AbdullahChauhan/custom-dropdown/issues
@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  material_ui: ^1.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

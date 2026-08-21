@@ -1,3 +1,7 @@
+# 4.0.1
+
+- Support material UI
+
 # 4.0.0
 
 A big release: a new overlay **animation system**, **infinite-scroll pagination**, a stack of new customization options, and fixes that sweep most of the open-issue backlog. All additions are backward-compatible.

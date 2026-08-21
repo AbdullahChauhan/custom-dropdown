@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // Guards the overlay-teardown fixes from #109:
