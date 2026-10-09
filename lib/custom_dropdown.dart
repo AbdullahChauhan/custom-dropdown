@@ -762,14 +762,24 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
       });
     }
 
-    if (widget.controller != oldWidget.controller &&
-        widget.controller != null) {
-      selectedItemNotifier = widget.controller!;
+    // Move the listener to the new controller and dispose the old one only if
+    // we created it. Going back to null keeps the selection in a new internal
+    // controller, so dispose() can rely on `widget.controller == null`.
+    if (widget.controller != oldWidget.controller) {
+      final old = selectedItemNotifier..removeListener(_selectedItemListener);
+      selectedItemNotifier =
+          widget.controller ?? SingleSelectController(old.value);
+      selectedItemNotifier.addListener(_selectedItemListener);
+      if (oldWidget.controller == null) old.dispose();
     }
 
-    if (widget.multiSelectController != oldWidget.multiSelectController &&
-        widget.multiSelectController != null) {
-      selectedItemsNotifier = widget.multiSelectController!;
+    if (widget.multiSelectController != oldWidget.multiSelectController) {
+      final old = selectedItemsNotifier
+        ..removeListener(_selectedItemsListener);
+      selectedItemsNotifier =
+          widget.multiSelectController ?? MultiSelectController(old.value);
+      selectedItemsNotifier.addListener(_selectedItemsListener);
+      if (oldWidget.multiSelectController == null) old.dispose();
     }
   }
 

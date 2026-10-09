@@ -273,6 +273,29 @@ class _DropdownOverlayState<T> extends State<_DropdownOverlay<T>>
   }
 
   @override
+  void didUpdateWidget(covariant _DropdownOverlay<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // The caller can swap controllers while the overlay is open; move our
+    // listeners so the old ones don't keep this state alive.
+    if (widget.selectedItemNotifier != oldWidget.selectedItemNotifier) {
+      oldWidget.selectedItemNotifier.removeListener(singleSelectListener);
+      widget.selectedItemNotifier.addListener(singleSelectListener);
+      singleSelectListener();
+    }
+    if (widget.selectedItemsNotifier != oldWidget.selectedItemsNotifier) {
+      oldWidget.selectedItemsNotifier.removeListener(multiSelectListener);
+      widget.selectedItemsNotifier.addListener(multiSelectListener);
+      multiSelectListener();
+    }
+    if (widget.itemsScrollCtrl != oldWidget.itemsScrollCtrl) {
+      final old = scrollController..removeListener(_onScroll);
+      scrollController = widget.itemsScrollCtrl ?? ScrollController();
+      if (_isPaginated) scrollController.addListener(_onScroll);
+      if (oldWidget.itemsScrollCtrl == null) old.dispose();
+    }
+  }
+
+  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     widget.selectedItemNotifier.removeListener(singleSelectListener);

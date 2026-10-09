@@ -59,7 +59,7 @@ class _SearchField<T> extends StatefulWidget {
 class _SearchFieldState<T> extends State<_SearchField<T>> {
   final searchCtrl = TextEditingController();
   bool isFieldEmpty = false;
-  FocusNode focusNode = FocusNode();
+  final FocusNode focusNode = FocusNode();
   Timer? _delayTimer;
 
   @override
@@ -75,6 +75,7 @@ class _SearchFieldState<T> extends State<_SearchField<T>> {
   @override
   void dispose() {
     searchCtrl.dispose();
+    focusNode.dispose();
     _delayTimer?.cancel();
     super.dispose();
   }

@@ -127,7 +127,7 @@ class _StaggeredItemState extends State<_StaggeredItem>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller =
       AnimationController(vsync: this, duration: widget.duration);
-  late final Animation<double> _animation =
+  late final CurvedAnimation _animation =
       CurvedAnimation(parent: _controller, curve: widget.curve);
   Timer? _startTimer;
 
@@ -144,6 +144,7 @@ class _StaggeredItemState extends State<_StaggeredItem>
   @override
   void dispose() {
     _startTimer?.cancel();
+    _animation.dispose();
     _controller.dispose();
     super.dispose();
   }

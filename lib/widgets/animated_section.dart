@@ -22,7 +22,7 @@ class _AnimatedSection extends StatefulWidget {
 class _AnimatedSectionState extends State<_AnimatedSection>
     with SingleTickerProviderStateMixin {
   late AnimationController animController;
-  late Animation<double> animation;
+  late CurvedAnimation animation;
 
   @override
   void initState() {
@@ -80,6 +80,7 @@ class _AnimatedSectionState extends State<_AnimatedSection>
 
   @override
   void dispose() {
+    animation.dispose();
     animController.dispose();
     super.dispose();
   }
